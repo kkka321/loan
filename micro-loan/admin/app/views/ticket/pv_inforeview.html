@@ -1,0 +1,315 @@
+
+
+<div class="row">
+        <div class="content-wrapper">
+                <div class="col-md-12">
+                        <!-- Custom Tabs -->
+                        <div class="nav-tabs-custom">
+                          <ul class="nav nav-tabs">
+                            <li class="{{if eq $.action "new"}} active{{end}} red pv-red-tab"><a href="#tab_1" class="tab_a " data-toggle="tab" aria-expanded="true">{{t $.LangUse "新工单"}} </a></li>
+                            <li class="{{if eq $.action "part"}} active{{end}} yellow pv-yellow-tab"><a href="#tab_2" data-toggle="tab" aria-expanded="false">{{t $.LangUse "部分完成"}}</a></li>
+                            <li class="{{if eq $.action "complete"}} active{{end}} glay pv-glay-tab"><a href="#tab_4" data-toggle="tab" aria-expanded="false">{{t $.LangUse "已完成 "}}</a></li>
+                          </ul>
+                          <div class="tab-content">
+
+
+
+                                {{if eq $.action "new"}}
+                            <div class="{{if eq $.action "new"}} active{{end}} tab-pane" id="tab_1">
+                                <div class="tab_1div">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- Horizontal Form -->
+
+                                            <!-- /.box-header -->
+                                            <!-- form start -->
+                                            <form class="form-horizontal" action="/ticket/pv_inforeview" method="get">
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-md-2">
+                                                            <input name="id" type="text" class="form-control" placeholder="{{t $.LangUse "工单"}} ID" value="{{.id}}">
+                                                        </div>
+                                                        <div class="col-xs-12 col-md-2">
+                                                            <input name="order_id" type="text" class="form-control" placeholder="{{t $.LangUse "借款"}} ID" value="{{.orderID}}">
+                                                        </div>
+                                                      
+                                                        <div class="col-xs-12 col-md-2">
+                                                            <input type="hidden" name="action" value="new"/>
+                                                            <input type="submit" class="form-control btn btn-info" value="{{t $.LangUse "搜索"}}">
+                                                        </div>
+
+
+                                                        <div class="col-xs-12 col-md-2">
+                                                        <button type="button" class="toggoleSelfOnlineStatus form-control btn btn-warning" data-tostop="{{t $.LangUse "暂停接单"}}"   data-tostart="{{t $.LangUse "恢复接单"}}" data-workerstatus="{{if $.IsWorkerAcceptTicket}}1{{else}}0{{end}}" data-lock="0">
+                                                            {{if $.IsWorkerAcceptTicket}}
+                                                            {{t $.LangUse "暂停接单"}}
+                                                            {{else}}
+                                                            {{t $.LangUse "恢复接单"}}
+                                                            {{end}}
+                                                        </button>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        <!-- /.box -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box">
+                                            <div class="box-body">
+                                                <table class="table table-bordered table-striped">
+                                                    <tr>
+                                                    <th>{{t .LangUse "操作"}}</th>
+                                                    <th class="th_sort" id="id">{{t .LangUse "工单"}}ID <i id="iid" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                    <th class="th_sort" id="order_id">{{t .LangUse "借款"}}ID <i id="iorder_id" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                    <th>{{t .LangUse "申请时间"}}</th>
+                                                    <th>{{t .LangUse "分配时间"}}</th>
+                                                    </tr>
+                                                    {{range .List}}
+                                                    <tr >
+                                                        <input type="hidden" name="id" value="{{.Id}}"/>
+                                                        <td>
+
+                                                        {{if eq .Status $.TicketStatusAssigned}}
+                                                        <a  class="startTicket" link="{{.Link}}" href="javascirpt:;" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "开始"}}"></i></a>
+                                                        
+                                                        {{else if ne .Status $.TicketStatusClosed}}
+                                                        <a  class="viewTicket" href="{{.Link}}" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "直达链接"}}"></i></a>
+                                                        {{end}}
+                                                        </td>
+                                                        <td>{{.Id}}</td>
+                                                        <td>{{.OrderID}}</td>
+                                                        <td>{{.Ctime | mDateMHS}}</td>
+                                                        <td>{{.AssignTime | mDateMHS}}</td>
+                                                    </tr>
+                                                    {{end}}
+                                                </table>
+
+                                                <ul class="pagination pagination-sm no-margin pull-right">
+                                                        {{template "inc/paginator.html" .}}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            {{end}}
+                            <!-- /.tab-pane -->
+                            {{if eq $.action "part"}}
+                            <div class="{{if eq $.action "part"}} active{{end}} tab-pane" id="tab_2">
+                                <div class="tab_2div">
+                                    <div class="row">
+                                            <div class="col-md-12">
+                                                <!-- Horizontal Form -->
+
+                                                    <!-- /.box-header -->
+                                                    <!-- form start -->
+                                                    <form class="form-horizontal" action="/ticket/pv_inforeview" method="get">
+                                                        <div class="box-body">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-md-2">
+                                                                    <input name="id" type="text" class="form-control" placeholder="{{t $.LangUse "工单"}} ID" value="{{.id}}">
+                                                                </div>
+                                                                <div class="col-xs-12 col-md-2">
+                                                                    <input name="order_id" type="text" class="form-control" placeholder="{{t $.LangUse "借款"}} ID" value="{{.orderID}}">
+                                                                </div>
+                                                                
+                                                                <div class="col-xs-12 col-md-2">
+                                                                        <input type="hidden" name="action" value="part"/>
+                                                                    <input type="submit" class="form-control btn btn-info" value="{{t $.LangUse "搜索"}}">
+                                                                </div>
+
+                                                                <!--
+                                                                <div class="col-xs-1">
+                                                                <button type="button" class="toggoleSelfOnlineStatus btn btn-warning" data-tostop="{{t $.LangUse "暂停接单"}}"   data-tostart="{{t $.LangUse "恢复接单"}}" data-workerstatus="{{if $.IsWorkerAcceptTicket}}1{{else}}0{{end}}" data-lock="0">
+                                                                    {{if $.IsWorkerAcceptTicket}}
+                                                                    {{t $.LangUse "暂停接单"}}
+                                                                    {{else}}
+                                                                    {{t $.LangUse "恢复接单"}}
+                                                                    {{end}}
+                                                                </button>
+                                                                </div>
+                                                                -->
+
+                                                            </div>
+
+                                                        </div>
+                                                    </form>
+                                                <!-- /.box -->
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box">
+                                                    <div class="box-body">
+                                                        <table class="table table-bordered table-striped">
+                                                            <tr>
+                                                            <th>{{t .LangUse "操作"}}</th>
+                                                            <th class="th_sort" id="id">{{t .LangUse "工单"}}ID <i id="iid" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                            <th class="th_sort" id="order_id">{{t .LangUse "借款"}}ID <i id="iorder_id" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                            <th>{{t .LangUse "申请时间"}}</th>
+                                                            <th>{{t .LangUse "分配时间"}}</th>
+                                                            <th class="th_sort" id="handle_num">{{t $.LangUse "处理次数"}}<i id="ihandle_num" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                            <th>{{t .LangUse "审核时间"}}</th>
+                                                            </tr>
+                                                            {{range .List}}
+                                                            <tr  >
+                                                                <input type="hidden" name="id" value="{{.Id}}"/>
+                                                                <td>
+        
+                                                                {{if eq .Status $.TicketStatusAssigned}}
+                                                                <a  class="startTicket" link="{{.Link}}" href="javascirpt:;" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "开始"}}"></i></a>
+                                                                
+                                                                {{else if ne .Status $.TicketStatusClosed}}
+                                                                <a  class="viewTicket" href="{{.Link}}" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "直达链接"}}"></i></a>
+                                                                {{end}}
+                                                                </td>
+                                                                <td>{{.Id}}</td>
+                                                                <td>{{.OrderID}}</td>
+                                                                <td>{{.Ctime | mDateMHS}}</td>
+                                                                <td>{{.AssignTime | mDateMHS}}</td>
+                                                                <td>{{.HandleNum}}</td>
+                                                                <td>{{.PartialCompleteTime | mDateMHS}}</td>
+                                                                
+                                                            </tr>
+                                                            {{end}}
+                                                        </table>
+
+                                                        <ul class="pagination pagination-sm no-margin pull-right">
+                                                                {{template "inc/paginator.html" .}}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            {{end}}
+                            <!-- /.tab-pane -->
+                            
+                            {{if eq $.action "complete"}}
+                            <div class="{{if eq $.action "complete"}} active{{end}} tab-pane" id="tab_4">
+                                <div class="tab_4div">
+                                    <div class="row">
+                                            <div class="col-md-12">
+                                                <!-- Horizontal Form -->
+
+                                                    <!-- /.box-header -->
+                                                    <!-- form start -->
+                                                    <form class="form-horizontal" action="/ticket/pv_inforeview" method="get">
+                                                        <div class="box-body">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-md-2">
+                                                                    <input name="id" type="text" class="form-control" placeholder="{{t $.LangUse "工单"}} ID" value="{{.id}}">
+                                                                </div>
+                                                                <div class="col-xs-12 col-md-2">
+                                                                    <input name="order_id" type="text" class="form-control" placeholder="{{t $.LangUse "借款"}} ID" value="{{.orderID}}">
+                                                                </div>
+                                                             
+                                                                <div class="col-xs-12  col-md-2">
+                                                                    <input name="complete_time_range"  id="complete_time_range" type="text" readonly class="form-control" origin="{{.completeTimeRange}}" placeholder="{{t $.LangUse "完成时间"}}" value="{{.completeTimeRange}}" />
+                                                                </div>
+                                                                <div class="col-xs-12 col-md-2">
+                                                                        <input type="hidden" name="action" value="complete"/>
+                                                                    <input type="submit" class="form-control btn btn-info" value="{{t $.LangUse "搜索"}}">
+                                                                </div>
+
+                                                                <!--
+                                                                <div class="col-xs-1">
+                                                                <button type="button" class="toggoleSelfOnlineStatus btn btn-warning" data-tostop="{{t $.LangUse "暂停接单"}}"   data-tostart="{{t $.LangUse "恢复接单"}}" data-workerstatus="{{if $.IsWorkerAcceptTicket}}1{{else}}0{{end}}" data-lock="0">
+                                                                    {{if $.IsWorkerAcceptTicket}}
+                                                                    {{t $.LangUse "暂停接单"}}
+                                                                    {{else}}
+                                                                    {{t $.LangUse "恢复接单"}}
+                                                                    {{end}}
+                                                                </button>
+                                                                </div>
+                                                                -->
+
+                                                            </div>
+
+                                                        </div>
+                                                    </form>
+                                                <!-- /.box -->
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box">
+                                                    <div class="box-body">
+                                                        <table class="table table-bordered table-striped">
+                                                            <tr>
+                                                            <th>{{t .LangUse "操作"}}</th>
+                                                            <th class="th_sort" id="id">{{t .LangUse "工单"}}ID <i id="iid" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                    <th class="th_sort" id="order_id">{{t .LangUse "借款"}}ID <i id="iorder_id" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                                            <th>{{t .LangUse "申请时间"}}</th>
+                                                            <th>{{t .LangUse "分配时间"}}</th>
+                                                            <th>{{t .LangUse "审核时间"}}</th>
+                                                            </tr>
+                                                            {{range .List}}
+                                                            <tr >
+                                                                <input type="hidden" name="id" value="{{.Id}}"/>
+                                                                <td>
+        
+                                                                {{if eq .Status $.TicketStatusAssigned}}
+                                                                <a  class="startTicket" link="{{.Link}}" href="javascirpt:;" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "开始"}}"></i></a>
+                                                                
+                                                                {{else if ne .Status $.TicketStatusClosed}}
+                                                                <a  class="viewTicket" href="{{.Link}}" target="_blank"><i class="fa fa-fw fa-edit text-yellow"  style="font-size:20px;" title="{{t $.LangUse "直达链接"}}"></i></a>
+                                                                {{end}}
+                                                                </td>
+                                                                <td>{{.Id}}</td>
+                                                                <td>{{.OrderID}}</td>
+                                                                <td>{{.Ctime | mDateMHS}}</td>
+                                                                <td>{{.AssignTime | mDateMHS}}</td>
+                                                                <td>{{.CompleteTime | mDateMHS}}</td>
+                                                                
+                                                            </tr>
+                                                            {{end}}
+                                                        </table>
+
+                                                        <ul class="pagination pagination-sm no-margin pull-right">
+                                                                {{template "inc/paginator.html" .}}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            {{end}}
+                            <!-- /.tab-pane -->
+                          </div>
+                          <!-- /.tab-content -->
+                        </div>
+                        <!-- nav-tabs-custom -->
+                      </div>
+
+
+            <!-- Content Header (Page header) -->
+            <!-- <section class="content-header">
+                <h3>
+                    {{t $.LangUse "催收"}}
+                </h3>
+                <a href="/overdue/urge/detail?id={{$.OneCase.Id}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+
+            </section> -->
+
+            <!-- Main content -->
+
+
+            <div class="modal fade" id="remindDialog" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.content -->
+        </div>
+        </div>

@@ -1,0 +1,176 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "反馈列表"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" id="searchForm" action="/feedback" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "手机号"}}: <input name="mobile" type="text" class="form-control" placeholder="{{t .LangUse "手机号"}}" value="{{$.mobile}}">
+                            </div>
+                            <div class="col-xs-3">
+                            {{t .LangUse "客户"}} ID: <input name="account_id" type="text" class="form-control" placeholder="{{t .LangUse "客户"}} ID" value="{{$.accountID}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "客户分类"}}:
+                                    <select name="user_tags" class="tagSelectMultiBox selectpicker form-control" data-hide-disabled="multiple" data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagUserMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedTagUserMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "ID检索"}}: <input name="id_check" type="text" class="form-control" placeholder="{{t .LangUse "ID检索"}}" value="{{$.id_check}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "反馈分类"}}:
+                                    <select name="tags" class="tagSelectMultiBox selectpicker form-control" multiple="multiple" data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedTagMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "APP版本"}}: <input name="app_version" type="text" class="form-control" placeholder="{{t .LangUse "APP版本"}}" value="{{$.app_version}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "API版本"}}: <input name="api_version" type="text" class="form-control" placeholder="{{t .LangUse "API版本"}}" value="{{$.api_version}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "文本检索"}}: <input name="check_txt" type="text" class="form-control" placeholder="{{t .LangUse "文本检索"}}" value="{{$.check_txt}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "字符数"}}: <input name="char_num" type="text" class="form-control" placeholder="{{t .LangUse "字符数"}}" value="{{$.char_num}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "每页条数"}}:
+                                    <select name="page_number" class="tagSelectMultiBox selectpicker form-control"  data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagPageMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedTagPageMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "创建时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="ctime_range"  id="ctime_range" type="text" readonly class="form-control" origin="{{$.ctimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.ctimeRange}}" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                <!-- &nbsp;<a href="{{$.exportURL}}" class="export" target="_blank" class="form-control">{{t .LangUse "导出"}}</a> -->
+                                &nbsp;<button target="_blank" class="export form-control btn btn-block btn-warning">{{t .LangUse "导出"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/feedback" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                            <!-- <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control multiAssign">{{t .LangUse "分配工单"}}</a>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                <tr>
+                  <th class="listMultiSelect" style="display:none;">{{t .LangUse "多选"}}</th>
+                  <th class="th_sort" id="Id">{{t .LangUse "ID"}}<i id="iId"></i></th>
+                  <th>{{t .LangUse "手机号"}}</th>
+                  <th>{{t .LangUse "客户"}} ID</th>
+                  <th>{{t .LangUse "APP版本"}}</th>
+                  <th>{{t .LangUse "API版本"}}</th>
+                  <th>{{t .LangUse "反馈分类"}}</th>
+                  <th>{{t .LangUse "客户分类"}}</th>
+                  <th>{{t .LangUse "订单"}} ID</th>
+                  <th>{{t .LangUse "订单状态"}}</th>
+                  <th>{{t .LangUse "订单申请时间"}}</th>
+                  <th>{{t .LangUse "申请次数"}}</th>
+                  <th>{{t .LangUse "申请成功次数"}}</th>
+                  <th>{{t .LangUse "用户反馈内容"}}</th>
+                  <th>image</th>
+                  <th>{{t .LangUse "时间"}}</th>
+                </tr>
+                {{range .List}}
+                <tr>
+                  <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>
+                    <td>{{.Id}}</td>
+                    <td>{{.Mobile}}</td>
+                    <td>{{.AccountID}}</td>
+                    <td>{{.AppVersion}}</td>
+                    <td>{{.ApiVersion}}</td>
+                    <td>{{getFeedbackTagDisplay $.LangUse .Tags}}</td>
+                    <td>{{getCustomerTags $.LangUse .AccountTags}}</td>
+                    <td>{{.CurrentOrderID}}</td>
+                    <td>{{getLoanStatusDesc $.LangUse .CurrentOrderStatus}}</td>
+                    <td>{{mDateMHS .CurrentOrderApplyTime}}</td>
+                    <td>{{.ApplyOrderNum}}</td>
+                    <td>{{.ApplyOrderSuccNum}}</td>
+                    <td>{{.Content}}</td>
+                    <td>
+                    {{if gt .PhotoId1 0}}<a target="_blank" href="{{$.domainURL}}/feedback/image?id_check={{.Id}}">image</a>
+                    {{else if gt .PhotoId2 0}}<a target="_blank" href="{{$.domainURL}}/feedback/image?id_check={{.Id}}">image</a>
+                    {{else if gt .PhotoId3 0}}<a target="_blank" href="{{$.domainURL}}/feedback/image?id_check={{.Id}}">image</a>
+                    {{else if gt .PhotoId4 0}}<a target="_blank" href="{{$.domainURL}}/feedback/image?id_check={{.Id}}">image</a>
+                    {{else}}
+                    -
+                    {{end}}
+                    </td>
+                    <td>{{mDateMHS .Ctime}}</td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

@@ -1,0 +1,69 @@
+<script>
+    $(function() {
+        function createLineChart() {
+          var serverData = {{$.jsonProcessChartDatas}}
+          var standardRepayRate = {{$.standardRepayRate}}
+          var data = (typeof serverData == 'string') ? JSON.parse(serverData) : serverData;
+          console.log(data)
+          Highcharts.chart('chartContainer', {
+              title: {
+                  text: ''
+              },
+              legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'middle'
+              },
+              xAxis: {
+                  tickInterval: 1,
+                  title: {
+                      text: '{{t $.LangUse "时间/Hour"}}'
+                  },
+              },
+              yAxis: {
+                  allowDecimals: false,
+                  min: 0,
+                  max: standardRepayRate + 1,
+                  title: {
+                      text: '{{t $.LangUse "回收率"}}' + '%'
+                  },
+                  plotLines:[{
+                    color:'red',           //线的颜色，定义为红色
+                    dashStyle:'longdashdot',     //默认值，这里定义为实线
+                    value:standardRepayRate,               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
+                    width:2,                //标示线的宽度，2px
+                    label:{
+                        text:{{t $.LangUse "目标回收率"}},     //标签的内容
+                        align:'left',                //标签的水平位置，水平居左,默认是水平居中center
+                        //x:10                         //标签相对于被定位的位置水平偏移的像素，重新定位，水平居左10px
+                    },
+                }]
+              },
+              tooltip: {
+          			shared: true,
+          			crosshairs: true,
+          		},
+              series: [{
+                name: '{{t $.LangUse "回收进度"}}' + '%',
+                dataLabels: {
+                  enabled: true,
+                  formatter: function() {
+                    console.log(this)
+                    return this.y + '%';
+                  }
+                },
+                data:data,
+                // data: [
+                //   {x:3,y:29.7,extra:'hhh', suffix: '%'}, // 提示：extra 为随意命名的变量
+                //   {x:4,y:71.5,extra:'2333', suffix: 'g'},
+                //   {x:5,y:106.4,extra:'1122', suffix: 'm'},
+                //   {x:6,y:129.2,extra:'vvvv', suffix: '$'}
+                // ]
+              }]
+          });
+        }
+        createLineChart()
+
+
+    });
+</script>

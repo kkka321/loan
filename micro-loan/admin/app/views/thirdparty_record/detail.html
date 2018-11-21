@@ -1,0 +1,70 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "第三方请求详情"}}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box box-default color-palette-box">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box-body no-padding">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="bg-light-blue color-palette col-md-2">
+                                    <p class="text-center">{{t .LangUse "第三方"}}</p>
+                                </td>
+                                <td class="col-md-4">
+                                {{getThirdpartyName $.LangUse .data.Thirdparty}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "关系ID"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.data.RelatedId}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "API URL"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.data.Api}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "请求"}}</p>
+                                </td>
+                                <td class="col-md-6" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                                {{.data.Request}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "响应体"}}</p>
+                                </td>
+                                <td class="col-md-6" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                                {{.data.Response}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "创建时间"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{mDateMHS .data.Ctime}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+
+            
+        </div>
+    </section>
+</div>

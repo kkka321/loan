@@ -1,0 +1,173 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+          {{t .LangUse "黑名单管理"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    <a href="/customer/risk_report" target="_blank"><i class="fa fa-gear">{{t .LangUse "上报风险"}}</i></a>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/customer/risk" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                {{t .LangUse "风险类型"}}:
+                                <select name="risk_type" class="form-control">
+                                    <option value="0">{{t .LangUse "请选择"}}</option>
+                                {{range $value, $show := .RiskTypeMap}}
+                                    <option value="{{$value}}"{{if eq $.risk_type $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                {{t .LangUse "风险值"}}:<input name="risk_value" type="text" class="form-control" placeholder="{{t .LangUse "风险值"}}" value="{{.risk_value}}" />
+                            </div>
+                            <div class="col-xs-2">
+                                {{t .LangUse "审核状态"}}:
+                                <select name="status" class="form-control">
+                                    <option value="-1" selected>{{t .LangUse "请选择"}}</option>
+                                {{range $value, $show := $.RiskStatusMap}}
+                                    <option value="{{$value}}"{{if eq $.status $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                {{t .LangUse "是否解除"}}:
+                                <select name="is_deleted" class="form-control">
+                                    <option value="-1" {{if eq $.isDeleted -1}} selected{{end}}>{{t .LangUse "所有"}}</option>
+                                    <option value="0" {{if eq $.isDeleted 0}} selected{{end}}>{{t .LangUse "未解除"}}</option>
+                                    <option value="1" {{if eq $.isDeleted 1}} selected{{end}}>{{t .LangUse "已解除"}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                {{t .LangUse "来源渠道"}}:
+                                <select name="source" class="form-control">
+                                    <option value="-1" {{if eq $.source -1}} selected{{end}}>{{t .LangUse "所有"}}</option>
+                                    <option value="0" {{if eq $.source 0}} selected{{end}}>{{t .LangUse "系统识别"}}</option>
+                                    <option value="1" {{if gt $.source 0}} selected{{end}}>{{t .LangUse "内部提报"}}</option>
+                                </select>
+                            </div>
+                          
+                        </div>
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                {{t .LangUse "上报时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="ctime_range"  id="ctime_range" type="text" readonly class="form-control" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.cTimeRange}}" />
+                                </div>
+
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "审核时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="review_time_range"  id="review_time_range" type="text" readonly class="form-control"  placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.reviewTimeRange}}" />
+                                </div>
+
+                            </div>
+                          </div>
+                          <div class="row"><p>&nbsp;</p></div>
+                          <div class="row">
+
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/customer/risk" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                            <div class="col-xs-2">
+                                &nbsp;<a href="/customer/risk_report" target="_blank" class="form-control">{{t .LangUse "上报风险"}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered table-striped">
+                <tr>
+                    <th>{{t .LangUse "风险类型"}}</th>
+                    <th>{{t .LangUse "风险项"}}</th>
+                    <th>{{t .LangUse "风险值"}}</th>
+                    <th>{{t .LangUse "原因"}}</th>
+                    <th>{{t .LangUse "上报时间"}}</th>
+                    <th>{{t .LangUse "审核时间"}}</th>
+                    <th>{{t .LangUse "操作员"}}</th>
+                    <th>{{t .LangUse "审核状态"}}</th>
+                    <th>{{t .LangUse "来源渠道"}}</th>
+                    <th>{{t .LangUse "操作"}}</th>
+                </tr>
+                {{range .List}}
+                <tr{{if eq .IsDeleted 1}} class="bg-yellow disabled color-palette"{{end}}>
+                    <td>{{riskTypeDisplay $.LangUse .RiskType}}</td>
+                    <td>{{riskItemDisplay $.LangUse .RiskItem}}</td>
+                    <td>{{.RiskValue}}</td>
+                    <td>{{riskReasonDisplay $.LangUse .Reason}}</td>
+                    <td>{{.Ctime | mDateMHS}}</td>
+                    <td>{{.ReviewTime | mDateMHS}}</td>
+                    <td>{{.OpUid | operatorName}}</td>
+                    <td>{{riskStatusDisplay $.LangUse .Status}}</td>
+                    <td>
+                        {{if gt .OpUid 0}}
+                            {{t $.LangUse "内部提报"}}
+                        {{else}}
+                            {{t $.LangUse "系统识别"}}
+                        {{end}}
+
+                    </td>
+                    <td>
+                      <div class="btn-group btn-group-xs">
+                        {{if eq .Status 0}}{{if eq .IsDeleted 0 }}
+                        <a href="/customer/risk_review?id={{.Id}}"  target="_blank">{{t $.LangUse "审核"}}</a>
+                        {{end}}{{end}}
+
+                        {{if eq .IsDeleted 0 }}{{if eq .Status 1 }}
+                        <a href="/customer/risk_relieve?id={{.Id}}"  target="_blank">{{t $.LangUse "解除"}}</a>
+                        {{end}}{{end}}
+                          </div>
+                    </td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

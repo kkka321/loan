@@ -1,0 +1,36 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "自动外呼记录"}} --- {{.mobile}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "自动外呼时间"}}</th>
+                                <th>{{t .LangUse "是否拨通"}}</th>
+                            </tr>
+                            {{range .autoCallRecord}}
+                                <tr>
+                                    <td>{{mDateMHS .StartTime}}</td>
+                                    <td>{{phoneConnectDisplay $.LangUse .IsDial}}</td>
+                                </tr>
+                            {{end}}
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

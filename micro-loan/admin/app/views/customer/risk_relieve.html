@@ -1,0 +1,116 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "解除"}}
+        </h1>
+    </section>
+    <section class="content">
+        <form method="post" id="updateForm" action="/customer/risk_relieve/save">
+            <input type="hidden" name="id" value="{{$.id}}"/>
+            <div class="box box-default color-palette-box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body no-padding">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险项"}}</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control" disabled name="risk_item">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                                {{range $v, $s := .RiskItemMap}}
+                                                    <option value="{{$v}}"{{if eq $v $.Risk.RiskItem}} selected{{end}}>{{t $.LangUse $s}}</option>
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险类型"}}</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control" disabled name="risk_type">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                            {{range $v, $s := .RiskTypeMap}}
+                                                <option value="{{$v}}"{{if eq $v $.Risk.RiskType}} selected{{end}}>{{t $.LangUse $s}}</option>
+                                            {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险值"}}</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input name="risk_value" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." required  disabled value="{{.Risk.RiskValue}}" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "上报说明"}}</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+
+                                        <textarea name="report_remark" class="form-control" rows="3" disabled placeholder="{{t .LangUse "上报说明"}} ...">{{.Risk.ReportRemark}}</textarea>
+                                      </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "审核说明"}}</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+
+                                        <textarea name="review_remark" class="form-control" rows="3" disabled placeholder="{{t .LangUse "审核说明"}} ...">{{.Risk.ReviewRemark}}</textarea>
+                                      </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "解除原因"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control" name="relieve_reason">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                                  {{range $v, $s := .RiskRelieveReason}}
+                                                      <option value="{{$v}}">{{t $.LangUse $s}}</option>
+                                                  {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "解除"}}{{t .LangUse "说明"}}</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+
+                                        <textarea name="remark" class="form-control" rows="3" placeholder="{{t .LangUse "说明"}} ..." ></textarea>
+                                      </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

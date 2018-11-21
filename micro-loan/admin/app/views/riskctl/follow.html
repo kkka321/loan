@@ -1,0 +1,60 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "设备信息"}}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box box-default color-palette-box">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box-body no-padding">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="bg-light-blue color-palette col-md-2">
+                                    <p class="text-center">{{t .LangUse "版本名称"}}</p>
+                                </td>
+                                <td class="col-md-4">
+                                {{.data.AppVersion}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "版本号"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.data.AppVersionCode}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "下载渠道"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.StemFrom}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "操作系统版本"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.data.OS}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "机型"}}</p>
+                                </td>
+                                <td class="col-md-6">
+                                {{.data.Model}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

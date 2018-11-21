@@ -1,0 +1,171 @@
+<script>
+$(document).ready(function(){
+    function showWaring(msg) {
+        $(".alert").remove();
+        var msgBox = "<div class='alert alert-danger alert-dismissible' role='alert'>" +
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+            "<span aria-hidden='true'>&times;</span>" +
+            "</button>" +
+            "<strong>Warning!</strong> " +
+            msg +
+            "</div>";
+        $(".content-header").after(msgBox);
+        $('.alert').show();
+    }
+
+
+    $("#taskList").on('change', function(){
+        console.log($(this).val());
+        var privilegeId = $(this).val();
+        $.ajax({
+            url:'/rbac/privilege/operations',
+            data:{privilege_id: privilegeId},
+            dataType:'json',
+            cache:false,
+            type:'GET',
+            error: function () {
+                $("#submitButton").html("Submit");
+                $("#submitButton").removeAttr("disabled");
+                showWaring('Request Failed');
+                //bv.resetForm();
+            },
+            success:function(result) {
+                console.log(result);
+                if (result.errorCode > 0) {
+                    showWaring(result.errorMessage);
+                } else {
+                    var assignedOperations = '';
+                    var unAssignedOperations = '';
+                    for( var key in result){
+                      if( result[key].isAssigned ){
+                        assignedOperations += "<option value='" +result[key].id +"'>" + result[key].name +"</option>";
+
+                      } else {
+                        unAssignedOperations += "<option value='" +result[key].id +"'>" + result[key].name +"</option>";
+
+                      }
+                    }
+                    $("#assignedOperationList").html(assignedOperations);
+                    $("#unassignedOperationList").html(unAssignedOperations);
+                }
+            },
+            complete:function() {
+
+            },
+            beforeSend:function() {
+
+            }
+        });
+    });
+
+    $("#addOperation").on('click', function(){
+        var assignOperations = $("#unassignedOperationList").val();
+        var activeRoleList = $("#taskList").val();
+        console.log(assignOperations);
+        console.log(activeRoleList);
+        console.log(activeRoleList.length);
+
+        if( activeRoleList.length > 1 ){
+            showWaring("Please don't choose multiple task.")
+        } else if( assignOperations.length <  1){
+            showWaring("Please choose at least 1 privilege.")
+        } else {
+            var privilegeId = activeRoleList[0];
+            $.ajax({
+              url:'/rbac/privilege/assign_operations',
+              data:{privilege_id: privilegeId,assign_operations: assignOperations},
+              dataType:'json',
+              cache:false,
+              type:'POST',
+              error: function () {
+                  $("#submitButton").html("Submit");
+                  $("#submitButton").removeAttr("disabled");
+                  showWaring('Request Failed');
+                  //bv.resetForm();
+              },
+              success:function(result) {
+                  console.log(result);
+                  if (result.hasOwnProperty('error')) {
+                      showWaring(result.error);
+                  } else {
+                    var assignedOperations = '';
+                    var unAssignedOperations = '';
+                    var list = result.list
+                    for( var key in list){
+                      if( list[key].isAssigned ){
+                        assignedOperations += "<option value='" +list[key].id +"'>" + list[key].name +"</option>";
+
+                      } else {
+                        unAssignedOperations += "<option value='" +list[key].id +"'>" + list[key].name +"</option>";
+
+                      }
+                    }
+                    $("#assignedOperationList").html(assignedOperations);
+                    $("#unassignedOperationList").html(unAssignedOperations);
+                  }
+              },
+              complete:function() {
+
+              },
+              beforeSend:function() {
+
+              }
+            });
+        }
+    });
+
+  $("#revokeOperation").on('click', function(){
+    var assignOperations = $("#assignedOperationList").val();
+    var activeTaskList = $("#taskList").val();
+
+    if( activeTaskList.length > 1 ){
+        showWaring("请不要选择多个权限.")
+    } else if( activeTaskList.length <  1){
+        showWaring("请选择一个权限.")
+    } else {
+        var privilegeId = activeTaskList[0];
+        $.ajax({
+          url:'/rbac/privilege/revoke_operations',
+          data:{privilege_id: privilegeId,assign_operations: assignOperations},
+          dataType:'json',
+          cache:false,
+          type:'POST',
+          error: function () {
+              showWaring('Request Failed');
+          },
+          success:function(result) {
+            console.log(result);
+            if (result.hasOwnProperty('error')) {
+                showWaring(result.error);
+            } else {
+              var assignedOperations = '';
+              var unAssignedOperations = '';
+              var list = result.list
+              for( var key in list){
+                if( list[key].isAssigned ){
+                  assignedOperations += "<option value='" +list[key].id +"'>" + list[key].name +"</option>";
+
+                } else {
+                  unAssignedOperations += "<option value='" +list[key].id +"'>" + list[key].name +"</option>";
+
+                }
+              }
+              $("#assignedOperationList").html(assignedOperations);
+              $("#unassignedOperationList").html(unAssignedOperations);
+            }
+
+          },
+          complete:function() {
+
+          },
+          beforeSend:function() {
+
+          }
+        });
+    }
+});
+
+
+
+});
+</script>

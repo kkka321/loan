@@ -1,0 +1,361 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+  $(".co-red-tab").click(function(){
+      location.href="/ticket/collection?action=new"
+  })
+  $(".co-blue-tab").click(function(){
+      location.href="/ticket/collection?action=old"
+  })
+  $(".co-yellow-tab").click(function(){
+      location.href="/ticket/collection?action=ptp"
+  })
+  $(".co-glay-tab").click(function(){
+      location.href="/ticket/collection?action=complete"
+  })
+
+
+   $(".pv-red-tab").click(function(){
+      location.href="/ticket/pv_inforeview?action=new"
+  })
+  $(".pv-yellow-tab").click(function(){
+      location.href="/ticket/pv_inforeview?action=part"
+  })
+  $(".pv-glay-tab").click(function(){
+      location.href="/ticket/pv_inforeview?action=complete"
+  })
+
+  $(".rm-red-tab").click(function(){
+      location.href="/ticket/rm?action=new"
+  })
+
+  $(".rm-glay-tab").click(function(){
+      location.href="/ticket/rm?action=complete"
+  })
+
+
+
+  $('#join_urge_time_range').daterangepicker({
+
+    locale: {
+    format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+    }, function(start, end, label) {
+    $('#join_urge_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+    });
+
+    $('#last_urge_time_range').daterangepicker({
+
+    locale: {
+    format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+    }, function(start, end, label) {
+    $('#last_urge_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+    });
+
+  $('#ctime_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#ctime_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+
+  $('#complete_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#complete_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $('#close_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#close_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $(".startTicket").on("click", function(e){
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).attr("link")
+    $.ajax({
+        url:"/ticket/update_status",
+        data:{id:id, action:"start"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.open(link, "_blank")
+              window.location.reload();
+            }
+        },
+    });
+    return false;
+
+  })
+
+  $(".completeTicket").on("click", function(e){
+    e.preventDefault();
+
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).data("link")
+    $.ajax({
+        url:"/ticket/update_status",
+        data:{id:id, action:"complete"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.location.reload();
+            }
+        },
+    });
+  })
+
+  $(".closeTicket").on("click", function(e){
+    e.preventDefault();
+
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    if(confirm("are you sure to close this ticket?")){
+      $.ajax({
+          url:"/ticket/update_status",
+          data:{id:id, action:"close"},
+          dataType:'json',
+          cache:false,
+          type:"POST",
+          async: false,
+          success:function(result) {
+              if (result.hasOwnProperty('error') ) {
+                  showWarningBox(result.error);
+              } else {
+                window.location.reload();
+              }
+          },
+      });
+    }
+  })
+
+
+
+  $('#assignModal').on('hide.bs.modal', function (e) {
+    console.log("hide clear");
+    $(this).removeData();
+  });
+
+  $("#assignModal").delegate("#submitAssignButton","click",function(e){
+    var form = $("#assignForm")
+    $.ajax({
+        url:"/ticket/assign",
+        data:form.serialize(),
+        dataType:'json',
+        cache:false,
+        type:form.attr('method'),
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+                showWarningBox(result.error);
+            } else {
+                console.log("success");
+                $('#assignModal').modal('hide');
+                window.location.reload();
+            }
+        },
+    });
+  })
+
+  $(".toggoleSelfOnlineStatus").on("click", function(e) {
+    var ele = $(this)
+    if (ele.data("lock") == "1") {
+      return false
+    }
+
+    ele.data("lock", "1")
+    ele.html(ele.html()+"...")
+    console.log(ele.data("workerstatus"))
+    if (ele.data("workerstatus") == "0"){
+      // 开始接单
+
+      $.ajax({
+          url:"/ticket/update_my_online_status",
+          data:{action:"online"},
+          dataType:'json',
+          cache:false,
+          type:"POST",
+          async: false,
+          success:function(result) {
+              if (result.hasOwnProperty('error') ) {
+              } else {
+                ele.html(ele.data("tostop"))
+                ele.data("workerstatus", "1")
+              }
+          },
+      });
+    } else {
+      $.ajax({
+          url:"/ticket/update_my_online_status",
+          data:{action:"offline"},
+          dataType:'json',
+          cache:false,
+          type:"POST",
+          async: false,
+          success:function(result) {
+              if (result.hasOwnProperty('error') ) {
+              } else {
+                ele.html(ele.data("tostart"))
+                ele.data("workerstatus", "0")
+              }
+          },
+      });
+    }
+    $(this).data("lock", "0")
+
+  });
+
+  $(".multiAssign").on("click", function(){
+    $(".listMultiSelect").css("display", "block")
+  })
+
+  $("#selectAll").on("click", function(){
+    var isCheckedAll = $(this).is(':checked')
+    if(isCheckedAll == true ){
+      $(".listCheckBox").prop("checked",true)
+    } else {
+      $(".listCheckBox").prop("checked",false)
+    }
+  });
+
+    $("#selectAllEntrust").on("click", function(){
+    var isCheckedAll = $(this).is(':checked')
+    if(isCheckedAll == true ){
+      $(".listCheckBoxEntrust").prop("checked",true)
+    } else {
+      $(".listCheckBoxEntrust").prop("checked",false)
+    }
+  });
+
+  $('#batchAssignModal').on('shown.bs.modal', function (event) {
+    updateMultiSelect()
+  });
+
+  $("#batchAssignModal").delegate("#submitBatchAssignButton","click",function(e){
+    var form = $("#batchAssignForm")
+    $.ajax({
+        url:"/ticket/batch_assign",
+        data:form.serialize(),
+        dataType:'json',
+        cache:false,
+        type:form.attr('method'),
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+                showWarningBox(result.error);
+            } else {
+              $("#resultMessage").html(result.result);
+              $('#smallModal').modal('show')
+                  .on('hidden.bs.modal', function (e) {
+                      window.location.reload()
+                  })
+            }
+        },
+    });
+  })
+  $("#batchAssignModal").delegate(".assignUID","change",function(e){
+    batchAssignSubmitCheck()
+  })
+
+  // $("#updateModal").on("hidden.bs.modal", function() {
+  //   console.log("hidden clear");
+  //   $(this).removeData("bs.modal");
+  // });
+
+});
+function batchAssignSubmitCheck(){
+  var selectedTicketCount = parseInt($("#selectedTicketCount").html())
+  var assignUID = $("#batchAssignModal input:radio[name=assign_uid]:checked").val()
+  if(selectedTicketCount>0 && parseInt(assignUID)>0){
+    $("#submitBatchAssignButton").prop("disabled",false)
+  } else {
+    $("#submitBatchAssignButton").prop("disabled",true)
+  }
+}
+
+function updateMultiSelect(){
+  var assignTickets = '';
+  var count = 0
+  $('input:checkbox[name=listCheckBox]:checked').each(function(k){
+      if(k == 0){
+          assignTickets = $(this).val();
+      }else{
+          assignTickets += ','+$(this).val();
+      }
+      count++
+  })
+  $("#selectedTicketCount").html(count)
+  $("#batchAssignIdContainer").val(assignTickets)
+  batchAssignSubmitCheck()
+}
+
+$('#batchApplyEntrust').on('click', function (event) {
+    var assignTickets = '';
+    var count = 0
+    $('input:checkbox[name=listCheckBoxEntrust]:checked').each(function(k){
+        if(k == 0){
+            assignTickets = $(this).val();
+        }else{
+            assignTickets += ','+$(this).val();
+        }
+        count++
+    })
+    if (count>0){
+      $.ajax({
+        url:"/ticket/batch_applyentrust",
+        data:{"ids":assignTickets},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        success:function(data) {
+            console.log(data)
+            if (data.hasOwnProperty('error') ) {
+                showWarningBox(data.error);
+            }else{
+              $("#resultMessage").html(data.result);
+              $('#smallModal').modal('show')
+                  .on('hidden.bs.modal', function (e) {
+                      window.location.reload()
+                  })
+            }
+        },
+      });
+    }
+
+  });
+  function showWarningBox(messageContent) {
+    var warningBoxContent = '<div class="callout"><p>' + messageContent +  '</p> </div>';
+    showBoxMsg(warningBoxContent);
+}
+
+function showBoxMsg(msg) {
+    $("#smallModal div.modal-body").html(msg);
+    $("#smallModal").modal('show');
+}
+
+</script>

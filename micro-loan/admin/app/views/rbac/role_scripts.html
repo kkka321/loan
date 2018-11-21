@@ -1,0 +1,228 @@
+<script>
+
+$(function(){
+  // 绑定，modal 弹出事件，查看 log
+    $('#myModal').on('shown.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // 触发事件的按钮
+        var pid = button.data('pid') // 解析出data-whatever内容
+        var pname = button.data('pname') // 解析出data-whatever内容
+        var roleType = button.data('roletype') // 解析出data-whatever内容
+        var typeID = button.data('typeid') // 解析出data-whatever内容
+        $("#rolePid").val(pid);
+        $("#roleTypeInput").val(typeID);
+        $("#myModalLabel strong").html(pname);
+        $("#roleType").html(roleType+"-");
+        return false;
+    });
+
+  $('#addForm').bootstrapValidator({
+      message: 'This value is not valid',
+      feedbackIcons: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+      },
+      fields: {
+          name: {
+              message: 'The Name is not valid.',
+              validators: {
+                  notEmpty: {
+                    message: 'The Name is required and can\'t be empty.'
+                  },
+
+                  // remote: {
+                  //   url: '/',
+                  //   message: 'The username is not available'
+                  // },
+
+                  callback: {
+                      message: 'User Name Exists!'
+                  }
+              }
+          },
+          status: {
+              message: 'The User Status is not valid.',
+              validators: {
+                  notEmpty: {
+                      message: 'The User Status is required and can\'t be empty.'
+                  },
+                  choice: {
+                      min: 0,
+                      max: 2,
+                      message: 'The User Status is not valid.'
+                  }
+              }
+          },
+      }
+  })
+  .on('success.form.bv', function (e) {
+      // Prevent form submission
+      e.preventDefault();
+
+      // Get the form instance
+      var $form = $(e.target);
+
+      // Get the BootstrapValidator instance
+      var bv = $form.data('bootstrapValidator');
+
+      // Use Ajax to submit form data
+      $.ajax({
+          url:$form.attr('action'),
+          data:$form.serialize(),
+          dataType:'json',
+          cache:false,
+          type:$form.attr('method'),
+          error: function () {
+              $("#submitButton").html("Submit");
+              $("#submitButton").removeAttr("disabled");
+              showWaring('Request Failed');
+              bv.resetForm();
+          },
+          success:function(result) {
+              if (result.hasOwnProperty('error') ) {
+                  showWarningBox(result.error);
+                  bv.resetForm();
+              } else {
+                  console.log("success");
+                  $('#myModal').modal('hide');
+
+                  $('#myModal').modal('hide').on('hidden.bs.modal', function (e) {
+                      $(this).removeData();
+                      $("#resultMessage").html("Created successful, ID:" + result.id);
+                      $('#smallModal').modal('show')
+                          .on('hidden.bs.modal', function (e) {
+                                location.href = '/rbac/role?id='+result.id;
+                          })
+                  });
+              }
+          },
+          complete:function() {
+              $("#submitButton").html("Submit");
+              $("#submitButton").removeAttr("disabled");
+          },
+          beforeSend:function() {
+              $("#submitButton").attr('disabled', 'disabled');
+              $("#submitButton").html("Waiting...");
+          }
+      });
+
+  });
+
+  $('#updateModal').on('shown.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // 触发事件的按钮
+    var id = button.data('id') // 解析出data-whatever内容
+
+    console.log("modal show")
+    $('#updateForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            name: {
+                message: 'The Name is not valid.',
+                validators: {
+                    notEmpty: {
+                      message: 'The Name is required and can\'t be empty.'
+                    },
+
+                    // remote: {
+                    //   url: '/',
+                    //   message: 'The username is not available'
+                    // },
+
+                    callback: {
+                        message: 'User Name Exists!'
+                    }
+                }
+            },
+        }
+    })
+    .on('success.form.bv', function (e) {
+        // Prevent form submission
+        e.preventDefault();
+        // Get the form instance
+        var $form = $(e.target);
+        // Get the BootstrapValidator instance
+        var bv = $form.data('bootstrapValidator');
+        // Use Ajax to submit form data
+        $.ajax({
+            url:$form.attr('action'),
+            data:$form.serialize(),
+            dataType:'json',
+            cache:false,
+            type:$form.attr('method'),
+            error: function () {
+                $("#submitButton").html("Submit");
+                $("#submitButton").removeAttr("disabled");
+                showWaring('Request Failed');
+                bv.resetForm();
+            },
+            success:function(result) {
+                if (result.hasOwnProperty('error') ) {
+                    showWarningBox(result.error);
+                    bv.resetForm();
+                } else {
+                    console.log("success");
+
+                    $('#updateModal').modal('hide').on('hidden.bs.modal', function (e) {
+                        $(this).removeData();
+                        $("#resultMessage").html(result.info);
+                        $('#smallModal').modal('show')
+                            .on('hidden.bs.modal', function (e) {
+                                location.href = '/rbac/role?id='+result.id;
+                            })
+                    });
+                    $('#updateModal').modal('hide');
+
+                }
+            },
+            complete:function() {
+                $("#submitButton").html("Submit");
+                $("#submitButton").removeAttr("disabled");
+            },
+            beforeSend:function() {
+                $("#submitButton").attr('disabled', 'disabled');
+                $("#submitButton").html("Waiting...");
+            }
+        });
+
+    });
+
+    return false;
+  });
+
+  $('#myModal').on('hide.bs.modal', function (e) {
+     $(this).removeData();
+  });
+
+  $("#myModal").on("hidden.bs.modal", function() {
+      console.log("clear")
+      $(this).removeData("bs.modal");
+  });
+  $('#updateModal').on('hide.bs.modal', function (e) {
+    console.log("hide clear");
+    $(this).removeData();
+  });
+
+  $("#updateModal").on("hidden.bs.modal", function() {
+    console.log("hidden clear");
+    $(this).removeData("bs.modal");
+  });
+})
+
+
+
+function showWarningBox(messageContent) {
+    var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+    showBoxMsg(warningBoxContent);
+}
+
+function showBoxMsg(msg) {
+    $("#smallModal div.modal-body").html(msg);
+    $("#smallModal").modal('show');
+}
+
+</script>

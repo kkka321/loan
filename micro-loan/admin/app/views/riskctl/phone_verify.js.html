@@ -1,0 +1,362 @@
+<script>
+var DataSet = new Set();
+
+var id = '{{.BaseInfo.Id}}'
+var order_id = '{{.OrderId}}';
+
+$(function () {
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        var dataType = $(e.target).attr("data-type");
+        loadTab(id, dataType)
+    });
+
+    $('#phone_time').datetimepicker({
+      format:'Y-m-d H:i:s',
+      step: 5
+    });
+});
+
+function loadTab(id, dataType) {
+    if (DataSet.has(dataType)){
+        return
+    }
+
+    DataSet.add(dataType)
+
+    $.ajax({
+        type: "GET",
+        url: '/customer/detail/' + dataType + '?id=' + id + '&order_id=' + order_id,
+        dataType: 'html',
+        success: function (data) {
+            var tab = document.getElementById("tab-" + dataType);
+            var t = document.getElementById("detail_" + dataType);
+            if (t != null) {
+                tab.removeChild(t);
+            }
+            var div = document.createElement("div");
+            div.setAttribute("id", "detail_" + dataType);
+            div.innerHTML = data;
+            tab.appendChild(div);
+            $('#tab-' + dataType).addClass('active');
+        }
+    });
+}
+
+$(document).ready(function () {
+    loadTab(id, "base-info")
+
+    $(".reason-select").hide();
+
+    $('.redirect-reject').click(function () {
+        $("#redirect_reject").prop("value", "1");
+        //$('#save_result').submit();
+    });
+
+    $('.set-result').click(function () {
+        var phone_time = $("#phone_time").val();
+        var phone_connected = $(":radio[name='phone_connected']:checked").val();
+
+        {{if ne $.ItemID 2}}
+        if(phone_time == ""){
+            alert("{{t $.LangUse "请输入"}} {{t $.LangUse "电话拨打时间"}}");
+            return false;
+        }
+        if(phone_connected == undefined){
+            alert("{{t $.LangUse "请输入"}} {{t $.LangUse "电话接通情况"}}");
+            return false;
+        }
+        {{end}}
+
+        var v = $(this).attr("v");
+        $('#result').prop("value", v);
+        //$('#save_result').submit();
+    });
+
+    $('body').on('click', ".check_photo", function () {
+        $("#custinfo").trigger("click");
+    });
+
+    //如果所有选项都为正常，将电核拒绝置灰
+    $("input[type=radio]").click(function(){
+        var radio_count = $("input[type=radio]").length;
+        var radio_normal = $(".radio-normal:checked").length;
+        var radio_abnormal = $(".radio-abnormal:checked").length;
+
+        // console.log("radio_count :"+radio_count )
+        // console.log("radio_normal:"+radio_normal)
+
+        var dif = 0
+        {{if ne $.ItemID 2}}
+            dif = 2
+        {{end}}
+        //全部勾选正常显示电核通过按钮，隐藏电核拒绝按钮
+        if (radio_normal== (radio_count-dif)/2){
+            $("#phone_verify_pass").show();
+            $("#phone_verify_refuse").hide();
+        }
+        //只要有一项异常就显示电核拒绝按钮，隐藏电核通过按钮
+        if (radio_abnormal>= 1){
+            $("#phone_verify_pass").hide();
+            $("#phone_verify_refuse").show();
+        }
+    });
+
+    $(".radio-normal").click(function(){
+        $("#qid_value_"+this.id).hide();
+        jsRemoveSelectedItemFromSelect($("#qid_value_"+this.id)[0])
+        // console.log(this)
+        // console.log(this.id)
+
+    });
+
+    $(".radio-abnormal").click(function(){
+        $("#qid_value_"+this.id).show();
+        // console.log(this)
+        // console.log(this.id)
+
+    });
+});
+</script>
+
+
+<script>
+    $('body').on('click', "#hebing", function () {
+        var className = $(this).attr('class');
+        if (className == 'glyphicon glyphicon-chevron-right') {
+            $("#custom_two").css("width", "10px")
+            $("#custom_one").css("margin-right", "0px")
+            $(this).attr('class', 'glyphicon glyphicon-chevron-left')
+            $("#custom_two_list").css("display", "none")
+        }
+        if (className == 'glyphicon glyphicon-chevron-left') {
+            $(this).attr('class', 'glyphicon glyphicon-chevron-right')
+            $("#custom_one").css("margin-right", "851px")
+            $("#custom_two").css("width", "850px")
+            $("#custom_two_list").css("display", "")
+        }
+    });
+
+$('#phone-verify-call-record').click(function(){
+    obj = new Object();
+    obj.OrderId = $("#phone-verify-call-record").val();
+    var phone_time = $("#phone_time").val();
+    var phone_connected = $(":radio[name='phone_connected']:checked").val();
+
+    if(phone_time == ""){
+      alert("{{t $.LangUse "请输入"}} {{t $.LangUse "电话拨打时间"}}");
+      return false;
+    }
+
+    if(phone_connected == undefined){
+        alert("{{t $.LangUse "请输入"}} {{t $.LangUse "电话接通情况"}}");
+        return false;
+    }
+
+    obj.PhoneTime = phone_time;
+    obj.PhoneConnected = phone_connected;
+    obj.Remark = $("#remark").val();
+    var jsonStr = JSON.stringify(obj);
+
+    $.ajax({
+        type: "post",
+        url: '/riskctl/phone_verify/call_record',
+        data:{'jsonStr':jsonStr},
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            alert(data.msg)
+            //window.close();
+        }
+    });
+});
+
+$('#save_result').submit(function(){
+
+    console.log("save_result submit");
+    // console.log(this)
+    // return false
+    $(".single-submit").prop("disabled",true);
+
+});
+
+function verifyAbnormal(){
+    {{if eq $.ItemID 2}}
+        var ab =  $(".radio-abnormal:checked")
+        var len =  $(".radio-abnormal:checked").length
+        // console.log(ab)
+        for (var i=0; i< len;i++){
+            var sele = $('#qid_value_'+ab[i].id)
+            var index=sele[0].selectedIndex ;
+            console.log("index:"+ index)
+            if (index ==0){
+                alert("{{t $.LangUse "请选择异常原因"}}");
+                return false
+            }
+        }
+    {{end}}
+    return true
+}
+
+$('#phone_verify_pass').click(function(){
+    var len =  $(".radio-abnormal:checked").length
+    if (len >0){
+        alert("{{t $.LangUse "存在异常状态,不满足通过条件"}}");
+        return false
+    }
+
+    {{if eq $.ItemID 2}}
+        var radio_count = $("input[type=radio]").length;
+        var radio_normal = $(".radio-normal:checked").length;
+        if (radio_normal !=  radio_count/2){
+            alert("{{t $.LangUse "please select all option"}}");
+            return false
+        }
+    {{end}}
+    return true
+
+});
+
+$('#phone_verify_refuse').click(function(){
+    var len =  $(".radio-abnormal:checked").length
+    if (len == 0){
+        alert("{{t $.LangUse "至少需要有一个异常状态,不满足拒绝条件"}}");
+        return false
+    }
+
+    return verifyAbnormal()
+});
+
+$('#phone_verify_invalid').click(function(){
+    return verifyAbnormal()
+});
+
+$('#valid_confirm_bt').click(function(){
+    var sele = $('#valid_confirm_select')
+    var index=sele[0].selectedIndex
+    if (index ==0){
+        alert("{{t $.LangUse "请选择失效原因"}}");
+        return false
+    }
+
+    $('#invalid_reason').prop("value", index);
+    document.getElementById("save_result").submit();
+});
+
+$("#myModal").on("hidden.bs.modal", function() {
+    console.log("clear")
+    jsRemoveSelectedItemFromSelect($("#valid_confirm_select")[0])
+});
+
+$('#valid_cancel_bt').click(function(){
+    jsRemoveSelectedItemFromSelect($("#valid_confirm_select")[0])
+});
+
+
+var num = 0
+var intervalId = null
+var call_record_id = ""
+
+$('#phone-verify-call-button').click(function(){
+
+    $(":radio[name='phone_connected']").removeAttr("disabled")
+    $(":radio[name='phone_connected']").prop("checked",false)
+
+    $('#phone_time').val("")
+    $('#phone_time').removeAttr("disabled")
+
+    obj = new Object();
+    obj.Mobile = $("#phone-verify-call-input").val();
+    obj.OrderId = $("#phone-verify-call-input").attr("data-orderid");
+    obj.CaseId = $("#phone-verify-call-input").attr("data-orderid");
+    obj.TicketType = "phone-verify";
+    var jsonStr = JSON.stringify(obj);
+
+    $.ajax({
+        type: "post",
+        url: '/extension/sip_call',
+        data:{'jsonStr':jsonStr},
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            $('#phone-verify-call-result').val(data.msg)
+            $('#phone-verify-call-result').show()
+            if (data.isok == 1){
+                call_record_id = data.call_record_id
+                $('#phone-verify-call-button').attr("disabled", "disabled")
+                $('#phone-verify-stop-button').show()
+                $('#phone-verify-stop').show()
+                $('#phone-verify-stop').val('{{t $.LangUse "如挂断电话后呼叫按钮不可用，请点击中止，方可重新呼叫"}}')
+                intervalGetSipCallResult()
+            }
+        }
+    });
+});
+
+function intervalGetSipCallResult(){
+    intervalId = setInterval(getSipCallResult, 3000)
+}
+
+function getSipCallResult(){
+    console.log("get sip call result num:", num)
+    console.log("call_record_id：", call_record_id)
+
+    $.ajax({
+        type: "get",
+        url: '/extension/sip_call_result',
+        data:{'call_record_id':call_record_id},
+        dataType:'json',
+        cache:false,
+        async:false,
+        success: function (data) {
+
+            if (data.is_dail == 1){
+                clearInterval(intervalId)
+                $(":radio[name='phone_connected'][value='1']").prop("checked", "checked");
+                $(":radio[name='phone_connected'][value='1']").click();
+                $(":radio[name='phone_connected']").attr("disabled","disabled")
+                $('#phone_time').val(data.start_time)
+
+                getCallBackResult()
+                num = 0
+            } else if (data.is_dail == 0) {
+                clearInterval(intervalId)
+                $(":radio[name='phone_connected'][value='0']").prop("checked", "checked");
+                $(":radio[name='phone_connected'][value='0']").click();
+                $(":radio[name='phone_connected']").attr("disabled","disabled")
+                $('#phone_time').val(data.start_time)
+
+                getCallBackResult()
+                num = 0
+            } else {
+                num++
+            }
+        }
+    });
+
+};
+
+function getCallBackResult() {
+    $('#phone_time').attr("disabled","disabled")
+    $('#phone-verify-call-button').removeAttr("disabled")
+    $('#phone-verify-call-result').hide()
+    $('#phone-verify-stop-button').hide()
+    $('#phone-verify-stop').hide()
+}
+
+$('#phone-verify-stop-button').click(function(){
+    clearInterval(intervalId)
+    $("#i_submit").removeAttr("disabled")
+    $('#phone-verify-call-button').removeAttr("disabled")
+    $('#phone-verify-call-result').hide()
+    $('#phone-verify-stop-button').hide()
+    $('#phone-verify-stop').hide()
+});
+
+function jsRemoveSelectedItemFromSelect(objSelect) {
+    var length = objSelect.options.length - 1;
+    for(var i = length; i >= 0; i--){
+        objSelect.options[i].selected =false;
+    }
+}
+
+</script>

@@ -1,0 +1,176 @@
+<script>
+$(function () {
+
+  $(".startWork").on("click", function(e){
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).data("link")
+    $.ajax({
+        url:"/ticket/update_worker_status",
+        data:{id:id, action:"start"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.location.reload();
+            }
+        },
+    });
+
+  })
+
+  $(".stopWork").on("click", function(e){
+    e.preventDefault();
+
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).data("link")
+    $.ajax({
+        url:"/ticket/update_worker_status",
+        data:{id:id, action:"stop"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.location.reload();
+            }
+        },
+    });
+  })
+
+
+  $(".online").on("click", function(e){
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).data("link")
+    $.ajax({
+        url:"/ticket/update_worker_online_status",
+        data:{id:id, action:"online"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.location.reload();
+            }
+        },
+    });
+
+  })
+
+  $(".offline").on("click", function(e){
+    e.preventDefault();
+
+    var id = $(this).parents("tr").find("input[name='id']").val()
+    var link = $(this).data("link")
+    $.ajax({
+        url:"/ticket/update_worker_online_status",
+        data:{id:id, action:"offline"},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        async: false,
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+              return false
+                showWarningBox(result.error);
+            } else {
+              window.location.reload();
+            }
+        },
+    });
+  })
+
+
+
+
+  $(".ajax-change-filed").hover(function(){
+    $(this).append("<span class='label label-danger text-right'>Modify</span>").css({"background-color":"#dd4b39 !important","cursor":"pointer","color":"#fff","line-height":"100%"});
+  },function(){
+    $(this).css({"background-color":"","color":"#000"}).find(".label").remove();
+  });
+  $(".ajax-change-filed").click(function(){
+    $(this).hide();
+    $(this).next().find(".ajax-change-text").attr("class","form-control ajax-change-text show").focusEnd();
+  });
+  $(".ajax-change-text").blur(function(){
+      // change($(this));
+  });
+  $(".ajax-change-text").keyup(function(e){
+      if(e.keyCode == 13){
+        change($(this));
+      }
+  });
+ 
+  function change(thisdom){
+    obj = new Object();
+      obj.field = thisdom.attr("data-filed");
+      obj.value = thisdom.val();
+      obj.id = thisdom.attr("data-id");
+      var jsonStr = JSON.stringify(obj);
+    console.log(jsonStr)
+      $.ajax({
+        type: "post",
+        url: '/ticket/ajax_modify_reduced_quota',
+        data:{'jsonStr':jsonStr},
+        dataType: 'json',
+        success: function (data) {
+          console.log(data);
+            if(data.data == true){
+              $(".ajax-change-text").attr("class","form-control ajax-change-text hidden");
+             thisdom.parent().prev().html(obj.value).show();
+            }else{
+              if(data.error == 1){
+                alert("Invalid quota value");
+              }
+            }
+        }
+      });
+  }
+
+
+  // $("#updateModal").on("hidden.bs.modal", function() {
+  //   console.log("hidden clear");
+  //   $(this).removeData("bs.modal");
+  // });
+  $.fn.setCursorPosition = function(position){  
+      if(this.lengh == 0) return this;  
+      return $(this).setSelection(position, position);  
+  }  
+    
+  $.fn.setSelection = function(selectionStart, selectionEnd) {  
+      if(this.lengh == 0) return this;  
+      input = this[0];  
+    
+      if (input.createTextRange) {  
+          var range = input.createTextRange();  
+          range.collapse(true);  
+          range.moveEnd('character', selectionEnd);  
+          range.moveStart('character', selectionStart);  
+          range.select();  
+      } else if (input.setSelectionRange) {  
+          input.focus();  
+          input.setSelectionRange(selectionStart, selectionEnd);  
+      }  
+    
+      return this;  
+  }  
+$.fn.focusEnd = function(){  
+    console.log(this.val().length)
+      this.setCursorPosition(this.val().length);  
+} 
+
+});
+
+</script>

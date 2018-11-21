@@ -1,0 +1,15 @@
+<script>
+$(function () {
+  $('#ctime_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#ctime_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+});
+
+
+</script>

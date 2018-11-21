@@ -1,0 +1,278 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "还款管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/repay/list" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "借款"}}ID" value="{{.id}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "手机号码"}}:<input name="mobile" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "手机号码"}}"
+                                                             value="{{if gt .mobile 0}}{{.mobile}}{{end}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "账户"}}ID:<input name="account_id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "账户"}}" value="{{.account_id}}"/>
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control"
+                                                             placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}"/>
+                                </div>
+
+                                <div class="col-xs-3">{{t .LangUse "还款状态"}}:
+                                    <select id="check_status" name="check_status" class="selectpicker form-control" multiple="multiple">
+                                    {{range $value, $show := .check_status}}
+                                        <option value="{{$value}}"{{if isInMap $.checkStatus $value}}
+                                                selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+
+                                <div class="col-xs-2 " id="div_left_amount" style="display:none">
+                                {{t .LangUse "剩余还款金额小于等于"}}:<input name="left_amount" id="left_amount" type="number" class="form-control" value="{{.leftAmount}}" />
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "申请时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="apply_time_range" id="apply_time_range" type="text" readonly
+                                               class="form-control" origin="{{.applyTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.applyTimeRange}}"/>
+                                    </div>
+
+                                </div>
+                                <!-- </div>
+                                <div class="row"> -->
+                                <div class="col-xs-3">
+                                {{t .LangUse "应还日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="repay_date_range" id="repay_date_range" type="text" readonly
+                                               class="form-control" origin="{{.repayDateRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.repayDateRange}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "实际还款时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="repay_time_range" id="repay_time_range" type="text" readonly
+                                               class="form-control" origin="{{.repayTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.repayTimeRange}}"/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "贷款还清时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="finish_time_range" id="finish_time_range" type="text" readonly
+                                               class="form-control" origin="{{.finishTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.finishTimeRange}}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <input id="i_search" type="submit" class="form-control btn btn-block btn-info"
+                                           value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="/repay/list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="javascript:void(0)"
+                                       class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- statistic-->
+                <div class="box">
+                    <div class="box-header clearfix">
+                        <ul class="statistic pull-right">
+                        {{template "inc/statisticRepay.html" .}}
+                        </ul>
+                    </div>
+
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="th_sort" id="Id">{{t .LangUse "借款"}}ID<i id="iId"
+                                                                                    class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "VA账户"}}</th>
+                                <th>{{t .LangUse "超市付款码"}}</th>
+                                <th>{{t .LangUse "还款状态"}}</th>
+                                <th class="th_sort" id="RepayDate">{{t .LangUse "应还日期"}}<i id="iRepayDate"
+                                                                                           class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="RepayTime">{{t .LangUse "实还日期"}}<i id="iRepayTime"
+                                                                                           class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="FinishTime">{{t .LangUse "贷款还清时间"}}<i id="iFinishTime"
+                                                                                           class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="Loan">{{t .LangUse "放贷金额"}}<i id="iLoan"
+                                                                                      class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="TotalRepay">{{t .LangUse "应还总额"}}<i id="iTotalRepay"
+                                                                                            class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="TotalRepayPayed">{{t .LangUse "实还总额"}}<i id="iTotalRepayPayed"
+                                                                                                 class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="ReduceTotal">{{t .LangUse "减免总额"}}<i id="iReduceTotal"
+                                                                                             class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.Id}}</td>
+                                <td><a href="/customer/detail?id={{.UserAccountId}}" target="_blank">{{.Realname}}</a>
+                                </td>
+                                <td>
+                                    {{range $vars := .UserEAccounts}}
+                                        {{range $var := $vars}}
+                                            {{$var}}<br/>
+                                        {{end}}
+                                    {{end}}
+                                </td>
+                                <td id="td_paymentcode_{{.Id}}">
+                                    {{if ne .CheckStatus 8}}
+                                        {{.UserAccountId | paymentCodeDisplay}}
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_paymentcode_{{.Id}}" id="generate_paymentcode_{{.Id}}" type="button">generate payment code</button>
+                                    {{else}}
+                                            -
+                                    {{end}}
+                                </td>
+                                <td>{{getLoanStatusDesc $.LangUse .CheckStatus}}</td>
+                                <td>{{.RepayDate | mDateMHSDate }}</td>
+                                <td>{{.RepayTime | mDateMHS }}</td>
+                                <td>{{.FinishTime | mDateMHS }}</td>
+                                <td>{{.Loan}}</td>
+                                <td>{{.TotalRepay}}</td>
+                                <td>{{.TotalRepayPayed}}</td>
+                                <td>{{.ReduceTotal}}</td>
+                                <td>
+                                {{if or (eq .CheckStatus 14) (eq .CheckStatus 15) (eq .CheckStatus 8)}}
+                                    <a href="/repay/backend/user_e_trans?order_id={{.Id}}">{{t $.LangUse "资金流水"}}</a> |
+                                    <a href="/repay/backend/repay_plan?order_id={{.Id}}">{{t $.LangUse "还款计划"}}</a> |
+                                    <a href="/repay/backend/repay_plan_history?order_id={{.Id}}">{{t $.LangUse "还款计划历史"}}</a>
+                                {{else}}
+                                    <a href="/overdue/backend/reduction?order_id={{.Id}}" target="_blank">{{t $.LangUse "减免"}}</a> |
+                                    <a href="/repay/backend/user_e_trans?order_id={{.Id}}">{{t $.LangUse "资金流水"}}</a> |
+                                    <a href="/repay/backend/repay_plan?order_id={{.Id}}&repay_time={{.RepayTime}}">{{t $.LangUse "还款计划"}}</a> |
+                                    <a href="/repay/backend/repay_plan_history?order_id={{.Id}}">{{t $.LangUse "还款计划历史"}}</a>
+                                {{end}}
+
+                                 {{if eq $.OpUid 1}}
+                                    <a href="" data-id="{{.Id}}" data-target="#updateModal" data-remote="/repay/backend/repay_plan/rollback?order_id={{.Id}}" data-toggle="modal">|{{t $.LangUse "还款计划回退"}}</a>
+                                 {{end}}
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+
+                        {{range .List}}
+                            <div class="modal fade" id="modal_paymentcode_{{.Id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="modalLabel_{{.Id}}">{{t $.LangUse "生成便利店付款码"}}</h4>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div>{{t $.LangUse "订单id"}} : {{.Id}} </div>
+                                            <div>{{t $.LangUse "剩余待还金额"}} : <span id="repay_balance_{{.Id}}" balance="{{.RepayBalanceAmount}}">{{.RepayBalanceAmount}}</span></div><br/>
+
+                                            <div><button id="change_balance_{{.Id}}" type="button" class="btn btn-default">{{t $.LangUse "更改金额"}}</button></div>
+
+
+                                        </div>
+                                        <div class="modal-footer" id="generate_text_{{.Id}}">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                            <button id="generate_btn_{{.Id}}" type="button" class="btn btn-default">{{t $.LangUse "生成"}}</button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal -->
+                            </div>
+                        {{end}}
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>

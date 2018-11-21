@@ -1,0 +1,330 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  var clipboard = new ClipboardJS('.copybtn');
+    clipboard.on('success', function(e) {
+        $("[data-toggle='tooltip']").attr("title","copyied").tooltip();
+        e.clearSelection();
+    });
+
+  $('#phone_time').datetimepicker({
+      format:'Y-m-d H:i:s',
+      step: 5
+  });
+
+
+  $('#promise_repay_time').datetimepicker({
+     format:'Y-m-d H:i',
+     step: 5
+  });
+
+
+  function showWarningBox(messageContent) {
+      var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+      showBoxMsg(warningBoxContent);
+  }
+
+  function showBoxMsg(msg) {
+      $("#smallModal div.modal-body").html(msg);
+      $("#smallModal").modal('show');
+  }
+
+  $("#submit").on("click", function(){
+    var overdueDaysStart = $('#overdue_days_start').val();
+    var overdueDaysEnd = $('#overdue_days_end').val();
+
+    var rS = parseInt(overdueDaysStart)
+    var rE = parseInt(overdueDaysEnd)
+    if(rS>rE) {
+       showBoxMsg('{{t .LangUse "逾期天数起始值大于终止值"}}')
+       //e.preventDefault();
+       return false
+    }
+  });
+
+});
+
+$('input[name="phone_connected"]').click(function(){
+    var phone_connected_radio_val = $('input[name="phone_connected"]:checked').val();
+
+    if (phone_connected_radio_val == 1){
+      $('#i_tr_repay_inclination').show();
+      $('#i_tr_overdue_reason').show();
+      $('#i_tr_promise_repay_time').show();
+      $('#i_tr_phone_unconnect_reason').hide();
+      $('#phone_unconnect_reason').val(0);
+    }
+
+    if(phone_connected_radio_val == 0){
+        $('#i_tr_phone_unconnect_reason').show()
+        $('#i_tr_repay_inclination').hide()
+        $('#i_tr_overdue_reason').hide()
+        $('#i_tr_promise_repay_time').hide()
+        $('#promise_repay_time').val("")
+        $('#overdue_reason').val("")
+        $('#repay_inclination').val(0)
+    }
+
+});
+
+$('#phone_objects').on("click",function(){
+    $("#remind-call-result").hide()
+
+    var phone_objects_option_val = $('#phone_objects').val();
+    if (phone_objects_option_val == 6){ // 其他联系人
+        $('#i_tr_else_contact').show()
+        $('#i_tr_contact_list').hide()
+        $("#remind-call-button").removeAttr("disabled")
+    } else if (phone_objects_option_val == 5) { // 通讯录
+        $('#i_tr_else_contact').hide()
+        $('#i_tr_contact_list').show()
+        $("#remind-call-button").removeAttr("disabled")
+    } else if (phone_objects_option_val == 4) { // 公司电话
+        $('#i_tr_else_contact').hide()
+        $('#i_tr_contact_list').hide()
+        $("#remind-call-input").val($("input#company").attr("data-mobile"))
+        $("#remind-call-button").removeAttr("disabled")
+    } else if (phone_objects_option_val == 3) { // 联系人2
+        $('#i_tr_else_contact').hide()
+        $('#i_tr_contact_list').hide()
+        $("#remind-call-input").val($("input#contact2").attr("data-mobile"))
+        $("#remind-call-button").removeAttr("disabled")
+    } else if (phone_objects_option_val == 2) { // 联系人1
+        $('#i_tr_else_contact').hide()
+        $('#i_tr_contact_list').hide()
+        $("#remind-call-input").val($("input#contact1").attr("data-mobile"))
+        $("#remind-call-button").removeAttr("disabled")
+    } else if (phone_objects_option_val == 1) { // 本人
+        $('#i_tr_else_contact').hide()
+        $('#i_tr_contact_list').hide()
+        $("#remind-call-input").val($("input#oneself").attr("data-mobile"))
+        $("#remind-call-button").removeAttr("disabled")
+    }
+});
+
+
+$("input#else_contact_mobile").on('keyup',function(){
+    $("#remind-call-input").val($('input#else_contact_mobile').val())
+})
+
+
+$('#contact_list').on("click",function(){
+    $("#remind-call-input").val($('#contact_list').val())
+});
+
+var num = 0
+var intervalId = null
+var call_record_id = ""
+
+$('#remind-call-button').click(function(){
+
+    // var phone_objects_option_val = $('#phone_objects').val();
+    // if (phone_objects_option_val == 6){ // 其他联系人
+    //     $("#remind-call-input").val($("input#else_contact_mobile").val())
+
+    // } else if (phone_objects_option_val == 5) { // 通讯录
+    //     $("#remind-call-input").val($("select#contact_list").val())
+    // }
+    // console.log(phone_objects_option_val)
+    // if ($("#remind-call-input").val() == "" || $("#remind-call-input").val() == 0) {
+    //     alert('{{t $.LangUse "选择的拨打对象联系方式为空"}}')
+    //     return false;
+    // }
+
+    $(":radio[name='phone_connected']").removeAttr("disabled")
+    $(":radio[name='phone_connected']").prop("checked",false)
+
+    $('#phone_time').val("")
+    $('#phone_time').removeAttr("disabled")
+
+    obj = new Object();
+    obj.Mobile = $("#remind-call-input").val();
+    obj.OrderId = $("#remind-call-input").attr("data-orderid");
+    obj.CaseId = $("#remind-call-input").attr("data-caseid");
+    obj.TicketType = "repay-remind";
+    var jsonStr = JSON.stringify(obj);
+
+    $.ajax({
+        type: "post",
+        url: '/extension/sip_call',
+        data:{'jsonStr':jsonStr},
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            $('#remind-call-result').val(data.msg)
+            $('#remind-call-result').show()
+            if (data.isok == 1){
+                call_record_id = data.call_record_id
+                $('#i_submit').attr("disabled", "disabled")
+                $('#remind-call-button').attr("disabled", "disabled")
+                $('#timer-stop-button').show()
+                $('#remind-stop').show()
+                $('#remind-stop').val('{{t $.LangUse "如挂断电话后未自动获取结果，请点击中止并手动选择结果"}}')
+
+                $("#phone_objects").attr("disabled","disabled")
+                $("#else_contact_mobile").attr("disabled","disabled")
+                $("#contact_list").attr("disabled","disabled")
+                intervalGetSipCallResult()
+            } else if (data.isok == 0) {
+                $('#remind-stop').hide()
+            }
+        }
+    });
+});
+
+function intervalGetSipCallResult(){
+    intervalId = setInterval(getSipCallResult, 3000)
+}
+
+function getSipCallResult(){
+    console.log("get sip call result num:", num)
+    console.log("call_record_id：", call_record_id)
+
+    $.ajax({
+        type: "get",
+        url: '/extension/sip_call_result',
+        data:{'call_record_id':call_record_id},
+        dataType:'json',
+        success: function (data) {
+            console.log(data);
+            callResultHandler(data)
+        }
+    });
+
+};
+
+$('#timer-stop-button').click(function(){
+    clearInterval(intervalId)
+    $("#i_submit").removeAttr("disabled")
+    $('#remind-call-button').removeAttr("disabled")
+    $('#remind-call-result').hide()
+    $('#timer-stop-button').hide()
+    $('#remind-stop').hide()
+
+    $.ajax({
+        type: "get",
+        url: '/extension/sip_call_bill',
+        data:{'call_record_id':call_record_id},
+        dataType:'json',
+        success: function (data) {
+            console.log(data)
+            callResultHandler(data)
+
+        }
+    });
+});
+
+function callResultHandler(data){
+    if (data.is_dail == 1){
+        clearInterval(intervalId)
+        $(":radio[name='phone_connected'][value='1']").prop("checked", "checked");
+        $(":radio[name='phone_connected'][value='1']").click();
+        $(":radio[name='phone_connected']").attr("disabled","disabled")
+        $('#phone_time').val(data.start_time)
+
+        getCallBackResult()
+        num = 0
+
+    } else if (data.is_dail == 0) {
+        clearInterval(intervalId)
+        $(":radio[name='phone_connected'][value='0']").prop("checked", "checked");
+        $(":radio[name='phone_connected'][value='0']").click();
+        $(":radio[name='phone_connected']").attr("disabled","disabled")
+        $('#phone_time').val(data.start_time)
+
+        getCallBackResult()
+        num = 0
+
+    } else {
+        num++
+    }
+}
+
+function getCallBackResult() {
+    $('#phone_time').attr("disabled","disabled")
+    $("#phone_objects").attr("disabled","disabled")
+    $("#else_contact_mobile").attr("disabled","disabled")
+    $("#contact_list").attr("disabled","disabled")
+
+    $('#remind-call-button').removeAttr("disabled")
+    $("#i_submit").removeAttr("disabled")
+    $('#remind-stop').hide()
+    $('#timer-stop-button').hide()
+    $('#remind-call-result').hide()
+}
+
+$('#generate_paymentcode').click(function(){
+    $.ajax({
+        url:'/overdue/market_payment_code/generate',
+        data:{order_id: "{{.OneCase.OrderId}}"},
+        dataType:'json',
+        cache:false,
+        type:'post',
+        error: function () {
+
+        },
+        success:function(result) {
+            if(result.error != ""){
+                alert(result.error)
+            }
+            //console.log(result)
+            //$("#remindDialog").modal({})
+        },
+        complete:function() {
+            window.location.reload()
+
+        },
+        beforeSend:function() {
+            $("#payment_code_td").html("<span style='color:red'>Processing, please wait...</span>")
+        }
+    });
+});
+
+$('#i_submit').click(function(){
+
+  if($('#phone_time').val() == ""){
+      alert({{t .LangUse "请选择电话拨打时间"}});
+      return false;
+  }
+
+  if($('#phone_objects').val() == 0){
+      alert({{t .LangUse "请选择电话拨打对象"}});
+      return false;
+  }
+
+  if($("input[name='phone_connected']:checked").val() == undefined){
+      alert({{t .LangUse "请选择电话接通情况"}});
+      return false;
+  }
+
+  if($("input[name='phone_connected']:checked").val() == 1){
+
+      if($("#repay_inclination").val() == 0){
+          alert({{t .LangUse "请选择还款意愿"}});
+          return false;
+      }
+
+      /*
+      if($('#promise_repay_time').val() == ""){
+          alert("请选择承诺还款时间");
+          return false;
+      }
+      */
+  }
+
+    if($("input[name='phone_connected']:checked").val() == 0){
+        if($('#phone_unconnect_reason').val() == 0){
+            alert({{t .LangUse "请选择未接通原因"}});
+            return false;
+        }
+    }
+
+    $(":radio[name='phone_connected']").removeAttr("disabled","disabled")
+    $('#phone_time').removeAttr("disabled","disabled")
+    $('#phone_objects').removeAttr("disabled","disabled")
+
+})
+
+$('select[name="phone_objects"]').click();
+
+</script>

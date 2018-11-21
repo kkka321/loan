@@ -1,0 +1,107 @@
+<script>
+    $(function () {
+        var validDays = {{$.coupon_days}}
+        var asStart = {{$.distr_as_start}}
+        var validStart = {{$.coupon_start}}
+        var validEnd = {{$.coupon_end}}
+        if (asStart > 0) {
+            var item = document.getElementById('coupon_today');
+            item.checked = true
+            $("#coupon_start").val("-")
+        } else {
+            var item = document.getElementById('coupon_today');
+            item.checked = false
+        }
+        if (validDays > 0) {
+            $("#coupon_days").val(validDays)
+            $("#coupon_end").val("-")
+
+        } else {
+            $("#coupon_days").val("")
+        }
+
+        function updateType() {
+            v = $('#coupon_type').val()
+            $("#redpacket_div").hide()
+            $("#discount_div").hide()
+            $("#interest_div").hide()
+            $("#limit_div").hide()
+
+            if (v == 1) {
+                $("#redpacket_div").show()
+            } else if (v == 2) {
+                $("#discount_div").show()
+            } else if (v == 3) {
+                $("#interest_div").show()
+            } else if (v == 4) {
+                $("#limit_div").show()
+            }
+        }
+
+        $('#distr_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#distr_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+        $('#coupon_start').daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": true,
+        }, function(start, end, label) {
+            $('#coupon_start').val(start.format('YYYY-MM-DD'))
+        });
+
+        $('#coupon_end').daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": true,
+        }, function(start, end, label) {
+            $('#coupon_end').val(start.format('YYYY-MM-DD'))
+        });
+
+        var op = getParam("op")
+        if (op == "2") {
+            $(".coupon-op").attr("disabled", "disabled")
+            $("#title").val("编辑优惠券")
+            $("#status_div").show()
+            $("#status_div2").show()
+        } else {
+            $(".coupon-op").removeAttr("disabled")
+            $("#title").text("增加优惠券")
+            $("#status_div").hide()
+            $("#status_div2").hide()
+        }
+
+        $("#coupon_end").click(function(){
+            $("#coupon_days").val("")
+        });
+
+        $("#coupon_start").click(function(){
+            var item = document.getElementById('coupon_today');
+            item.checked = false
+        });
+
+        $("#coupon_days").click(function(){
+            $("#coupon_end").val("")
+        });
+
+        $("#coupon_today").click(function(){
+            $("#coupon_start").val("")
+        });
+
+        updateType()
+
+        $('#coupon_type').on('click', function (event) {
+            updateType()
+        });
+    });
+
+</script>

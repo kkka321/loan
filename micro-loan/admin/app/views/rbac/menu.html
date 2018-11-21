@@ -1,0 +1,197 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+      <h1>
+          菜单管理
+      </h1>
+  </section>
+
+  <section class="content" style="">
+  <div class="row">
+
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <div class="box center">
+        <div class="box-header with-border">
+          <h3 class="box-title">菜单列表</h3>
+        </div>
+        <section class="sidebar" style="height: auto;">
+            <ul class="sidebar-menu tree" data-widget="tree" >
+              {{range .List}}
+
+              <li class="treeview {{if .IsActive}} active {{end}}">
+                  <a href="#">
+                      <i class="fa {{.Class}}" href="{{.Path}}"></i> <span>{{.Name}}</span>
+                      <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+
+
+                      <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+                          <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-toggle="modal" data-target="#updateModal">{{t $.LangUse "编辑"}}</button>
+                          <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="up">上移</button>
+                          <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="down">下移</button>
+                          <button type="button" class="deleteMenu btn btn-danger" data-id="{{.Id}}" data-name="{{.Name}}" data-pid="{{.Pid}}" data-toggle="modal" data-target="#deleteModal">删除</button>
+                      </span>
+
+
+                  </a>
+                    <ul class="treeview-menu">
+
+                    {{range .SubMenus}}
+                    <li class="treeview {{if .IsActive}} active {{end}}" >
+                        <a href="#">
+                            <i class="fa {{.Class}}" href="{{.Path}}"></i> <span>{{.Name}}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                            <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+                                <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-toggle="modal" data-target="#updateModal">{{t $.LangUse "编辑"}}</button>
+                                <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="up">上移</button>
+                                <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="down">下移</button>
+                                <button type="button" class="deleteMenu btn btn-danger" data-id="{{.Id}}" data-name="{{.Name}}" data-pid="{{.Pid}}" data-toggle="modal" data-target="#deleteModal">删除</button>
+                            </span>
+                        </a>
+                          <ul class="treeview-menu">
+
+                          {{range .SubMenus}}
+                          <li class="treeview {{if .IsActive}} active {{end}}">
+                              <a href="#">
+                                  <i class="fa {{.Class}}" href="{{.Path}}"></i> <span>{{.Name}}</span>
+                                  <!-- <span class="pull-right-container">
+                                      <i class="fa fa-angle-left pull-right"></i>
+                                  </span> -->
+                                  <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+                                      <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-toggle="modal" data-target="#updateModal">{{t $.LangUse "编辑"}}</button>
+                                      <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="up">上移</button>
+                                      <button type="button" class="updateSort btn btn-primary" data-id="{{.Id}}" data-operation="down">下移</button>
+                                      <button type="button" class="deleteMenu btn btn-danger" data-id="{{.Id}}" data-name="{{.Name}}" data-pid="{{.Pid}}" data-toggle="modal" data-target="#deleteModal">删除</button>
+                                  </span>
+                              </a>
+
+                          </li>
+                          {{end}}
+                          <li class="active">
+                            <a href="javascript:;" data-pid="{{.Id}}" data-pname="{{.Name}}" class="addNewMenu" data-toggle="modal" data-target="#myModal">
+                              <i class=" active glyphicon glyphicon-plus-sign"></i>新增子菜单...
+                            </a>
+                          </li>
+                          </ul>
+                    </li>
+                    {{end}}
+                    <li class="active">
+                      <a href="javascript:;" data-pid="{{.Id}}" data-pname="{{.Name}}" class="addNewMenu" data-toggle="modal" data-target="#myModal">
+                        <i class=" active glyphicon glyphicon-plus-sign"></i>新增子菜单...
+                      </a>
+                    </li>
+                  </ul>
+
+                </li>
+                {{end}}
+                <li class="">
+                  <a href="javascript:;" data-pid="0" data-pname="{{.Name}}" class="addNewMenu" data-toggle="modal" data-target="#myModal">
+                    <i class=" active glyphicon glyphicon-plus-sign"></i>新增顶级菜单...
+                  </a>
+                </li>
+              </ul>
+
+
+        </section>
+      </section>
+      </div>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+  </section>
+  </div>
+
+
+  <!-- Add Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header createPayMethodFormTitle">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">创建 << <strong></strong> >> 子菜单</h4>
+        </div>
+        <form role="form" id="addForm" method="post" action="/menu/create">
+            <div class="modal-body">
+                <!-- text input -->
+                <input type="hidden" id="menuPid" name="pid" value="">
+                <div class="form-group">
+                    <label>名称</label>
+                    <input type="text" class="form-control" placeholder="输入名称" name="name" value="">
+                </div>
+                <div class="form-group">
+                    <label>路径</label>
+                    <input type="text" class="form-control" placeholder="输入访问路径,包括/   [父级菜单留空即可]" name="path" value="">
+                </div>
+                <div class="form-group">
+                    <label>菜单图标类名</label>
+                    <input type="text" class="form-control" placeholder="输入菜单图标类明" name="class" value="fa-circle-o">
+                </div>
+
+                <div class="form-group">
+                    <label>权限</label>
+                    <input type="text" class="form-control" disabled placeholder="自动获取...   [父级菜单留空即可]" name="privilege_name" value="">
+                    <input type="hidden" class="form-control"   name="privilege_id" value="">
+                </div>
+                <div class="form-group">
+                    <label>{{t .LangUse "状态"}}</label>
+                    <select class="form-control input-sm" name="status" id="">
+                      <option value="1" selected>正常</option>
+
+                      <option value="0">{{t .LangUse "无效"}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{t .LangUse "取消"}}</button>
+                <button type="submit" class="btn btn-success" id="submitButton" >{{t .LangUse "提交"}}</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+      </div>
+    </div>
+  </div>
+
+  <!-- delete Modal -->
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" id="deleteModal">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" >移除菜单</h4>
+              </div>
+              <div class="modal-body">
+                  确认删除菜单 <strong></strong> 吗?
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">{{t .LangUse "取消"}}</button>
+                  <button type="submit" class="btn btn-success" data-id="" data-pid="" id="deleteSubmitButton" >确认</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="smallModalLabel">Tag</h4>
+              </div>
+              <div class="modal-body" id="resultMessage">
+                  Loading...
+              </div>
+          </div>
+      </div>
+  </div>

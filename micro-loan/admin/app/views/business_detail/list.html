@@ -1,0 +1,111 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t $.LangUse "资金对账"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/business/detail/list" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "注册时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="register_time_range"  id="register_time_range" type="text" readonly class="form-control" origin="{{.registerTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.registerTimeRange}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/business/detail/list" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tr>
+                  <th>{{t $.LangUse "日期"}}</th>
+                  <th>{{t $.LangUse "充值金额"}}</th>
+                  <th>{{t $.LangUse "提现金额"}}</th>
+                  <th>{{t $.LangUse "放款出账"}}</th>
+                  <th>{{t $.LangUse "放款手续费支出"}}</th>
+                  <th>{{t $.LangUse "还款入账"}}</th>
+                  <th>{{t $.LangUse "还款手续费支出"}}</th>
+                  <th>{{t $.LangUse "三方账户余额"}}</th>
+                  <th>{{t $.LangUse "在贷余额"}}</th>
+                  <th>{{t $.LangUse "服务费收入"}}</th>
+                  <th>{{t $.LangUse "利息收入"}}</th>
+                  <th>{{t $.LangUse "宽限期利息收入"}}</th>
+                  <th>{{t $.LangUse "罚息收入"}}</th>
+                  <th>{{t $.LangUse "操作"}}</th>
+                </tr>
+
+                {{range .List}}
+                <tr>
+                    <td>{{.RecordDateS}}</td>
+                    <td>{{.RechargeAmount}}</td>
+                    <td>{{.WithdrawAmount}}</td>
+                    <td>{{.PayOutAmount}}</td>
+                    <td>{{.PayOutForFee}}</td>
+                    <td>{{.PayInAmount}}</td>
+                    <td>{{.PayInForFee}}</td>
+                    <td>{{.AccountBalance}}</td>
+                    <td>{{.LendingBalance}}</td>
+                    <td>{{.FeeIncome}}</td>
+                    <td>{{.InterestIncome}}</td>
+                    <td>{{.GraceInterestIncome}}</td>
+                    <td>{{.PenaltyInterestIncome}}</td>
+                    <td>
+                        <a href="/business/detail/recharge?recharge_date={{.RecordDateS}}" class="label label-primary">{{t $.LangUse "充值"}}</a>
+                        <a href="/business/detail/withdraw?withdraw_date={{.RecordDateS}}" class="label label-info">{{t $.LangUse "提现"}}</a>
+                        <a href="/business/detail/list/view?date={{.RecordDateS}}" class="label label-success">{{t $.LangUse "明细"}}</a>
+                    </td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "减免"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="/overdue/backend/do_reduction" method="post">
+                            <table class="table table-bordered table-striped">
+
+
+                                <tr>
+                                    <td>{{t .LangUse "应还日期"}}</td>
+                                    <td>{{.repay_plan.RepayDate|mDateMHSDate}}</td>
+                                    <td>{{t .LangUse "实还日期"}}</td>
+                                    <td>{{.order.RepayTime|mDateMHSDate}}</td>
+                                    <td>{{t .LangUse "减免日期"}}</td>
+                                    <td>{{.reduceRecord.Ctime|mDateMHSDate}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                                <tr>
+                                    <td>{{t .LangUse "应还本金"}}</td>
+                                    <td>{{.repay_plan.Amount}}</td>
+                                    <td>{{t .LangUse "实还本金"}}</td>
+                                    <td>{{.repay_plan.AmountPayed}}</td>
+                                    <td>{{t .LangUse "已减免本金"}}</td>
+                                    <td>{{.repay_plan.AmountReduced}}</td>
+                                    <td>{{t .LangUse "剩余可减免本金"}}</td>
+                                    <td>{{.could_reduce_amount}}</td>
+                                    <td>{{t .LangUse "减免本金"}}</td>
+                                    <td><input class="form-group col-md-8" type="text" name="reduction_amount"  onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>{{t .LangUse "应还宽限期利息"}}</td>
+                                    <td>{{.repay_plan.GracePeriodInterest}}</td>
+                                    <td>{{t .LangUse "实还宽限期利息"}}</td>
+                                    <td>{{.repay_plan.GracePeriodInterestPayed}}</td>
+                                    <td>{{t .LangUse "已减免宽限期利息"}}</td>
+                                    <td>{{.repay_plan.GracePeriodInterestReduced}}</td>
+                                    <td>{{t .LangUse "剩余可减免宽限期利息"}}</td>
+                                    <td>{{.could_reduce_grace_interest}}</td>
+                                    <td>{{t .LangUse "减免宽限期利息"}}</td>
+                                    <td><input class="form-group col-md-8" type="text" name="reduction_interest" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>{{t .LangUse "应还罚息"}}</td>
+                                    <td>{{.repay_plan.Penalty}}</td>
+                                    <td>{{t .LangUse "实还罚息"}}</td>
+
+                                    <td>{{.repay_plan.PenaltyPayed}}</td>
+                                    <td>{{t .LangUse "已减免罚息"}}</td>
+                                    <td>{{.repay_plan.PenaltyReduced}}</td>
+                                    <td>{{t .LangUse "剩余可减免罚息"}}</td>
+                                    <td>{{.could_reduce_penalty}}</td>
+                                    <td>{{t .LangUse "减免罚息"}}</td>
+                                    <td><input class="form-group col-md-8" type="text" name="reduction_penalty" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"/></td>
+                                </tr>
+
+                                <div class="form-group">
+                                    <tr>
+                                        <th>{{t .LangUse "原因"}}：</th>
+                                        <td colspan="9"><textarea rows=5 cols="50" class="form-control col-md-3" required name="reason"></textarea></td>
+                                    </tr>
+                                </div>
+                            </table>
+
+                            <p></p>
+                            <input type="hidden" name="order_id" value="{{.order_id}}" />
+                            <input type="submit" value="{{t .LangUse "提交"}}" />
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

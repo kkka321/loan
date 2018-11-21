@@ -1,0 +1,224 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "借款管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/order/list" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="id" type="number" class="form-control"
+                                                                                         placeholder="{{t .LangUse "借款"}}ID" value="{{if gt .id 0}}{{.id}}{{end}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户帐号"}}ID:<input name="user_account_id" type="number" class="form-control"
+                                                               placeholder="{{t .LangUse "客户帐号"}}ID"
+                                                               value="{{if gt .userAccountId 0}}{{.userAccountId}}{{end}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "手机号码"}}:<input name="mobile" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "手机号码"}}"
+                                                             value="{{.mobile}}"/>
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control"
+                                                             placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}"/>
+                                </div>
+
+                                <div class="col-xs-3">{{t .LangUse "借款状态"}}:
+                                    <select name="check_status" title={{t .LangUse "请选择"}} class="statusSelectMultiBox
+                                            selectpicker form-control" multiple="multiple" data-hide-disabled="true"
+                                    data-size="5">
+                                {{range $value, $show := .check_status}}
+                                    <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3">{{t .LangUse "订单类型"}}:
+                                    <select name="order_type" title={{t .LangUse "请选择"}} class="orderTypeMultiBox selectpicker form-control" multiple="multiple" data-hide-disabled="true"
+                                    data-size="2">
+                                {{range $value, $show := .order_type}}
+                                    <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "申请时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="apply_time_range" id="apply_time_range" type="text" readonly
+                                               class="form-control" origin="{{.applyTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.applyTimeRange}}"/>
+                                    </div>
+
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "创建时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="ctime_range" id="ctime_range" type="text" readonly
+                                               class="form-control" origin="{{.ctime_range}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.ctime_range}}"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;<input type="submit" class="form-control btn btn-block btn-info"
+                                                 value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/order/list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)"
+                                             class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="th_sort" id="Id">
+                                    {{t .LangUse "借款"}}ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                              {{if .hasRoll}}
+                                <th>{{t .LangUse "原始订单"}}</th>
+                              {{end}}
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th class="th_sort" id="Amount">
+                                    {{t .LangUse "合同金额"}}<i id="iAmount" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="Loan">
+                                    {{t .LangUse "放贷金额"}}<i id="iLoan" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="Period">
+                                    {{t .LangUse "借款期限"}}<i id="iPeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "借款状态"}}</th>
+                                <th>{{t .LangUse "风控状态"}}</th>
+                                <th class="th_sort" id="Ctime">
+                                    {{t .LangUse "创建时间"}}<i id="iCtime" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="ApplyTime">
+                                    {{t .LangUse "申请时间"}}<i id="iApplyTime" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="CheckTime">
+                                    {{t .LangUse "审批时间"}}<i id="iCheckTime" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="LoanTime">
+                                    {{t .LangUse "放款时间"}}<i id="iLoanTime" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="FinishTime">
+                                    {{t .LangUse "结清时间"}}<i id="iFinishTime" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "测试客户"}}</th>
+                                <th>{{t .LangUse "订单类型"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.Id}}</td>
+                              {{if $.hasRoll}}
+                                <td>{{.PreOrder}}</td>
+                              {{end}}
+                                <td><a href="/customer/detail?id={{.UserAccountId}}" target="_blank">
+                                        {{if eq "" .Realname}} - {{else}}{{.Realname}}{{end}}
+                                    </a>
+                                </td>
+                                <td>{{.Amount}}</td>
+                                <td>{{.Loan}}</td>
+                                <td>{{.Period}}</td>
+                                <td>{{getLoanStatusDesc $.LangUse .CheckStatus}}</td>
+                                <td>{{riskCtlStatusDisplay $.LangUse .RiskCtlStatus}}</td>
+                                <td>{{.Ctime | mDateMHS}}</td>
+                                <td>{{.ApplyTime | mDateMHS}}</td>
+                                <td>{{.CheckTime | mDateMHS}}</td>
+                                <td>{{.LoanTime | mDateMHS}}</td>
+                                <td>{{.FinishTime | mDateMHS}}</td>
+                                <td>
+                                {{if gt .RandomMark 0}}
+                                    <span class="label bg-red">YES</span>
+                                {{else}}
+                                    <span class="label bg-blue">NO</span>
+                                {{end}}
+                                </td>
+                                <td>
+                                    {{if eq 0 .IsTemporary}}<span class="label label-primary">{{t $.LangUse "普通订单"}}</span>{{end}}
+                                    {{if eq 1 .IsTemporary}}<span class="label bg-teal">{{t $.LangUse "临时订单"}}</span>{{end}}
+                                    {{if eq 1 .OrderRandomMark}}<span class="label bg-fuchsia">{{t $.LangUse "1级"}}</span>{{end}}
+                                    {{if eq 2 .OrderRandomMark}}<span class="label bg-fuchsia">{{t $.LangUse "2级"}}</span>{{end}}
+                                    {{if eq 0 .IsReloan}}<span class="label label-warning">{{t $.LangUse "首贷"}}</span>{{end}}
+                                    {{if eq 1 .IsReloan}}<span class="label label-success">{{t $.LangUse "复贷"}}</span>{{end}}
+                                    {{if gt .PreOrder 0}}<span class="label bg-purple">{{t $.LangUse "展单"}}</span>{{end}}
+                                    {{if gt .IsOverdue 0}}<span class="label bg-red">{{t $.LangUse "历史逾期"}}</span>{{end}}
+                                    {{if gt .IsDeadDebt 0}}<span class="label bg-red">{{t $.LangUse "坏账"}}</span>{{end}}
+
+                                </td>
+                                <td>
+                                    <a href="/order/backend/business_history?order_id={{.Id}}">{{t $.LangUse "业务流水"}}</a>
+                                    |
+                                    <a href="/riskctl/follow?id={{.Id}}" target="_blank">{{t $.LangUse "设备信息"}}</a>
+    {{if $.IsSuperAdmin}}
+    | <a href="/manage/order/change?order_id={{.Id}}">{{t $.LangUse "修改订单"}}</a>
+    {{end}}
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+{{.statusSelectMultiBox | str2html}}
+{{.orderTypeMultiBox | str2html}}

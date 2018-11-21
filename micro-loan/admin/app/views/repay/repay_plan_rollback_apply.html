@@ -1,0 +1,60 @@
+<div class="form-group" id="form_group">
+    <div class="modal-header createPayMethodFormTitle">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="updateModalLabel">{{t $.LangUse "还款计划回退"}}</h4>
+    </div>
+
+
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>{{t .LangUse "借款订单"}}ID:</label>
+                <input type="text" class="form-control" disabled value="{{.OrderId}}">
+            </div>
+
+            <div class="form-group">
+                <label>{{t .LangUse "实际入账金额"}}</label>
+                <input type="text" class="form-control" disabled value="{{.AmountPayedTotal}}">
+            </div>
+
+            <div class="form-group">
+                <label>{{t .LangUse "待回退金额"}}</label>
+                <input type="text" class="form-control" disabled value="{{.AmountPayedTotal}}">
+            </div>
+            <input type="hidden" class="form-control" name="order_id" id="order_id" value="{{.OrderId}}">
+            <input type="hidden" class="form-control" name="roll_back_total" id="roll_back_total"value="{{.AmountPayedTotal}}">
+        </div>
+
+        <div class="modal-footer">
+            <input type="button" class="btn btn-success" id="submitButton" value="{{t .LangUse "提交"}}" ></input>
+        </div>
+    </form>
+</div>
+
+<script>
+$('#submitButton').on("click", function() {
+    console.log("click");
+    var orderId = $("#order_id").val()
+    var rTotal = $("#roll_back_total").val()
+    $.ajax('/repay/backend/repay_plan/rollback/do', {
+        type: 'POST',
+        data: {'order_id': orderId, 'roll_back_total': rTotal},
+        dataType: 'json',
+        success: function(result) {
+            console.log("success");
+            console.log(result)
+            if (result == 1) {
+                alert("修改失败")
+            } else {
+                console.log("success");
+                $('#updateModal').modal('hide');
+                $('#form_group').hide();
+                location.reload();
+            }
+        },
+        error: function() {
+            error(output, 'Error communicating with remote server.');
+        }
+    });
+});
+</script>

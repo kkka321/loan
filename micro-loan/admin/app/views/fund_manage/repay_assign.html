@@ -1,0 +1,135 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "还款配置"}}
+        </h1>
+    </section>
+
+    <input type="hidden" id="loan_repay_type" value="2" />
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">{{t .LangUse "还款渠道"}}</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+
+                        <table class="table table-bordered table-condensed table-hover">
+                            <div class="form-group">
+                                <select multiple="" class="form-control" id="taskList" style="height: 500px;">
+                                {{range $k, $v := .FundCodeNameMap}}
+                                    <option value="{{$k}}">{{$v}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">{{t .LangUse "已分配银行"}}</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+
+                        <table class="table table-bordered table-condensed table-hover">
+                            <div class="form-group">
+                                <select multiple="multiple" class="form-control" id="assignedOperationList" style="height: 500px;">
+                            </select>
+                            </div>
+                        </table>
+                        <button class="btn btn-danger pull-right btn-xs"  id="revokeOperation" >{{t .LangUse "移除"}} >></button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">{{t .LangUse "可分配银行"}}</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+
+                        <table class="table table-bordered table-condensed table-hover">
+                            <div class="form-group">
+                                <select multiple="multiple" class="form-control" id="unassignedOperationList" style="height: 500px;">
+                            </select>
+                            </div>
+                        </table>
+                        <button class="btn btn-primary btn-xs"  id="addOperation"><< {{t .LangUse "新增"}}</button>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">{{t .LangUse "未分配银行"}}</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+
+                        <table class="table table-bordered table-condensed table-hover" >
+                            <div class="form-group">
+                                <select multiple="multiple" class="form-control" id="allUnassignedOperationList" style="height: 500px;" disabled>
+                            </select>
+                            </div>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.row -->
+        <!-- <div class="box box-solid">
+            <div class="box-body clearfix">
+                <button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#myModal" data-remote="">
+                    Create
+                </button>
+            </div>
+        </div> -->
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Create User</h4>
+                    </div>
+                    <div class="modal-body">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Tag</h4>
+                    </div>
+                    <div class="modal-body" id="resultMessage">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- /.row -->
+    </section>
+</div>

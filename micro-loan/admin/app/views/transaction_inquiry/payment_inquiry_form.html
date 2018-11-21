@@ -1,0 +1,73 @@
+<div class="content-wrapper">
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "订单状态查询"}}</h3>
+                    </div>
+
+                    <div class="with-border">
+                        <h2 class="box-title text-red ">{{t .LangUse "补单一定要慎重，仔细核查用户数据后，再进行补单"}}</h2>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+
+                    {{if gt .order.Id 0}}
+                        <section class="content">
+                            <div class="row">
+                                <!-- left column -->
+                                <div class="box-body">
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <th>{{t .LangUse "UserAccountId"}}</th>
+                                            <td>{{.order.UserAccountId}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{t .LangUse "OrderId"}}</th>
+                                            <td>{{.order.Id}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{t .LangUse "UserEAccountNumber"}}</th>
+                                            <td>{{.eAccount.EAccountNumber}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>{{t .LangUse "Status"}}</th>
+                                            <td>{{getLoanStatusDesc $.LangUse .order.CheckStatus}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>{{t .LangUse "补单金额"}}</th>
+                                            <td>{{.amount}}</td>
+                                        </tr>
+                                    </table>
+                                    <div class="box-body" id="payment_callback_div">
+                                        <input type="button" id="payment_callback" value="补单" />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    {{else}}
+                        <form role="form" method="get" action="/transaction_inquiry/payment_inquiry_form">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="order_id">{{t .LangUse "order_id"}}</label>
+                                    <input name="order_id" type="text" class="form-control" id="order_id" required placeholder="{{t .LangUse "order_id"}}">
+
+                                    <label for="amount">{{t .LangUse "补单金额"}}</label>
+                                    <input name="amount" type="text" class="form-control" id="amount" required placeholder="{{t .LangUse "amount"}}">
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}{{if .IsEdit}}{{t .LangUse "修改"}}{{end}}</button>
+                            </div>
+                        </form>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,52 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "分配历史"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tr>
+                  <th class="th_sort" id="Id">{{t .LangUse "Id"}}<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th>{{t .LangUse "分机号码"}}</th>
+                  <th>{{t .LangUse "分配人员"}}</th>
+                  <th>{{t .LangUse "分配时间"}}</th>
+                  <th>{{t .LangUse "取消分配时间"}}</th>
+                </tr>
+                <!-- {{range .List}}-->
+                <tr>
+                   <!-- <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>-->
+                   <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>
+                    <td>{{.Id}}</td>
+                    <td>{{.ExtNumber}}</td>
+                    <td>{{.NickName}}</td>
+                    <td>{{.AssignTime | mDateMHS}}</td>
+                    <td>{{.UnAssignTime | mDateMHS}}</td>
+
+                </tr>
+                <!-- {{end}}-->
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

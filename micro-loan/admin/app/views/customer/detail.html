@@ -1,0 +1,42 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "客户详情"}}
+        </h1>
+    </section>
+<section class="content">
+  <div class="box box-default color-palette-box">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom" id="cid_box" cid="{{.Id}}">
+                <ul class="nav nav-tabs" id="tabs">
+                    <li id="tab1"><a data-toggle="tab" href="#tab-base-info" data-type="base-info">{{t .LangUse "身份信息"}}</a></li>
+                    <li id="tab2"><a data-toggle="tab" href="#tab-other-info" data-type="other-info">{{t .LangUse "其他信息"}}</a></li>
+                    <!-- li id="tab3"><a data-toggle="tab" href="#tab-big-data-info" data-type="big-data-info">{{t .LangUse "大数据信息"}}</a></li -->
+                    <li id="tab4"><a data-toggle="tab" href="#tab-communication-record" data-type="communication-record">{{t .LangUse "沟通记录"}}</a></li>
+                    <li id="tab5"><a data-toggle="tab" href="#tab-loan-history" data-type="loan-history">{{t .LangUse "借款历史"}}</a></li>
+                    <li id="tab6"><a data-toggle="tab" href="#tab-check-duplicate" data-type="check-duplicate">{{t .LangUse "查重"}}</a></li>
+                    <li class="pull-right">
+                        <a href="/customer/risk_report?cid={{.Id}}" class="text-muted" target="_blank"><i class="fa fa-gear">{{t .LangUse "上报风险"}}</i></a>
+                    </li>
+                    <li class="pull-right">
+                        <a href="/customer/pic_show?cid={{.Id}}" class="text-muted" target="_blank"><i class="fa fa-gear">{{t .LangUse "图片历史"}}</i></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="content tab-pane" id="tab-base-info"></div>
+                    <div class="content tab-pane" id="tab-other-info"></div>
+                    <div class="content tab-pane" id="tab-big-data-info"></div>
+                    <div class="content tab-pane" id="tab-communication-record"></div>
+                    <div class="content tab-pane" id="tab-loan-history"></div>
+                    <div class="content tab-pane" id="tab-check-duplicate"></div>
+                </div>
+                <!-- /.tab-content -->
+            </div>
+            <!-- nav-tabs-custom -->
+        </div>
+    </div>
+  </div>
+</section>
+</div>

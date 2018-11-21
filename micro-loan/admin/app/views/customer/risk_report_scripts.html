@@ -1,0 +1,156 @@
+<script>
+$(function () {
+  cid = $("#cid").val()
+  var riskContainer = new Object()
+
+  if(cid != "0" && cid != "")  {
+    $("#riskItem").on("change", function(){
+      riskValE = $("#riskValue")
+      riskItem = parseInt($(this).val())
+      if(riskItem>0 ){
+        if( !riskContainer.hasOwnProperty(riskItem)) {
+          //console.log(1111)
+          originalPL = riskValE.attr("placeholder")
+          riskValE.attr("placeholder", "Query Risk Value.....")
+          // 查询为同步 ajax 查询
+          riskVal = queryRiskVal(cid,riskItem)
+          riskValE.attr("placeholder", originalPL)
+          if( riskContainer.hasOwnProperty(riskItem)) {
+            riskValE.val(riskContainer[riskItem])
+            $("#addForm").data("bootstrapValidator").revalidateField('risk_value')
+            //bootstrapValidator('revalidateField', field);
+          }else{
+            riskValE.val("");
+            $("#addForm").data("bootstrapValidator").revalidateField('risk_value')
+          }
+        } else {
+          //console.log(2222)
+          riskValE.val(riskContainer[riskItem])
+          $("#addForm").data("bootstrapValidator").revalidateField('risk_value')
+        }
+
+      } else {
+        return false
+      }
+    })
+  }
+
+  function queryRiskVal(cid, riskItem){
+
+    $.ajax({
+        url:'/customer/risk_query_val',
+        data:{cid: cid, risk_item: riskItem},
+        dataType:'json',
+        cache:false,
+        type:'GET',
+        async: false,
+        error: function () {
+        },
+        success:function(result) {
+            if (result.hasOwnProperty("error")) {
+            } else {
+              riskVal = ""
+              if (result.hasOwnProperty("data")) {
+                for(var k in result.data){//遍历json对象的每个key/value对,p为key
+                  riskContainer[k] = result.data[k]
+                }
+              }
+
+            }
+        },
+        complete:function() {
+          //$("#riskValue")..attr("placeholder", "Query Risk Value.....")
+        },
+        beforeSend:function() {
+          //$("#riskValue")..attr("placeholder", "Query Risk Value.....")
+        }
+    });
+  }
+
+
+    $('#addForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            risk_item: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  	"greaterThan": {
+                        value:1,
+                        message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    },
+                }
+            },
+            risk_type: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  	"greaterThan": {
+                        value:1,
+                        message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    },
+                }
+            },
+            risk_value: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  	"stringLength": {
+                        min:1,
+                        //message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    },
+                }
+            },
+            reason: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  	"greaterThan": {
+                        value:1,
+                        message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    },
+                }
+            },
+            remark: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  "stringLength": {
+                      min:1,
+                      //message: '{{t $.LangUse "此栏目为必填项"}}.',
+                  },
+                }
+            },
+        }
+    })
+    .on('success.form.bv', function (e) {
+
+    });
+
+    $("#resetForm").on("click", function(){
+      $("#addForm").data("bootstrapValidator").resetForm()
+    })
+
+
+    $("#order_ids").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9,]+','')
+    });
+
+    $("#user_account_ids").keyup(function(){
+      // console.log($("#user_account_ids").val())
+      this.value = this.value.match('^[0-9,]+','')
+    });
+
+    $("#refund_amount").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#fee").keyup(function(){
+      // console.log($("#user_account_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+});
+
+</script>

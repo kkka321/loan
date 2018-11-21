@@ -1,0 +1,107 @@
+<script>
+$(document).ready(function () {
+    $('#show_create_form').click(function () {
+        $('#create_form').removeClass('hide');
+        $('#p_item_name').focus();
+    });
+    $('#hide_create_form').click(function () {
+        $('#create_form').addClass('hide');
+    });
+
+    $('#create_config').click(function () {
+        var item_name = $('#p_item_name').val();
+        var item_type = $('#p_item_type').val();
+        var item_value= $('#p_item_value').val();
+        var weight    = $('#p_weight').val();
+        var description=$('#p_description').val();
+
+        if (item_name.length <= 0 || item_value.length <= 0 || weight.length <= 0 || description.length <= 0) {
+            alert('请认真填写,否则将会一直弹弹弹.');
+            return false
+        }
+
+        var data = {
+            item_name: item_name,
+            description: description,
+            item_type: item_type,
+            item_value:item_value,
+            weight: weight
+        };
+        var api = '/sysconfig/system_config/save';
+        $.ajax({
+            url: api,
+            data: data,
+            dataType:'json',
+            cache:false,
+            type: 'POST',
+            beforeSend:function() {
+                $('#create_config').attr('disabled', 'disabled').html('请求处理...');
+            },
+            complete:function() {
+                $('#create_config').removeAttr('disabled').html('再次提交');
+            },
+            error: function () {
+                alert('服务不可用,请稍后重试');
+                $('#create_config').removeAttr('disabled').html('尝试提交');
+            },
+            success:function(response) {
+                if (response.code != 0) {
+                    alert('操作失败,请重试: ' + response.message);
+                    return false;
+                } else {
+                    location.reload();
+                }
+            }
+        });
+    });
+
+    $('.switch-config').click(function () {
+        var obj = $(this);
+        var data = {
+            item_name: obj.attr('item-name'),
+            item_type: obj.attr('item-type'),
+            item_value:obj.attr('item-value'),
+            weight:    obj.attr('weight'),
+            description: obj.attr('description')
+        };
+        var api = '/sysconfig/system_config/save';
+        $.ajax({
+            url: api,
+            data: data,
+            dataType:'json',
+            cache:false,
+            type: 'POST',
+            beforeSend:function() {
+                obj.html('请求处理...');
+            },
+            complete:function() {
+                obj.html('再次提交');
+            },
+            error: function () {
+                alert('服务不可用,请稍后重试');
+                obj.html('尝试提交');
+            },
+            success:function(response) {
+                if (response.code != 0) {
+                    alert('操作失败,请重试: ' + response.message);
+                    return false;
+                } else {
+                    location.reload();
+                }
+            }
+        });
+    });
+
+    $('.modify-config').click(function () {
+        $('#create_form').removeClass('hide');
+
+        var obj = $(this);
+
+        $('#p_item_name').prop("value", obj.attr('item-name')).focus();
+        $('#p_item_type').val(obj.attr('item-type')).change();
+        $('#p_item_value').prop("value", obj.attr('item-value'));
+        $('#p_weight').prop('value', obj.attr('weight'));
+        $('#p_description').prop('value', obj.attr('description'));
+    });
+});
+</script>

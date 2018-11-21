@@ -1,0 +1,82 @@
+<div class="content-wrapper">
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "生成补单数据--doku"}}</h3>
+                    </div>
+
+                    <div class="with-border">
+                        <h2 class="box-title text-red ">{{t .LangUse "补单一定要慎重，仔细核查用户数据后，再进行补单"}}</h2>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+
+                    <form role="form" method="get" action="/transaction_inquiry/generate_fix_doku">
+                            <div class="box-body">
+                                <div class="col-md-3">
+                                    <label for="order_id">{{t .LangUse "订单"}}Id</label>
+                                    <input name="order_id" type="text" class="form-control" id="order_id" required placeholder="{{t .LangUse "order_id"}}" value="{{if gt .OrderId 0}}{{.OrderId}}{{end}}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="inquiry_id">{{t .LangUse "inquiry_id"}}</label>
+                                    <input name="inquiry_id" type="text" class="form-control" id="inquiry_id" required placeholder="{{t .LangUse "inquiry_id"}}" value="{{.InquiryId}}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="transaction_id">{{t .LangUse "transaction_id"}}</label>
+                                    <input name="transaction_id" type="text" class="form-control" id="inquiry_id" required placeholder="{{t .LangUse "transaction_id"}}" value="{{.TransactionId}}">
+                                </div>
+                                <div class="row"></div>
+                                <div class="row"></div>
+
+                                <div class="col-md-3">
+                                    {{/*<label for="thirdparty_table_name">{{t .LangUse "thirdparty_table_name"}}</label>*/}}
+                                    {{/*<input name="thirdparty_table_name" type="text" class="form-control" id="thirdparty_table_name" required placeholder="{{t .LangUse "thirdparty_table_name"}}" value="{{.ThirdpartyTableName}}">*/}}
+
+                                    {{t .LangUse "thirdparty_table_name"}}:
+                                    <select name="table_name"  id = "table_name" class="form-control" >
+                                        <option value="0">{{t .LangUse "请选择"}}</option>
+                                        {{range $value, $show := .TableNameMap}}
+                                            <option value="{{$value}}" {{if eq $.TableName $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="thirdparty_record_id">{{t .LangUse "thirdparty_record_id"}}</label>
+                                    <input name="thirdparty_record_id" type="text" class="form-control" id="thirdparty_record_id" required placeholder="{{t .LangUse "thirdparty_record_id"}}" value="{{if gt .ThirdpartyRecordId 0}}{{.ThirdpartyRecordId}}{{end}}">
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+
+                                <div class="col-xs-1">
+                                    <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <a href="/transaction_inquiry/generate_fix_doku" class=" form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+
+                            </div>
+
+                    </form>
+
+                    <div class="row"></div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{{t .LangUse "结果"}}</h3>
+                        </div>
+
+                        <textarea spellcheck="false" id="txtSourceLen" class="form-control " rows="18" >{{.Resp}}</textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>

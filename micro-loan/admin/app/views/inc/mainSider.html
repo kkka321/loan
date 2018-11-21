@@ -1,0 +1,142 @@
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+    {{if .IsLogin}}
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="{{if eq .Controller "index"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "index"}} class="active"{{end}}><a href="/index"><i class="fa fa-circle-o"></i>首页</a></li>
+                </ul>
+            </li>
+
+        {{if .IsSuperAdmin}}
+            <li class="{{if eq .Controller "manage"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-laptop"></i> <span>{{t .LangUse "系统管理"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "admin/list"}} class="active"{{end}}><a href="/manage/admin/list"><i class="fa fa-circle-o"></i>{{t .LangUse "用户列表"}}</a></li>
+                    <li{{if eq .Action "admin/create"}} class="active"{{end}}><a href="/manage/admin/create"><i class="fa fa-circle-o"></i>添加用户</a></li>
+                    <li{{if eq .Action "role_list"}} class="active"{{end}}><a href="/manage/rbac/role"><i class="fa fa-circle-o"></i>{{t .LangUse "角色管理"}}</a></li>
+                    <li{{if eq .Action "sms_verify_code"}} class="active"{{end}}><a href="/manage/sms_verify_code"><i class="fa fa-circle-o"></i>验证码</a></li>
+                    <li{{if eq .Action "op_log"}} class="active"{{end}}><a href="/admin/op_log"><i class="fa fa-circle-o"></i>操作日志</a></li>
+
+                </ul>
+            </li>
+        {{end}}
+
+            <li class="{{if eq .Controller "product"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-folder"></i> <span>{{t .LangUse "产品管理"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/product/list"><i class="fa fa-circle-o"></i>{{t .LangUse "产品列表"}}</a></li>
+                    <li{{if eq .Action "edit"}} class="active"{{end}}><a href="/product/edit"><i class="fa fa-circle-o"></i>{{t .LangUse "添加产品"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "customer"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-users"></i> <span>{{t .LangUse "客户管理"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/customer/list"><i class="fa fa-circle-o"></i>{{t .LangUse "客户列表"}}</a></li>
+                    <li{{if eq .Action "risk"}} class="active"{{end}}><a href="/customer/risk"><i class="fa fa-circle-o"></i>{{t .LangUse "风险管理"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "riskctl"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-money"></i> <span>{{t .LangUse "RiskCtl Manage"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/riskctl/list"><i class="fa fa-circle-o"></i>{{t .LangUse "Risk List"}}</a></li>
+                </ul>
+            </li>
+
+
+            <li class="{{if eq .Controller "order"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-gg-circle"></i> <span>{{t .LangUse "借款"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/order/list"><i class="fa fa-circle-o"></i>{{t .LangUse "借款管理"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "loan"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-rocket"></i> <span>{{t .LangUse "放款"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/loan/list"><i class="fa fa-circle-o"></i>{{t .LangUse "放款管理"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "repay"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-check-square-o"></i> <span>{{t .LangUse "还款"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/repay/list"><i class="fa fa-circle-o"></i>{{t .LangUse "还款管理"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "overdue"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-warning"></i> <span>{{t .LangUse "逾期"}}</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li{{if eq .Action "list"}} class="active"{{end}}><a href="/overdue/list"><i class="fa fa-circle-o"></i>{{t .LangUse "逾期管理"}}</a></li>
+                </ul>
+            </li>
+
+            <li class="{{if eq .Controller "sms"}}active {{end}}treeview">
+                <a href="#">
+                    <i class="fa fa-edit"></i> <span>短信</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="active"><a href="/sms"><i class="fa fa-circle-o"></i>发送短信</a></li>
+                </ul>
+            </li>
+        </ul>
+    {{end}}
+    </section>
+    <!-- /.sidebar -->
+</aside>

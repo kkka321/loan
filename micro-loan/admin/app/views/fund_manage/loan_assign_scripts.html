@@ -1,0 +1,196 @@
+<script>
+$(document).ready(function(){
+    function showWaring(msg) {
+        $(".alert").remove();
+        var msgBox = "<div class='alert alert-danger alert-dismissible' role='alert'>" +
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+            "<span aria-hidden='true'>&times;</span>" +
+            "</button>" +
+            "<strong>Warning!</strong> " +
+            msg +
+            "</div>";
+        $(".content-header").after(msgBox);
+        $('.alert').show();
+    }
+
+
+    $("#taskList").on('change', function(){
+        console.log($(this).val());
+        var fundId= $(this).val();
+        var type = $("#loan_repay_type").val();
+
+        console.log(type)
+        console.log("type:"+type)
+        $.ajax({
+            url:'/fund/manage/bank/query',
+            data:{fund_id: fundId[0], loan_repay_type: type},
+            dataType:'json',
+            cache:false,
+            type:'GET',
+            error: function () {
+                $("#submitButton").html("Submit");
+                $("#submitButton").removeAttr("disabled");
+                showWaring('Request Failed');
+                //bv.resetForm();
+            },
+            success:function(result) {
+                console.log(result);
+                if (result.errorCode > 0) {
+                    showWaring(result.errorMessage);
+                } else {
+                    var assignMap = result.AssignList;
+                    var unAssignMap = result.UnAssignList;
+                    var allUnAssignMap = result.AllUnAssignList;
+
+                    var assignedOperations = '';
+                    var unAssignedOperations = '';
+                    var allUnAssignedOperations = '';
+
+                    for( var key in assignMap){
+                        assignedOperations += "<option value='" +assignMap[key].Id +"'>" + assignMap[key].FullName +"</option>";
+                    }
+                    for( var key in unAssignMap){
+                        unAssignedOperations += "<option value='" +unAssignMap[key].Id +"'>" + unAssignMap[key].FullName +"</option>";
+                    }
+                    for( var key in allUnAssignMap){
+                        allUnAssignedOperations += "<option value='" +allUnAssignMap[key].Id +"'>" + allUnAssignMap[key].FullName +"</option>";
+                    }
+                    $("#assignedOperationList").html(assignedOperations);
+                    $("#unassignedOperationList").html(unAssignedOperations);
+                    $("#allUnassignedOperationList").html(allUnAssignedOperations);
+                }
+            },
+            complete:function() {
+
+            },
+            beforeSend:function() {
+
+            }
+        });
+    });
+
+    $("#addOperation").on('click', function(){
+        var assignOperations = $("#unassignedOperationList").val();
+        var activeRoleList = $("#taskList").val();
+        var type = $("#loan_repay_type").val();
+
+        console.log(assignOperations);
+        console.log(activeRoleList);
+        console.log(activeRoleList.length);
+
+        if( activeRoleList.length > 1 ){
+            showWaring("Please don't choose multiple task.")
+        } else if( assignOperations.length <  1){
+            showWaring("Please choose at least 1 privilege.")
+        } else {
+            var fundId = activeRoleList[0];
+            $.ajax({
+              url:'/fund/manage/bank/assign',
+              data:{fund_id: fundId, loan_repay_type: type, assign_operations: assignOperations},
+              dataType:'json',
+              cache:false,
+              type:'POST',
+              error: function () {
+                  $("#submitButton").html("Submit");
+                  $("#submitButton").removeAttr("disabled");
+                  showWaring('Request Failed');
+                  //bv.resetForm();
+              },
+              success:function(result) {
+                  console.log(result);
+                  if (result.hasOwnProperty('error')) {
+                      showWaring(result.error);
+                  } else {
+                      var assignMap = result.AssignList;
+                      var unAssignMap = result.UnAssignList;
+                      var allUnAssignMap = result.AllUnAssignList;
+
+                      var assignedOperations = '';
+                      var unAssignedOperations = '';
+                      var allUnAssignedOperations = '';
+
+                      for( var key in assignMap){
+                          assignedOperations += "<option value='" +assignMap[key].Id +"'>" + assignMap[key].FullName +"</option>";
+                      }
+                      for( var key in unAssignMap){
+                          unAssignedOperations += "<option value='" +unAssignMap[key].Id +"'>" + unAssignMap[key].FullName +"</option>";
+                      }
+                      for( var key in allUnAssignMap){
+                          allUnAssignedOperations += "<option value='" +allUnAssignMap[key].Id +"'>" + allUnAssignMap[key].FullName +"</option>";
+                      }
+                      $("#assignedOperationList").html(assignedOperations);
+                      $("#unassignedOperationList").html(unAssignedOperations);
+                      $("#allUnassignedOperationList").html(allUnAssignedOperations);
+                  }
+              },
+              complete:function() {
+
+              },
+              beforeSend:function() {
+
+              }
+            });
+        }
+    });
+
+  $("#revokeOperation").on('click', function(){
+    var assignOperations = $("#assignedOperationList").val();
+    var activeTaskList = $("#taskList").val();
+    var type = $("#loan_repay_type").val();
+
+    if( activeTaskList.length > 1 ){
+        showWaring("请不要选择多个权限.")
+    } else if( activeTaskList.length <  1){
+        showWaring("请选择一个权限.")
+    } else {
+        var fundId = activeTaskList[0];
+        $.ajax({
+          url:'/fund/manage/bank/un_assign',
+          data:{fund_id: fundId, loan_repay_type: type, assign_operations: assignOperations},
+          dataType:'json',
+          cache:false,
+          type:'POST',
+          error: function () {
+              showWaring('Request Failed');
+          },
+          success:function(result) {
+            console.log(result);
+            if (result.hasOwnProperty('error')) {
+                showWaring(result.error);
+            } else {
+                var assignMap = result.AssignList;
+                var unAssignMap = result.UnAssignList;
+                var allUnAssignMap = result.AllUnAssignList;
+
+                var assignedOperations = '';
+                var unAssignedOperations = '';
+                var allUnAssignedOperations = '';
+                for( var key in assignMap){
+                    assignedOperations += "<option value='" +assignMap[key].Id +"'>" + assignMap[key].FullName +"</option>";
+                }
+                for( var key in unAssignMap){
+                    unAssignedOperations += "<option value='" +unAssignMap[key].Id +"'>" + unAssignMap[key].FullName +"</option>";
+                }
+                for( var key in allUnAssignMap){
+                    allUnAssignedOperations += "<option value='" +allUnAssignMap[key].Id +"'>" + allUnAssignMap[key].FullName +"</option>";
+                }
+                $("#assignedOperationList").html(assignedOperations);
+                $("#unassignedOperationList").html(unAssignedOperations);
+                $("#allUnassignedOperationList").html(allUnAssignedOperations);
+            }
+
+          },
+          complete:function() {
+
+          },
+          beforeSend:function() {
+
+          }
+        });
+    }
+});
+
+
+
+});
+</script>

@@ -1,0 +1,40 @@
+<div class="modal-header createPayMethodFormTitle">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="updateModalLabel">更新菜单</h4>
+</div>
+<form role="form" id="updateForm" method="post" action="/menu/update">
+    <div class="modal-body">
+        <!-- text input -->
+        <div class="form-group">
+            <label>名称</label>
+            <input type="text" class="form-control" placeholder="输入名称" name="name" value="{{$.data.Name}}">
+        </div>
+        <div class="form-group">
+            <label>路径</label>
+            <input type="text" class="form-control" placeholder="输入访问路径,包括/" name="path" value="{{$.data.Path}}">
+        </div>
+        <div class="form-group">
+            <label>菜单图标类名</label>
+            <input type="text" class="form-control" placeholder="输入菜单图标类明" name="class" value="{{$.data.Class}}">
+        </div>
+
+        <div class="form-group">
+            <label>操作/与RBAC中的操作关联</label>
+            <input type="text" class="form-control" disabled placeholder="自动获取..." name="privilege_name" value="">
+            <input type="hidden" class="form-control" data-relatedpath="{{$.data.Path}}"  name="privilege_id" value="{{$.data.PrivilegeId}}">
+        </div>
+        <div class="form-group">
+            <label>{{t .LangUse "状态"}}</label>
+            <select class="form-control input-sm" name="status" id="">
+              <option value="1" {{if eq $.data.Status  1}} selected{{end}}>正常</option>
+
+              <option value="0" {{if eq $.data.Status  0}} selected{{end}}>{{t .LangUse "无效"}}</option>
+            </select>
+        </div>
+        <input type="hidden" class="form-control" name="id" value="{{$.data.Id}}">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{t .LangUse "取消"}}</button>
+        <button type="submit" class="btn btn-success" id="submitButton" >{{t .LangUse "提交"}}</button>
+    </div>
+</form>

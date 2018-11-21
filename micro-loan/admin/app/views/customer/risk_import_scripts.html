@@ -1,0 +1,51 @@
+<script>
+    $(function () {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            excluded : [':disabled'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                risk_data: {
+                    message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    validators: {
+                        "notEmpty": {
+                            message: '{{t $.LangUse "此栏目为必填项"}}.',
+                        },
+                    }
+                },
+
+                tmprisktype: {
+                    message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    validators: {
+                        "notEmpty": {
+                            message: '{{t $.LangUse "此栏目为必填项"}}.',
+                        },
+                    }
+                },
+            }
+        })
+                .on('success.form.bv', function (e) {
+
+                });
+
+        $("#resetForm").on("click", function(){
+            $("#addForm").data("bootstrapValidator").resetForm()
+        });
+
+        $('#riskTypeSelecter').on('change', function () {
+            var tmpSelected = $('#riskTypeSelecter').val();
+            if (tmpSelected != null) {
+                $('#tmprisktype').val(tmpSelected);
+            } else {
+                $('#tmprisktype').val("");
+            }
+            $('#addForm').data('bootstrapValidator').updateStatus('tmprisktype', 'NOT_VALIDATED').validateField('tmprisktype');
+        });
+
+    });
+
+</script>

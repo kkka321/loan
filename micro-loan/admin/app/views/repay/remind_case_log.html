@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "提醒记录"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "提醒人"}}</th>
+                                <th>{{t .LangUse "拨打对象"}}</th>
+                                <th>{{t .LangUse "联系方式"}}</th>
+                                <th>{{t .LangUse "电话拨打时间"}}</th>
+
+                                <th>{{t .LangUse "应答时间"}}</th>
+                                <th>{{t .LangUse "结束时间"}}</th>
+                                <th>{{t .LangUse "挂机方向"}}</th>
+                                <th>{{t .LangUse "挂机原因"}}</th>
+
+                                <th>{{t .LangUse "是否拨通"}}</th>
+                                <th>{{t .LangUse "承诺还款时间"}}</th>
+                                <th>{{t .LangUse "未还原因"}}</th>
+                                <th>{{t .LangUse "偿还意愿"}}</th>
+                                <th>{{t .LangUse "未接通原因"}}</th>
+                                <th>{{t .LangUse "结果"}}</th>
+                                <th>{{t .LangUse "记录"}}</th>
+                            </tr>
+                            {{range .list}}
+                                <tr>
+                                    <td>{{.OpUid | operatorName}}</td>
+                                    <td>{{phoneObjectDisplay $.LangUse .PhoneObject}}</td>
+                                    <td>{{.PhoneObjectMobile}}</td>
+                                    <td>{{mDateMHS .PhoneTime}}</td>
+
+                                    <td>{{mDateMHS .AnswerTimestamp}}</td>
+                                    <td>{{mDateMHS .EndTimestamp}}</td>
+                                    <td>{{voipHangupDisplay $.LangUse .HangupDirection}}</td>
+                                    <td>{{voipHangupDisplay $.LangUse .HangupCause}}</td>
+
+                                    <td>{{phoneConnectDisplay $.LangUse .PhoneConnect}}</td>
+                                    <td>{{mDateMHS .PromiseRepayTime}}</td>
+                                    <td>{{.UnrepayReason}}</td>
+                                    <td>{{repayInclinationDisplay $.LangUse .IsWillRepay}}</td>
+                                    <td>{{unconnectReasonDisplay $.LangUse .UnconnectReason}}</td>
+                                    <td>{{.Result}}</td>
+                                    <td>{{voipCallMothodDisplay $.LangUse .CallMethod}}</td>
+                                </tr>
+                            {{end}}
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

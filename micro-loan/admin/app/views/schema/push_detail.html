@@ -1,0 +1,48 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "消息详情"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                            <tr>
+                                <th>{{t .LangUse "推送日期"}}</th>
+                                <th>{{t .LangUse "推送数量"}}</th>
+                                <th>{{t .LangUse "成功数量"}}</th>
+                                <th>{{t .LangUse "当日已读量"}}</th>
+                                <th>{{t .LangUse "当日已读比例"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{mDateMHSDate .PushDate}}</td>
+                                <td>{{.TotalNum}}</td>
+                                <td>{{.SuccNum}}</td>
+                                <td>{{.ReadNum}}</td>
+                                <td>{{.ReadRate}}%</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

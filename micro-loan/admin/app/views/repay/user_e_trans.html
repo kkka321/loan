@@ -1,0 +1,54 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "资金流水"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "业务流水"}}</th>
+                                <th>{{t .LangUse "还款来源"}}</th>
+                                <th>{{t .LangUse "类型"}}</th>
+                                <th>{{t .LangUse "时间"}}</th>
+                                <th>{{t .LangUse "金额"}}</th>
+                                <th>{{t .LangUse "本金"}}</th>
+                                <th>{{t .LangUse "砍头息"}}</th>
+                                <th>{{t .LangUse "宽限期利息"}}</th>
+                                <th>{{t .LangUse "利息"}}</th>
+                                <th>{{t .LangUse "服务费"}}</th>
+                                <th>{{t .LangUse "罚息"}}</th>
+                            </tr>
+                        {{range .userTrans}}
+                            <tr>
+                                <td>{{.Id}}</td>
+                                <td>{{repaymentSource $.LangUse .PaymentId .PayType .VaCompanyCode}}</td>
+                                <td>{{if eq .VaCompanyCode 1002}} ({{t $.LangUse "摩比神奇"}}) {{end}} {{if eq .VaCompanyCode 1001}} ({{t $.LangUse "摩比神奇"}}) {{end}} {{getPayTypeDesc $.LangUse .PayType}}</td>
+                                <td>{{.Ctime | mDateMHS}}</td>
+                                <td>{{.Total}}</td>
+                                <td>{{.Amount}}</td>
+                                <td>{{.PreInterest}}</td>
+                                <td>{{.GracePeriodInterest}}</td>
+                                <td>{{.Interest}}</td>
+                                <td>{{.ServiceFee}}</td>
+                                <td>{{.Penalty}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

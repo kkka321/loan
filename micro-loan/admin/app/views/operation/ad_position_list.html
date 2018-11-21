@@ -1,0 +1,142 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "广告位管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+
+                    <form class="form-horizontal" action="/operation/add_ad_position" method="post" enctype="multipart/form-data">
+                        <div class="box-body">
+                            <div class="row"><p></p></div>
+                        </div>
+                        <div class="row box-body">
+                            <div class="col-xs-2">
+                                <button id="show_create_form" type="button" class="btn btn-block btn-warning">{{t .LangUse "新增广告位"}}</button>
+                            </div>
+                        </div>
+
+                        <div class="row hide" id="create_form">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <i class="fa fa-edit"></i>
+                                            <h3 class="box-title">{{t .LangUse "新增广告位"}}</h3>
+                                        </div>
+                                        <div class="box-body pad table-responsive">
+                                            <table class="table table-bordered text-center">
+                                                <tbody><tr>
+                                                    <th>{{t .LangUse "图片添加"}}</th>
+                                                    <th>{{t .LangUse "跳转链接"}}</th>
+                                                    <th>{{t .LangUse "映射公司"}}</th>
+                                                    <th>{{t .LangUse "广告位"}}</th>
+                                                </tr>
+
+                                                <tr class = "group_file" show>
+                                                        <td>
+                                                            <input type="file" name="file0"  id = "file0" value={{t .LangUse "请上传图片"}}/>
+                                                            <img id="image0"/>
+                                                        </td>
+                                                        <td>
+                                                            <input name="link_url" id="link_url" type="text" class="form-control" rows="2"
+                                                                origin="{{$.linkUrl}}" placeholder={{t .LangUse "跳转链接"}}></textarea>
+                                                        </td>
+                                                        <td>
+                                                            <input name="company_id" id="company_id" type="text" class="form-control" rows="2"
+                                                                origin="{{$.companyId}}" placeholder={{t .LangUse "映射公司id"}}></textarea>
+                                                        </td>
+                                                        <td>
+
+                                                            <select name="position" id="position" class="form-control">
+                                                                <option value="-1">{{t .LangUse "请选择"}}</option>
+                                                            {{range $k, $v := .adPositionList}}
+                                                                <option value="{{$k}}"{{if eq $.position $k}}
+                                                                        selected{{end}}>{{t $.LangUse $v}}</option>
+                                                            {{end}}
+                                                            </select>
+                                                       </td>
+
+                                                        <input name="r_id" id="r_id" type="hidden" class="form-control" rows="2"
+                                                            origin="{{$.r_id}}"  placeholder = 0></textarea>
+                                                        <input name="ids" id="ids" type="hidden" class="form-control" rows="2"
+                                                            origin="{{$.ids}}"  placeholder = 0></textarea>
+
+                                                </tr>
+                                                <tr>
+
+                                                    <input type="hidden" value="0" name="file_num" id="file_num" />
+                                                    <td>
+                                                        <button id="submit"  type="submit"  class=" btn-primary">{{t .LangUse "提交"}}</button>
+                                                    </td>
+                                                    <td>
+                                                        <button id="hide_create_form" type="button" class=" btn-primary">{{t .LangUse "收起"}}</button>
+                                                    </td>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.box -->
+                                    </div>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                       <form class="form-horizontal" action="/operation/update_ad_postion" method="get">
+                        <table class="table table-bordered table-striped">
+                                <tbody>
+                            <tr>
+                                <th>{{t .LangUse "图片"}}</th>
+                                <th>{{t .LangUse "跳转链接"}}</th>
+                                <th>{{t .LangUse "映射公司"}}</th>
+                                <th>{{t .LangUse "广告位"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                                <th>{{t .LangUse "创建时间"}}</th>
+                            </tr>
+                        {{range .List}}
+
+                            <tr>
+                                <td><img src={{.PicUrl}} style="height:200px;width=200px;" /></td>
+                                <td>{{.LinkUrl}}</td>
+                                <th>{{.CompanyId}}</th>
+                                <th>{{adPositionDisplay $.LangUse .Position}}</th>
+
+                                <th>
+                                    <button type="button" class="btn bg-orange btn-flat modify-config" id_tmp = "{{.Id}}" r_id="{{.ResourceId}}" link_url="{{.LinkUrl}}" company_id="{{.CompanyId}}" position="{{.Position}}" >{{t $.LangUse "修改"}}</button>|
+                                    <button type="button" class="btn bg-orange btn-flat super_delete_customer" data-id="{{.Id}}" >{{t $.LangUse "删除"}}</button>
+                                    <!-- <label style="cursor:pointer" data-id="{{.Id}}" class="super_delete_customer text-light-blue">{{t $.LangUse "删除"}}</label> -->
+                                </th>
+                                <td>{{.Ctime  | mDateMHS}}</td>
+                            </tr>
+
+                            {{end}}
+
+                            </tbody>
+                        </table>
+                    </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

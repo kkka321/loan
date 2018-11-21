@@ -1,0 +1,697 @@
+
+<div class="row">
+<div class="content-wrapper">
+        <div class="col-md-12">
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom">
+                  <ul class="nav nav-tabs">
+                    <li class="active red">
+                        <a href="#tab_1" class="tab_a" data-toggle="tab" aria-expanded="true">
+                        {{t $.LangUse "催收"}}
+                        </a>
+                    </li>
+                    <li class="yellow"><a href="#tab_2" data-toggle="tab" aria-expanded="false">{{t $.LangUse "催收情况"}}</a></li>
+                    <li class="blue"><a href="#tab_3" data-toggle="tab" aria-expanded="false">{{t $.LangUse "还款计划"}}</a></li>
+                    <li class="glay"><a href="#tab_4" data-toggle="tab" aria-expanded="false">{{t $.LangUse "自动外呼记录"}}</a></li>
+                  </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                            <form action="/overdue/urge/save" method="post">
+
+                                <section class="content">
+                                  <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title text-muted">{{t $.LangUse "工单信息"}}</h3>
+
+                                        {{if eq true .showEntrust}}
+                                            <button id="apply_entrust" type="button" class="btn btn-info btn-xs pull-right" value="{{t $.LangUse "申请委外"}}">{{t $.LangUse "申请委外"}}</button>
+                                        {{else}}
+                                            <button id="apply_entrust_disabled" type="button" class="btn btn-default btn-xs pull-right" disabled value="{{t $.LangUse "申请委外"}}">{{t $.LangUse "申请委外"}}</button>
+                                        {{end}}
+                                    </div>
+                                    <div class="box-body">
+
+                                      <div class="row line-row">
+                                         <div class="col-xs-6 col-md-3 col-lg-3 line-row-son"><span class="text-muted">{{t $.LangUse "上次承诺还款时间"}}:</span></div>
+                                          <!-- <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">{{t $.LangUse "暂未实现"}}</div> -->
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">{{mDateMHS .ticketData.NextHandleTime}}</div>
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son"><span class="text-muted">{{t $.LangUse "案件评级"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">
+                                                <input type="radio" name="case_level" id="optionsRadios2" value="A" {{if eq $.ticketData.CaseLevel "A" }}checked{{end}}>  &nbsp;&nbsp;A
+                                                <input type="radio" name="case_level" id="optionsRadios2" value="B" {{if eq $.ticketData.CaseLevel "B" }}checked{{end}}>  &nbsp;&nbsp;B
+                                                <input type="radio" name="case_level" id="optionsRadios2" value="C" {{if eq $.ticketData.CaseLevel "C" }}checked{{end}}>  &nbsp;&nbsp;C
+                                          </div>
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+
+                                  <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title text-muted">{{t $.LangUse "客户详情"}}</h3>
+                                    </div>
+                                    <div class="box-body">
+
+                                      <div class="row line-row">
+                                          <div class="col-xs-6 col-md-2 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "电话"}}:</span></div>
+                                          <div class="col-xs-6 col-md-2 col-lg-2 line-row-son text-default">
+
+                                                <div id="oneself" class="col-xs-6 col-md-2 col-lg-6">{{$.Customer.Mobile}}</div>
+                                                <div  class="col-xs-6 col-md-10 col-lg-6">
+                                                        <button id="onself-button" type="button" class="btn btn-info btn-xs"
+                                                        v="1" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}">
+                                                        <i class="fa fa-fw fa-phone"></i>
+                                                      </button>
+                                                        <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.Customer.Mobile}}"
+                                                        data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                            <i class="fa fa-fw fa-clipboard"></i>
+                                                        </button>
+                                                </div>
+
+                                          </div>
+
+                                          <div class="col-xs-6 col-md-2 col-lg-1 line-row-son"><span class="text-muted">{{t $.LangUse "客户姓名"}}:</span></div>
+                                          <div class="col-xs-6 col-md-2 col-lg-3 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                              <a href="/customer/detail?id={{$.Customer.Id}}" target="_blank">{{$.Customer.Realname}}</a>
+                                              </div>
+                                            </div>
+
+                                          <div class="col-xs-6 col-md-2 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "自动外呼结果"}}:</span></div>
+                                          <div class="col-xs-6 col-md-2 col-lg-2  line-row-son text-default">
+                                            <div class="col-xs-12 col-md-8 col-lg-8">
+                                            {{if gt $.AutoCallResult.StartTime 0}} {{$.AutoCallResult.StartTime | mDateMHS}}, {{phoneConnectDisplay $.LangUse $.AutoCallResult.IsDial}} {{end}}
+
+                                            </div>
+
+
+                                          </div>
+
+                                      </div>
+                                      <div class="row line-row">
+                                        <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "联系人"}}-1-{{t $.LangUse "电话"}}:</span></div>
+                                        <div class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+
+                                                <div id="contact1" class="col-xs-6 col-md-2 col-lg-6">{{$.AccountProfile.Contact1}}</div>
+                                                <div  class="col-xs-6 col-md-10 col-lg-6">
+                                                        <button id="contact1-button" type="button" class="btn btn-info btn-xs"
+                                                        v="2" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}"><i class="fa fa-fw fa-phone"></i></button>
+                                                        <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.AccountProfile.Contact1}}"
+                                                        data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                            <i class="fa fa-fw fa-clipboard"></i>
+                                                        </button>
+                                                </div>
+
+                                        </div>
+
+
+                                          <div class="col-xs-6 col-md-3 col-lg-1 line-row-son"><span class="text-muted">{{t .LangUse "关系"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                              {{$.AccountProfile.Relationship1 | $.AccountProfile.RelationshipHTML | str2html}}
+                                              </div>
+                                            </div>
+
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "姓名"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                            {{$.AccountProfile.Contact1Name}}
+                                            </div>
+                                        </div>
+
+                                      </div>
+                                      <div class="row line-row">
+                                        <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "联系人"}}-2-{{t $.LangUse "电话"}}:</span></div>
+                                        <div class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+
+                                                <div id="contact2" class="col-xs-6 col-md-2 col-lg-6">{{$.AccountProfile.Contact2}}</div>
+                                                <div  class="col-xs-6 col-md-10 col-lg-6">
+                                                        <button id="contact2-button" type="button" class="btn btn-info btn-xs"
+                                                        v="3" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}"><i class="fa fa-fw fa-phone"></i></button>
+                                                        <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.AccountProfile.Contact2}}"
+                                                        data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                            <i class="fa fa-fw fa-clipboard"></i>
+                                                        </button>
+                                                </div>
+
+                                        </div>
+
+
+                                          <div class="col-xs-6 col-md-3 col-lg-1 line-row-son"><span class="text-muted">{{t .LangUse "关系"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                                {{$.AccountProfile.Relationship2 | $.AccountProfile.RelationshipHTML | str2html}}
+                                                </div>
+                                        </div>
+
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "姓名"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                                {{$.AccountProfile.Contact2Name}}
+                                                </div>
+                                        </div>
+
+                                      </div>
+
+                                      <div class="row line-row">
+                                        <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "公司电话"}}:</span></div>
+                                        <div  class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+                                                <div id="company-phone" class="col-xs-6 col-md-2 col-lg-6">{{$.AccountProfile.CompanyTelephone}}</div>
+                                                <div  class="col-xs-6 col-md-10 col-lg-6">
+                                                        <button id="company-button" type="button" class="btn btn-info btn-xs"
+                                                        v="4" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}"><i class="fa fa-fw fa-phone"></i></button>
+                                                        <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.AccountProfile.CompanyTelephone}}"
+                                                        data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                            <i class="fa fa-fw fa-clipboard"></i>
+                                                        </button>
+                                                </div>
+
+                                        </div>
+
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "发薪日"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2  line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                                {{$.AccountProfile.SalaryDay}}
+                                                </div>
+                                        </div>
+
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son"><span class="text-muted">{{t .LangUse "通讯录"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 line-row-son text-default">
+                                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                              <div class="row">
+                                                    <div class="col-xs-6 col-md-6 col-lg-6">
+                                                            <select id="contact-list" class="form-control input-sm" name="contact-list">
+                                                                    <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                              {{if .HasBigData}}
+
+                                                                {{range  $key, $value := .ContactList}}
+                                                                    {{if eq $value.IsDailLast 0}}
+                                                                      <option style="background-color:salmon" value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                    {{else if eq $value.IsDailLast 1}}
+                                                                      <option style="background-color:mediumseagreen" value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                    {{else}}
+                                                                      <option value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                    {{end}}
+                                                                {{end}}
+
+                                                              {{end}}
+                                                            </select>
+                                                    </div>
+                                                    <div class="col-xs-6 col-md-6 col-lg-6">
+                                                            <button id="contact-list-button" type="button" class="btn btn-info btn-xs"
+                                                            v="5" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}"><i class="fa fa-fw fa-phone"></i></button>
+                                                            <button type="button" class="btn btn-info btn-xs copybtn" id="copyselect" data-clipboard-text=""
+                                                              data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                                  <i class="fa fa-fw fa-clipboard"></i>
+                                                              </button>
+                                                    </div>
+                                              </div>
+                                              </div>
+
+                                          </div>
+
+
+                                      </div>
+
+
+
+                                  </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-3 col-lg-2 text-default">
+                                          <input type="text" id="urge-call-input" name="urge-call-input" class="form-control hidden" value="" data-orderid="{{.OrderData.Id}}" data-caseid="{{.OneCase.Id}}" />
+                                        </div>
+                                        <div class="col-xs-6 col-md-3 col-lg-1 text-default">
+                                          <button id="timer-stop-button" type="button" class="btn btn-info btn-xs"
+                                                v="10" style="display: none">{{t .LangUse "中止"}}</button>
+                                        </div>
+
+                                        <div class="col-xs-6 col-md-3 col-lg-3 text-default">
+                                          <input type="text" id="remind-stop" class="form-control input-sm" style="border:none;display:none" value="" />
+                                          <input type="text" id="urge-call-result" class="form-control input-sm" style="border:none;display:none;width:400px" value="" />
+                                        </div>
+
+                                    </div>
+
+
+                                  </div>
+
+                                  <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title text-muted">{{t $.LangUse "记录催收结果"}}</h3>
+                                        <!--<a href="/overdue/urge/detail?order_id={{$.OneCase.OrderId}}" class="pull-right" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>-->
+                                        {{if eq $.OneCase.IsOut 0 }}
+                                        <a href="/overdue/backend/reduction?order_id={{$.OneCase.OrderId}}" class="pull-right" target="_blank">
+                                            <input type="button" class="btn btn-block btn-info btn-xs" title="{{t $.LangUse "减免"}}" value="&nbsp;&nbsp;&nbsp;&nbsp;{{t $.LangUse "减免"}}&nbsp;&nbsp;&nbsp;&nbsp;"/>
+                                        </a>
+                                        {{end}}
+                                    </div>
+                                    <div class="box-body padding-bottom-content">
+
+                                      <div class="row line-row">
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "联系方式"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">
+
+                                                {{range $val,$show := $.CommnicationWayMap}}
+                                                <input type="radio" name="communication_way" id="communication_way" value="{{$val}}" >&nbsp;&nbsp;{{t $.LangUse $show}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                {{end}}
+
+                                          </div>
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "电话拨打时间"}}:</span></div>
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2  line-row-son text-default">
+                                            <div class="input-group input-group-sm">
+                                              <div class="input-group-addon">
+                                                  <i class="fa fa-calendar"></i>
+                                              </div>
+                                              <input name="phone_time"  id="phone_time" type="text" readonly class="form-control" origin="" placeholder="{{t $.LangUse "选择日期"}}" value="" />
+                                            </div>
+                                          </div>
+
+
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "拨打对象"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">
+                                              <select id="phone_objects" class="form-control input-sm" name="phone_objects">
+                                                  <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                  <option value=1>{{t $.LangUse "本人"}}</option>
+                                                  <option value=2>{{t $.LangUse "联系人"}}1</option>
+                                                  <option value=3>{{t $.LangUse "联系人"}}2</option>
+                                                  <option value=4>{{t $.LangUse "公司电话"}}</option>
+                                                  <option value=5>{{t $.LangUse "通讯录"}}</option>
+                                                  <option value=6>{{t $.LangUse "其他联系人"}}</option>
+                                              </select>
+                                          </div>
+
+                                      </div>
+
+                                      <div class="row line-row">
+                                          <div class="col-xs-6 col-md-6 col-lg-2"><span class="text-muted">{{t $.LangUse "电话接通情况"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-10 text-default">
+                                            <div class="input-group input-group-sm">
+                                              <input name="phone_connected" type="radio" value=1 />&nbsp;&nbsp;{{t $.LangUse "接通"}}
+                                                  &nbsp;&nbsp;&nbsp;&nbsp;
+                                              &nbsp;<input name="phone_connected" type="radio" value=0 />&nbsp;&nbsp;{{t $.LangUse "未接通"}}
+                                            </div>
+                                          </div>
+
+                                      </div>
+
+                                      <div class="row line-row">
+
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son i_tr_repay_inclination" style="display: none"><span class="text-muted">{{t $.LangUse "还款意愿"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default i_tr_repay_inclination" style="display: none">
+                                            <select class="form-control input-sm" required id="repay_inclination" name="repay_inclination">
+                                                <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                <option value=1>{{t $.LangUse "有"}}</option>
+                                                <option value=2>{{t $.LangUse "无"}}</option>
+                                            </select>
+                                          </div>
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son i_tr_promise_repay_time" style="display: none"><span class="text-muted">{{t $.LangUse "承诺还款时间"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default i_tr_promise_repay_time" style="display: none">
+                                            <div class="input-group input-group-sm">
+                                              <div class="input-group-addon">
+                                                  <i class="fa fa-calendar"></i>
+                                              </div>
+                                              <input name="promise_repay_time" class="form-control input-sm" id="promise_repay_time" type="text" readonly class="" origin="" placeholder="{{t $.LangUse "选择日期"}}" value="" />
+                                            </div>
+                                          </div>
+
+                                      </div>
+                                      <div class="row line-row i_tr_overdue_reason" style="display: none">
+                                        <div class="col-xs-6 col-md-4 col-lg-2" ><span class="text-muted">{{t $.LangUse "逾期原因"}}:</span></div>
+
+                                        <div class="col-xs-6 col-md-8 col-lg-10 text-default"  >
+                                          <select class="form-control input-sm" required id="overdue_reason" name="overdue_reason_item">
+                                            <option value=0>{{t $.LangUse "请选择"}}</option>
+                                            {{range $val,$show := $.OverdueReasonItemMap}}
+                                            <option value="{{$val}}">{{t $.LangUse $show}}</option>
+                                            {{end}}
+                                          </select>
+                                        </div>
+
+                                      </div>
+                                      <div class="row line-row">
+                                        <div class="col-xs-6 col-md-4 col-lg-2"><span class="text-muted">{{t $.LangUse "催收结果"}}:</span></div>
+
+                                        <div class="col-xs-6 col-md-8 col-lg-10 text-default">
+                                                <select class="form-control input-sm" required id="overdue_reason" name="result">
+                                                <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                {{range $val,$show := $.UrgeResultMap}}
+                                                <option value="{{t $.LangUse $show}}">{{t $.LangUse $show}}</option>
+                                                {{end}}
+                                                </select>
+                                        </div>
+
+                                      </div>
+                                    </div>
+
+
+
+                                    <div class="box-footer">
+
+                                      <input type="hidden" id="ticket_id" name="ticket_id" value="{{.ticketData.Id}}" />
+                                      <input type="hidden" id="case_id" name="id" value="{{.OneCase.Id}}" />
+                                      <input type="hidden" id="order_id" name="order_id" value="{{.OneCase.OrderId}}" />
+                                      <input type="hidden" id="account_id" name="account_id" value="{{$.Customer.Id}}" />
+                                      <input id="i_submit" type="submit" class="form-control btn btn-info "  value="{{t $.LangUse "保存催收记录"}}" />
+                                    </div>
+
+                                  </div>
+
+                                  <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title text-muted">{{t $.LangUse "还款信息"}}</h3>
+                                     <!--   <a href="/repay/backend/repay_plan?order_id={{$.OneCase.OrderId}}" class="pull-right" target="_blank"><i class="fa fa-gear">{{t $.LangUse "还款计划"}}</i></a>-->
+                                    </div>
+                                    <div class="box-body">
+
+                                      <div class="row line-row">
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "VA账号"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-info-light">
+                                            {{vaDisplayBankCode $.EAccount}}-{{$.EAccount.EAccountNumber}}
+                                            <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{vaDisplayBankCode $.EAccount}}-{{$.EAccount.EAccountNumber}}"
+                                              data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                  <i class="fa fa-fw fa-clipboard"></i>
+                                              </button>
+                                          </div>
+
+
+
+                                          {{if eq .PaymentCode ""}}
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son"><span class="text-muted">{{t $.LangUse "便利店付款码"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default">
+                                              <button id="generate_paymentcode" type="button" class="btn btn-info btn-xs" value="generate payment code" data-toggle="modal" data-target="#modal_paymentcode_{{$.OneCase.OrderId}}"/>Generate payment code</button>
+                                          </div>
+                                          {{else}}
+                                              {{if eq .ExpireFlag true}}
+                                                <div class="col-xs-6 col-md-3 cosl-lg-3 line-row-son"><span class="text-muted">{{t $.LangUse "便利店付款码"}}:</span></div>
+                                                <div class="col-xs-6 col-md-3 col-lg-3 line-row-son text-default" id="payment_code_td">
+                                                    <button id="generate_paymentcode" type="button" class="btn btn-info btn-xs" value="generate payment code" data-toggle="modal" data-target="#modal_paymentcode_{{$.OneCase.OrderId}}"/>Generate payment code</button>
+                                                </div>
+                                              {{else}}
+                                                  <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "便利店付款码"}}:</span></div>
+                                                  &nbsp;&nbsp;<div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-info-light" style="width:300px" id="payment_code_td">
+                                                      {{$.PaymentCode}} &nbsp;&nbsp;
+                                                      <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text=" {{$.PaymentCode}}"
+                                              data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                  <i class="fa fa-fw fa-clipboard"></i>
+                                              </button>
+                                                          &nbsp;&nbsp;<button id="generate_paymentcode" type="button" class="btn btn-info btn-xs" value="generate payment code" data-toggle="modal" data-target="#modal_paymentcode_{{$.OneCase.OrderId}}"/>Generate payment code</button>
+                                                  </div>
+
+
+                                              {{end}}
+                                          {{end}}
+
+                                          <div class="modal fade" id="modal_paymentcode_{{$.OneCase.OrderId}}" tabindex="-1" role="dialog" aria-spanledby="myModalspan" aria-hidden="true">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                      <div class="modal-header">
+                                                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                          <h4 class="modal-title" id="modalspan_{{$.OneCase.OrderId}}">{{t $.LangUse "生成便利店付款码"}}</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+
+                                                          <div>{{t $.LangUse "订单id"}} : {{$.OneCase.OrderId}} </div>
+                                                          <div>{{t $.LangUse "剩余待还金额"}} : <span id="repay_balance_{{$.OneCase.OrderId}}" balance="{{.RepayBalanceAmount}}">{{.RepayBalanceAmount}}</span></div><br/>
+
+                                                          <div><button id="change_balance_{{$.OneCase.OrderId}}" type="button" class="btn btn-default">{{t $.LangUse "更改金额"}}</button></div>
+
+
+                                                      </div>
+                                                      <div class="modal-footer" id="generate_text_{{$.OneCase.OrderId}}">
+                                                          <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                                          <button id="generate_btn_{{$.OneCase.OrderId}}" type="button" class="btn btn-default">{{t $.LangUse "生成"}}</button>
+                                                      </div>
+                                                  </div><!-- /.modal-content -->
+                                              </div><!-- /.modal -->
+                                          </div>
+
+                                      </div>
+
+                                      <!--
+                                      <div class="row">
+                                          <div class="col-xs-6 col-md-3 col-lg-2"><span class="text-muted">{{t $.LangUse "可减免金额"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 text-default">
+                                            {{$.CanReducedAmount}}
+                                          </div>
+
+                                          <div class="col-xs-6 col-md-3 col-lg-2"><span class="text-muted">{{t $.LangUse "减免后待结清金额"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 text-default">
+                                            {{if gt $.CanReducedAmount 0}}
+                                                {{if $.isExistAddminPrereduced}}
+                                                {{$.RepayClearLowstAmount}}
+                                                  <button type="button" class="btn btn-info btn-xs" disabled />{{t $.LangUse "已申请结清减免"}}</button>
+                                                {{else}}
+
+                                                  <button id="reduced_quota_submit" type="button" class="btn btn-info btn-xs" value="{{t $.LangUse "结清减免"}}" data-status="no" data-alreadydo="{{t $.LangUse "已申请结清减免"}}" />{{t $.LangUse "结清减免"}}</button>
+                                                {{end}}
+                                            {{end}}
+                                          </div>
+                                      </div>
+                                    -->
+                                      <div class="row line-row">
+                                        <div class="col-xs-6 col-md-6 col-lg-2"><span class="text-muted">{{t $.LangUse "是否允许展期"}}:</span></div>
+                                        <div class="col-xs-6 col-md-6 col-lg-3 text-default">
+                                          {{if eq .IsDefer true}}
+                                          <span id="rollTrialTrigger" data-isrolltrial="ok">{{t .LangUse "允许展期"}}</span>
+                                          | <a href="/overdue/defer_show?account_id={{.AccountId}}" target="_blank">{{t $.LangUse "试算"}}</a>
+                                          | <a href="/overdue/roll_apply?account_id={{.AccountId}}" target="_blank">{{t $.LangUse "申请展期"}}</a>
+                                          {{else }}
+                                          <p id="rollTrialTrigger">{{t .LangUse "不允许展期"}}</p>
+                                          {{end}}
+                                        </div>
+
+                                        <div class="col-xs-6 col-md-6 col-lg-3 deferData"><span class="text-muted">{{t $.LangUse "展期需还款金额"}}:</span></div>
+                                        <div class="col-xs-6 col-md-6 col-lg-3 text-default rollTrialAmount">
+                                        </div>
+
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+
+                                  <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title text-muted">{{t $.LangUse "借款信息"}}</h3>
+                                    </div>
+                                    <div class="box-body">
+
+                                        <div class="row line-row">
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "借款订单编号"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-info-light">{{$.OrderData.Id}}
+
+                                            <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.OrderData.Id}}"
+                                                data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                    <i class="fa fa-fw fa-clipboard"></i>
+                                                </button>
+                                          </div>
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "应还日期"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-info-light">{{$.RepayPlan.RepayDate | mDateMHSDate}}</div>
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "剩余应还总额"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">{{$.LeftOver}}</div>
+                                        </div>
+
+                                        <div class="row line-row">
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "逾期天数"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">{{$.OneCase.OverdueDays}}</div>
+
+                                          <!-- <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "案件级别"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">{{$.OneCase.CaseLevel}}</div> -->
+
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son"><span class="text-muted">{{t $.LangUse "实还总额"}}:</span></div>
+                                          <div class="col-xs-6 col-md-6 col-lg-2 line-row-son text-default">{{$.acutalRepayedTotal}}</div>
+                                        </div>
+
+
+
+                                          <!--
+                                          <div class="col-xs-6 col-md-3 col-lg-2"><span class="text-muted">{{t $.LangUse "剩余可处理天数"}}:</span></div>
+                                          <div class="col-xs-6 col-md-3 col-lg-2 text-default">{{t $.LangUse "暂未实现"}}</div>
+                                           -->
+
+
+
+                                    </div>
+
+                                  </div>
+                                </section>
+
+
+                              </form>
+
+
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                            <section class="content">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                                <table class="table table-bordered table-striped">
+                                                        <tr>
+                                                            <th>{{t .LangUse "催收人"}}</th>
+                                                            <th>{{t .LangUse "拨打对象"}}</th>
+                                                            <th>{{t .LangUse "联系方式"}}</th>
+                                                            <th>{{t .LangUse "电话拨打时间"}}</th>
+
+                                                            <th>{{t .LangUse "应答时间"}}</th>
+                                                            <th>{{t .LangUse "结束时间"}}</th>
+                                                            <th>{{t .LangUse "挂机方向"}}</th>
+                                                            <th>{{t .LangUse "挂机原因"}}</th>
+
+                                                            <th>{{t .LangUse "是否拨通"}}</th>
+                                                            <th>{{t .LangUse "承诺还款时间"}}</th>
+                                                            <th>{{t .LangUse "逾期原因"}}</th>
+                                                            <th>{{t .LangUse "偿还意愿"}}</th>
+                                                            <!-- <th>{{t .LangUse "未接通原因"}}</th> -->
+                                                            <th>{{t .LangUse "催收结果"}}</th>
+                                                            <th>{{t .LangUse "记录"}}</th>
+                                                        </tr>
+                                                        {{range .urgeDetailList}}
+                                                            <tr>
+                                                                <td>{{.OpUid | operatorName}}</td>
+                                                                <td>{{phoneObjectDisplay $.LangUse .PhoneObject}}</td>
+                                                                <td>{{.PhoneObjectMobile}}</td>
+                                                                <td>{{mDateMHS .PhoneTime}}</td>
+
+                                                                <td>{{mDateMHS .AnswerTimestamp}}</td>
+                                                                <td>{{mDateMHS .EndTimestamp}}</td>
+                                                                <td>{{voipHangupDisplay $.LangUse .HangupDirection}}</td>
+                                                                <td>{{voipHangupDisplay $.LangUse .HangupCause}}</td>
+
+                                                                <td>{{phoneConnectDisplay $.LangUse .PhoneConnect}}</td>
+                                                                <td>{{mDateMHS .PromiseRepayTime}}</td>
+                                                                <td>
+                                                                  {{if eq .OverdueReasonItem 0}}
+                                                                    {{.OverdueReason}}
+                                                                  {{else}}
+                                                                    {{overdueReasonItemDisplay $.LangUse .OverdueReasonItem}}
+                                                                  {{end}}
+                                                                </td>
+                                                                <td>{{repayInclinationDisplay $.LangUse .RepayInclination}}</td>
+                                                                <!-- <td>{{unconnectReasonDisplay $.LangUse .UnconnectReason}}</td> -->
+                                                                <td>{{if eq .Result ""}}-{{else}}{{.Result}}{{end}}</td>
+                                                                <td>{{voipCallMothodDisplay $.LangUse .CallMethod}}</td>
+                                                            </tr>
+                                                        {{end}}
+                                                    </table>
+
+
+
+                                            <!-- /.box -->
+                                        </div>
+                                    </div>
+                                </section>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_3">
+                            <section class="content">
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                                <table class="table table-bordered table-striped">
+                                                        <tr>
+                                                            <th>{{t .LangUse "应还日期"}}</th>
+                                                            <td>{{.repayPlan.RepayDate | mDateMHSDate}}</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <th>{{t .LangUse "应还本金"}}</th>
+                                                            <td>{{.repayPlan.Amount}}</td>
+                                                            <th>{{t .LangUse "已还本金"}}</th>
+                                                            <td>{{.repayPlan.AmountPayed}}</td>
+                                                            <th>{{t .LangUse "已减本金"}}</th>
+                                                            <td>{{.repayPlan.AmountReduced}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>{{t .LangUse "应还宽限期利息"}}</th>
+                                                            <td>{{.repayPlan.GracePeriodInterest}}</td>
+                                                            <th>{{t .LangUse "已还宽限期利息"}}</th>
+                                                            <td>{{.repayPlan.GracePeriodInterestPayed}}</td>
+                                                            <th>{{t .LangUse "已减宽限期利息"}}</th>
+                                                            <td>{{.repayPlan.GracePeriodInterestReduced}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>{{t .LangUse "应还罚息"}}</th>
+                                                            <td>{{.repayPlan.Penalty}}</td>
+                                                            <th>{{t .LangUse "已还罚息"}}</th>
+                                                            <td>{{.repayPlan.PenaltyPayed}}</td>
+                                                            <th>{{t .LangUse "已减罚息"}}</th>
+                                                            <td>{{.repayPlan.PenaltyReduced}}</td>
+                                                        </tr>
+
+                                                    </table>
+
+                                            <!-- /.box -->
+                                        </div>
+                                    </div>
+                                </section>
+                    </div>
+                    <div class="tab-pane" id="tab_4">
+                        <section class="content">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped">
+                                            <tr>
+                                                <th>{{t .LangUse "自动外呼时间"}}</th>
+                                                <th>{{t .LangUse "是否拨通"}}</th>
+                                            </tr>
+                                            {{range .autoCallRecord}}
+                                                <tr>
+                                                    <td>{{mDateMHS .StartTime}}</td>
+                                                    <td>{{phoneConnectDisplay $.LangUse .IsDial}}</td>
+                                                </tr>
+                                            {{end}}
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                        </div>
+                    </section>
+                    </div>
+                    <!-- /.tab-pane -->
+                  </div>
+                  <!-- /.tab-content -->
+                </div>
+                <!-- nav-tabs-custom -->
+              </div>
+
+
+    <!-- Content Header (Page header) -->
+    <!-- <section class="content-header">
+        <h3>
+            {{t $.LangUse "催收"}}
+        </h3>
+        <a href="/overdue/urge/detail?id={{$.OneCase.Id}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+
+    </section> -->
+
+    <!-- Main content -->
+
+
+    <div class="modal fade" id="remindDialog" tabindex="-1" role="dialog" aria-spanledby="updateModalspan">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+</div>
+</div>

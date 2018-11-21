@@ -1,0 +1,196 @@
+<script>
+$(function () {
+
+    $("#submit").on("click", function(){
+        var balance = parseInt($('#balance').val())
+        var amount = parseInt($('#refund_amount').val())
+        var fee = parseInt($('#fee').val())
+        var orderId = parseInt($('#order_id').val())
+        var otherAccount = parseInt($('#other_account').val())
+
+        console.log("balance" + balance)
+        console.log("amount" + amount)
+        console.log("fee" + fee)
+
+        var v =$("#refund_type").val()
+        console.log("value :"+v )
+        if(amount == 0 || amount >balance){
+            alert('{{t $.LangUse "金额错误"}}')
+            return false
+        }
+
+        if (v == '1'){
+            if(orderId == 0){
+                alert('{{t $.LangUse "填写订单Id"}}')
+                return false
+            }
+        }else if (v == '2') {
+            if(fee + amount > balance)  {
+                alert('{{t $.LangUse "金额错误"}}')
+                return false
+            }
+        }else if(v == '3'){
+            if(otherAccount==0)  {
+                alert('{{t $.LangUse "输入目的账户Id"}}')
+                return false
+            }
+        }
+
+
+
+        var fileNum = document.getElementById("file_num");
+        var v =$("#refund_type").val()
+        if ((v == '2') && (fileNum.value == '0' )){
+            alert('{{t $.LangUse "请选择退款凭证"}}')
+            return false
+        }
+    });
+
+    $("#resetForm").on("click", function(){
+        $(".group_order_id").show()
+        $(".group_file").hide()
+        $(".group_fee").hide()
+        $(".group_other_account").hide()
+    });
+
+    $("#refund_amount").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#order_id").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#other_account").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#fee").keyup(function(){
+      // console.log($("#user_account_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#refund_type").on("change",function(){
+        var v =$("#refund_type").val()
+        console.log("value :"+v )
+        if (v == '1'){
+            $(".group_order_id").show()
+            $(".group_file").hide()
+            $(".group_fee").hide()
+            $(".group_other_account").hide()
+        }else if (v == '2'){
+            $(".group_fee").show()
+            $(".group_file").show()
+            $(".group_order_id").hide()
+            $(".group_other_account").hide()
+        }else if (v == '3'){
+            $(".group_fee").hide()
+            $(".group_file").hide()
+            $(".group_order_id").hide()
+            $(".group_other_account").show()
+        }
+    });
+
+
+    $("#file0").on("change",function(){
+      // console.log("file0 change")
+      xmTanUploadImg($("#file0")[0], "image0")
+      increaseFileNum()
+
+      var file = document.getElementById("file1");
+      file.style.display = 'block'
+      var img = document.getElementById("image1");
+      img.style.display = 'block'
+    });
+
+    $("#file1").on("change",function(){
+      // console.log("file0 change")
+      xmTanUploadImg($("#file1")[0], "image1")
+      increaseFileNum()
+
+      var file = document.getElementById("file2");
+      file.style.display = 'block'
+      var img = document.getElementById("image2");
+      img.style.display = 'block'
+    });
+
+    $("#file2").on("change",function(){
+      // console.log("file0 change")
+      xmTanUploadImg($("#file2")[0], "image2")
+      increaseFileNum()
+      
+      var file = document.getElementById("file3");
+      file.style.display = 'block'
+      var img = document.getElementById("image3");
+      img.style.display = 'block'
+    });
+
+    $("#file3").on("change",function(){
+      // console.log("file0 change")
+      xmTanUploadImg($("#file3")[0], "image3")
+      increaseFileNum()
+      
+      var file = document.getElementById("file4");
+      file.style.display = 'block'
+      var img = document.getElementById("image4");
+      img.style.display = 'block'
+    });
+
+    $("#file4").on("change",function(){
+      // console.log("file0 change")
+      xmTanUploadImg($("#file4")[0], "image4")
+      increaseFileNum()
+    });
+
+
+    function increaseFileNum(){
+      var fileNum = document.getElementById("file_num");
+      console.log("fileNum.value:"+fileNum.value);
+      var num = parseInt(fileNum.value)
+      console.log("num:"+num);
+      num = num+1
+      fileNum.value =num
+      console.log("fileNum.value:"+fileNum.value);
+    }
+
+
+    function xmTanUploadImg(obj, imageName) {        
+        var file =  obj.files[0];
+        
+        console.log(obj);
+        console.log(file);
+        console.log("file.size = " + file.size);  //file.size 单位为byte
+
+        var reader = new FileReader();
+
+        //读取文件过程方法
+        reader.onloadstart = function (e) {
+            console.log("开始读取....");
+        }
+        reader.onprogress = function (e) {
+            console.log("正在读取中....");
+        }
+        reader.onabort = function (e) {
+            console.log("中断读取....");
+        }
+        reader.onerror = function (e) {
+            console.log("读取异常....");
+        }
+        reader.onload = function (e) {
+            console.log("成功读取....");
+
+            var img = document.getElementById(imageName);
+            img.src = e.target.result;
+            
+            img.style.width = "90px"
+            img.style.height = "90px"
+        }
+
+        reader.readAsDataURL(file)
+    }
+});
+
+</script>

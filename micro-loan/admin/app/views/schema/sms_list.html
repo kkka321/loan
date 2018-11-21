@@ -1,0 +1,150 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "短信管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/schema/sms_list" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "任务名称"}}: <input name="task_name" type="text" class="form-control" placeholder="{{t .LangUse "任务名称"}}" value="{{$.task_name}}">
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "推送时间"}}: <input name="schema_time" type="text" class="form-control" placeholder="{{t .LangUse "推送时间"}}" value="{{$.schema_time}}">
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "短信提供商"}}:
+                                    <select name="sender" class="form-control">
+                                        <option value="">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .SmsSender}}
+                                        <option value="{{$value}}"{{if eq $.sender $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "任务分类"}}:
+                                    <select name="schema_mode" class="form-control">
+                                        <option value="">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .SchemaMode}}
+                                        <option value="{{$value}}"{{if eq $.schema_mode $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "任务状态"}}:
+                                    <select name="schema_status" class="form-control">
+                                        <option value="">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .SchemaStatus}}
+                                        <option value="{{$value}}"{{if eq $.schema_status $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/schema/sms_list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                                <div class="col-xs-2">
+                                    &nbsp;<a href="/schema/sms_edit?op=1" class="form-control btn btn-block btn-info">{{t .LangUse "新增短信任务"}}</a>
+                                </div>
+                                <div class="col-xs-2">
+                                    &nbsp;<button class="form-control btn-warning" id="run_task">{{t .LangUse "调度任务"}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                            <tr>
+                                <th>
+                                {{t .LangUse "全选/取消"}} </br><input type="checkbox" class="input_check" name="check_all" id="check_all">
+                                </th>
+                                <th>{{t .LangUse "任务ID"}}</th>
+                                <th>{{t .LangUse "任务名称"}}</th>
+                                <th>{{t .LangUse "发送对象"}}</th>
+                                <th>{{t .LangUse "短信提供商"}}</th>
+                                <th>{{t .LangUse "发送时间"}}</th>
+                                <th>{{t .LangUse "任务分类"}}</th>
+                                <th>{{t .LangUse "任务状态"}}</th>
+                                <th>{{t .LangUse "开始时间"}}</th>
+                                <th>{{t .LangUse "结束时间"}}</th>
+                                <th>{{t .LangUse "创建时间"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="check_single" value="{{.Id}}">
+                                </td>
+                                <td>{{.TaskId}}</td>
+                                <td>
+                                    <a href="/schema/sms_edit?op=3&id={{.Id}}">{{.TaskName}}</a>
+                                </td>
+                                <td>{{smsTargetDisplay $.LangUse .SmsTarget}}</td>
+                                <td>{{smsServiceDisplay $.LangUse .Sender}}</td>
+                                <td>{{.SchemaTime}}</td>
+                                <td>{{schemaModeDisplay $.LangUse .SchemaMode}}</td>
+                                <td>{{schemaStatusDisplay $.LangUse .SchemaStatus}}</td>
+                                <td>{{mDateUTC .StartDate}}</td>
+                                <td>{{mDateUTC .EndDate}}</td>
+                                <td>{{mDateMHS .Ctime}}</td>
+                                <td>
+                                {{if eq .SchemaStatus 4}}
+                                {{else}}
+                                    <a href="/schema/sms_edit?op=2&id={{.Id}}">{{t $.LangUse "修改"}}</a> |
+                                {{if ne .SchemaStatus 2}}
+                                    <a style="cursor: pointer" data-id="{{.Id}}" data-op="2" class="schema_op">{{t $.LangUse "停止"}}</a> |
+                                {{else}}
+                                {{if eq .SchemaMode 1}}
+                                    <a style="cursor: pointer" data-id="{{.Id}}" data-op="1" class="schema_op">{{t $.LangUse "启动"}}</a> |
+                                {{else}}
+                                    <a style="cursor: pointer" data-id="{{.Id}}" data-op="1" class="schema_op">{{t $.LangUse "恢复"}}</a> |
+                                {{end}}
+                                {{end}}
+                                {{end}}
+                                    <a href="/schema/sms_detail?id={{.TaskId}}">{{t $.LangUse "推送详情"}}</a>
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

@@ -1,0 +1,244 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+
+    $(document).ready(function (){
+
+        checkSelect();
+
+        checkRefund();
+
+    });
+
+    function checkRefund(){
+        var select = $('#check_status')[0]
+        var length = $('#check_status')[0].length
+        var m = new Map();
+
+        for (var i =0; i<length; i++){
+            m.set(select[i].value ,select[i].selected);
+        }
+
+        if (m.get("5") == false && m.get("6") == true && m.get("12") == false && m.get("7") == false){
+            if (getLoanChannelSelect() != 0){
+                $("#refund")[0].disabled = false
+            }
+        }
+    }
+
+  $('#apply_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#apply_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+
+  $('#loan_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#loan_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $('#finish_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#finish_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $("#check_all").on("click", function(e){
+
+      var checkd = $('#check_all')[0].checked
+      console.log(checkd )
+      console.log("check_all is onclick------->:"+checkd)
+
+      //选择所有items
+      var fruitItems = document.getElementsByName('check_single');
+      for(var i=0; i<fruitItems.length; i++) {
+          if(fruitItems[i].checked !=  checkd) {
+              fruitItems[i].checked = checkd;
+          }
+      }
+
+    });
+
+    $("#check_status").on("change", function(e){
+        checkSelect();
+    });
+
+    $("#loan_channel").on("change", function(e){
+        $("#refund")[0].disabled = true
+        // checkSelect();
+        // checkRefund();
+    });
+
+
+    $(".invalid_order").on("click", function(e){
+        var str='make sure to re invalid order '
+        str += this.id
+        console.log(str);
+        if (!confirm(str)){
+           console.log("cancle button click");
+           return false
+        }
+        console.log("confirm button click");
+
+        $.ajax({
+            url:"/loan/backend/do_disburse_again",
+            data:{order_id:this.id, check_status: 10},
+            dataType:'json',
+            cache:false,
+            type:"POST",
+            success:function(result) {
+                location.reload();
+            }
+        });
+
+        return false
+    });
+
+    $(".loan_back").on("click", function(e){
+        var str='make sure to loan back the order '
+        str += this.id
+        console.log(str);
+        if (!confirm(str)){
+           console.log("cancle button click");
+           return false
+        }
+        console.log("confirm button click");
+
+        $.ajax({
+            url:"/loan/backend/do/roll/back",
+            data:{order_id:this.id,},
+            dataType:'json',
+            cache:false,
+            type:"POST",
+            success:function(result) {
+                location.reload();
+                // console.log(result)
+            },
+            error:function (result) {
+                if (result.status == 403){
+                    alert("You are Forbidden for this operation")
+                }
+                // console.log(result)
+            }
+        });
+        return false
+    });
+
+    $("#refund").on("click", function(e){
+        var str='make sure to re disburse by '
+        str += getLoanChannelSelectText()
+        if (!confirm(str)){
+            console.log("cancle button click");
+            return false
+        }
+        console.log("confirm button click");
+
+        // collect ids
+        var ids = new Array()
+        var items = document.getElementsByName('check_single');
+        for(var i=0; i<items.length; i++) {
+            if(items[i].checked ==  true) {
+                ids.push(items[i].value)
+            }
+        }
+
+        if (ids.length==0){
+            alert("please select order to re disburse!")
+            return false
+        }
+        $(this).prop("disabled",true);
+        $.ajax({
+            url:"/loan/backend/do/disbure/again/multi",
+            data:{ids:ids},
+            dataType:'json',
+            cache:false,
+            type:"POST",
+            success:function(result) {
+                location.reload();
+            },
+            beforeSend:function() {
+                $("#refund").html("{{t .LangUse "处理中"}}...");
+            }
+        });
+
+        return false
+    });
+
+    function getLoanChannelSelect() {
+        var select = $('#loan_channel')[0]
+        var length = $('#loan_channel')[0].length
+        for (var i =0; i<length; i++){
+            if (select[i].selected){
+                return select[i].value
+            }
+        }
+    }
+
+    function getLoanChannelSelectText() {
+        var select = $('#loan_channel')[0]
+        var length = $('#loan_channel')[0].length
+        for (var i =0; i<length; i++){
+            if (select[i].selected){
+                return select[i].text
+            }
+        }
+    }
+
+    function checkSelect() {
+        $("#failed_code")[0].disabled = true
+
+        var select = $('#check_status')[0]
+        var length = $('#check_status')[0].length
+        var m = new Map();
+
+        for (var i =0; i<length; i++){
+            // console.log(select[i].value +"   "+select[i].selected)
+            m.set(select[i].value ,select[i].selected);
+        }
+        // console.log(m)
+        // console.log(getLoanChannelSelect())
+
+        if ((m.get("5") == true || m.get("6") == true ||m.get("12") == true ) && (m.get("7") == false)){
+            $("#loan_channel")[0].disabled = false
+            if (m.get("5") == false && m.get("6") == true && m.get("12") == false ){
+                $("#failed_code")[0].disabled = false
+                if (getLoanChannelSelect() != 0){
+                    // $("#refund")[0].disabled = false
+                }else{
+                    $("#refund")[0].disabled = true
+                }
+            }else{
+                $("#failed_code")[0].disabled = true
+                $("#refund")[0].disabled = true
+            }
+        }else{
+            $("#refund")[0].disabled = true
+            $("#failed_code")[0].disabled = true
+            $("#loan_channel")[0].disabled = true
+            jsRemoveSelectedItemFromSelect($("#failed_code")[0])
+            jsRemoveSelectedItemFromSelect($("#loan_channel")[0])
+        }
+    }
+    function jsRemoveSelectedItemFromSelect(objSelect) {
+        var length = objSelect.options.length - 1;
+        for(var i = length; i >= 0; i--){
+           objSelect.options[i].selected =false;
+        }
+    }
+});
+
+</script>

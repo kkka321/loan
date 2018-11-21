@@ -1,0 +1,46 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            发送短信
+        </h1>
+    </section>
+
+
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">功能已调好，目前还剩2欧元的短信量了，不建议测试了</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form role="form" action="/sms/send">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">{{t .LangUse "手机号"}}</label>
+                                <input name='phoneNumber' type="phone" class="form-control" placeholder="{{t .LangUse "手机号"}}">
+                            </div>
+
+                            <!-- textarea -->
+                            <div class="form-group">
+                                <label>短信内容</label>
+                                <textarea name='msg' class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- /.content-wrapper -->

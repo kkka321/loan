@@ -1,0 +1,38 @@
+<script>
+    $(function () {
+        // 初始化时间范围选择插件
+        // $('#apply_time_range').daterangepicker({locale: {
+        //     format: 'YYYY-MM-DD'
+        // }});
+
+        $('#expires').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#expires').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+
+        $('#ctime').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label){
+            $('#ctime').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+        $('#utime').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label){
+            $('#utime').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+    });
+
+</script>

@@ -1,0 +1,29 @@
+<script>
+
+
+$('#payment_callback').click(function(){
+    $.ajax({
+        url:'/transaction_inquiry/payment_inquiry_result',
+        data:{order_id: "{{.order.Id}}", amount: {{.amount}}},
+        dataType:'json',
+        cache:false,
+        type:'post',
+        error: function () {
+
+        },
+        success:function(result) {
+            alert(result.msg)
+            console.log(result);
+        },
+        complete:function() {
+
+            window.location.href = '/transaction_inquiry/payment_inquiry_form';
+
+        },
+        beforeSend:function() {
+            $("#payment_callback_div").html("<span style='color:red'>Processing, please wait...</span>")
+        }
+    });
+});
+
+</script>

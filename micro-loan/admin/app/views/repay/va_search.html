@@ -1,0 +1,140 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "还款码查询"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/repay/va/search" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "借款"}}ID" value="{{.id}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "账户"}}ID:<input name="account_id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "账户"}}" value="{{.account_id}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "手机号码"}}:<input name="mobile" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "手机号码"}}"
+                                                             value="{{.mobile}}"/>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3" id = "loan_channel_group" >
+                                {{t .LangUse "还款方式"}}:
+                                    <select name="repay_type" id = "repay_type" class="form-control">
+                                        <option value="0">{{t .LangUse "请选择"}}</option>
+                                    {{range $value, $show := .RepayTypeMap}}
+                                        <option value="{{$value}}" {{if eq $.RepayType $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3">
+                                VA<input name="va_code" class="form-control"
+                                                             placeholder="{{t .LangUse "VA"}}" value="{{.vaCode}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "超市付款码"}}<input name="payment_code" class="form-control"
+                                                             placeholder="{{t .LangUse "超市付款码"}}" value="{{.paymentCode}}"/>
+                                </div>
+
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "创建时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="apply_time_range" id="apply_time_range" type="text" readonly
+                                               class="form-control" origin="{{.applyTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.applyTimeRange}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <input id="i_search_va" type="submit" class="form-control btn btn-block btn-info"
+                                           value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="/repay/va/search" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="javascript:void(0)"
+                                       class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- statistic-->
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "账户"}}ID</th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "借款"}}ID</th>
+                                {{if gt (len $.mobile) 0}}
+                                    <th>{{t .LangUse "手机号"}}</th>
+                                {{end}}
+                                <th>VA&{{t .LangUse "超市付款码"}}</th>
+                                <th>{{t .LangUse "创建时间"}}</th>
+                                <th>{{t .LangUse "失效时间"}}</th>
+                                <th>{{t .LangUse "渠道"}}</th>
+                                <th>{{t .LangUse "应还金额"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.UserAccountId}}</td>
+                                <td><a href="/customer/detail?id={{.UserAccountId}}" target="_blank">{{.RealName}}</a></td>
+                                <td>{{.OrderId}}</td>
+                                {{if gt (len $.mobile) 0}}
+                                    <td>{{.Mobile}}</td>
+                                {{end}}
+                                <td>{{.Code}}</td>
+                                <td>{{mDateMHS .ApplyTime}}</td>
+                                <td>{{mDateMHS .ExpireTime}}</td>
+                                <td>{{companyDisplayByCode $.LangUse .CompanyCode}}</td>
+                                <td>{{.Amount}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

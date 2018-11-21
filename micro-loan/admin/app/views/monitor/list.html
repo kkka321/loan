@@ -1,0 +1,149 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "系统监控"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="bg-light-blue color-palette col-md-6">
+                                    <p class="text-center">{{t .LangUse "订单通过率"}}</p>
+                                </td>
+                                {{if eq .RealData.ThirdpartySuccess -1}}
+                                    <td>-</td>
+                                {{else}}
+                                    <td>{{.RealData.OrderPass}}</td>
+                                {{end}}
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "第三方接口成功率"}}</p>
+                                </td>
+                                {{if eq .RealData.ThirdpartySuccess -1}}
+                                    <td>-</td>
+                                {{else}}
+                                    <td>{{.RealData.ThirdpartySuccess}}</td>
+                                {{end}}
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <ul class="nav nav-tabs">
+                <li id="tab1"><a href="/monitor/list?data_type=0">{{t .LangUse "订单通过率"}}</a></li>
+                <li id="tab2"><a href="/monitor/list?data_type=1">{{t .LangUse "第三方接口成功率"}}</a></li>
+                <li id="tab3"><a href="/monitor/list?data_type=2">{{t .LangUse "Api抽样统计"}}</a></li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        {{if eq .DataType 0}}
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th class="th_sort" id="Id">ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                    </th>
+                                    <th>{{t .LangUse "提交申请"}}</th>
+                                    <th>{{t .LangUse "提交审核"}}</th>
+                                    <th>{{t .LangUse "审核拒绝"}}</th>
+                                    <th>{{t .LangUse "等待审核"}}</th>
+                                    <th>{{t .LangUse "等待放款"}}</th>
+                                    <th>{{t .LangUse "放款失败"}}</th>
+                                    <th>{{t .LangUse "等待还款"}}</th>
+                                    <th>{{t .LangUse "结清"}}</th>
+                                    <th>{{t .LangUse "逾期"}}</th>
+                                    <th>{{t .LangUse "失效"}}</th>
+                                    <th>{{t .LangUse "部分还款"}}</th>
+                                    <th>{{t .LangUse "放款中"}}</th>
+                                    <th>{{t .LangUse "时间"}}</th>
+                                    <th>{{t .LangUse "创建时间"}}</th>
+                                </tr>
+                            {{range .List}}
+                                <tr>
+                                    <td>{{.Id}}</td>
+                                    <td>{{.Submit}}</td>
+                                    <td>{{.WaitReview}}</td>
+                                    <td>{{.Reject}}</td>
+                                    <td>{{.WaitManual}}</td>
+                                    <td>{{.WaitLoan}}</td>
+                                    <td>{{.LoanFail}}</td>
+                                    <td>{{.WaitRepayment}}</td>
+                                    <td>{{.Cleared}}</td>
+                                    <td>{{.Overdue}}</td>
+                                    <td>{{.Invalid}}</td>
+                                    <td>{{.PartialRepayment}}</td>
+                                    <td>{{.Loaning}}</td>
+                                    <td>{{.StatisticsDate}}</td>
+                                    <td>{{.Ctime | mDateMHS}}</td>
+                                </tr>
+                            {{end}}
+                            </table>
+                        {{else if eq .DataType 1}}
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th class="th_sort" id="Id">ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                    </th>
+                                    <th>{{t .LangUse "第三方"}}</th>
+                                    <th>{{t .LangUse "成功"}}</th>
+                                    <th>{{t .LangUse "失败"}}</th>
+                                    <th>{{t .LangUse "时间"}}</th>
+                                    <th>{{t .LangUse "创建时间"}}</th>
+                                </tr>
+                            {{range .List}}
+                                <tr>
+                                    <td>{{.Id}}</td>
+                                    <td>{{.Thirdparty | getThirdpartyName}}</td>
+                                    <td>{{.Success}}</td>
+                                    <td>{{.Fail}}</td>
+                                    <td>{{.StatisticsDate}}</td>
+                                    <td>{{.Ctime | mDateMHS}}</td>
+                                </tr>
+                            {{end}}
+                            </table>
+                        {{else}}
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th class="th_sort" id="Id">ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                    </th>
+                                    <th>{{t .LangUse "URL"}}</th>
+                                    <th>{{t .LangUse "耗费时间"}}</th>
+                                    <th>{{t .LangUse "时间"}}</th>
+                                    <th>{{t .LangUse "创建时间"}}</th>
+                                </tr>
+                            {{range .List}}
+                                <tr>
+                                    <td>{{.Id}}</td>
+                                    <td>{{.RequestUrl}}</td>
+                                    <td>{{.ConsumeTime}}</td>
+                                    <td>{{.StatisticsDate}}</td>
+                                    <td>{{.Ctime | mDateMHS}}</td>
+                                </tr>
+                            {{end}}
+                            </table>
+                        {{end}}
+                    </div>
+
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+

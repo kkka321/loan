@@ -1,0 +1,73 @@
+<script>
+$(function () {
+  $('#register_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#register_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+    $('.delete_customer').click(function() {
+        var id = $(this).attr('data-id')
+        $.ajax({
+            url:"/customer/delete?id=" + id,
+            dataType:'json',
+            cache:false,
+            type:"GET",
+            complete:function() {
+                location.reload();
+            }
+        });
+    })
+
+    $("#charge_amount").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    $("#withdraw_amount").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9]+','')
+    });
+
+    function showBoxMsg(msg) {
+        $("#smallModal div.modal-body").html(msg);
+        $("#smallModal").modal('show');
+    }
+
+
+    $("#submit_recharge").click(function(){
+      // console.log("submit click")
+      var name = $("#payment_name").val()
+      // console.log("name:" + name)
+
+      if (name == "0"){
+        showBoxMsg('{{t .LangUse "请选择第三方名称"}}')
+        return false
+      }    
+    });
+
+    $("#submit_withdraw").click(function(){
+      // console.log("submit click")
+      var name = $("#payment_name").val()
+      // console.log("name:" + name)
+
+      if (name == "0"){
+        showBoxMsg('{{t .LangUse "请选择第三方名称"}}')
+        return false
+      }    
+    });
+
+    $('#recharge_date').datepicker({
+       format:"yyyy-mm-dd",    //格式化日期
+       isshowtoday:true,    //打开选择今天按钮
+       autoclose: 1,        //选择完日期后，弹出框自动关闭
+       orientation:'bottom',
+    });
+
+
+});
+
+</script>

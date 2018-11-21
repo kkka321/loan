@@ -1,0 +1,167 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "通话记录"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/extension/call_record" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    {{t .LangUse "借款ID"}}: <input name="order_id" type="text" class="form-control" placeholder="{{t .LangUse "借款ID"}}" value="{{$.order_id}}">
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "用户姓名"}}: <input name="name" type="text" class="form-control" placeholder="{{t .LangUse "用户姓名"}}" value="{{$.name}}">
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "分机号"}}: <input name="extnumber" type="text" class="form-control" placeholder="{{t .LangUse "分机号"}}" value="{{$.extnumber}}">
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "工单类型"}}:
+                                    <select name="item_id" class="form-control">
+                                        <option value="-1">{{t .LangUse "请选择"}}</option>
+                                    {{range $value, $show := $.ticketItemMap}}
+                                        <option value="{{$value}}"{{if eq $.itemID $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    {{t .LangUse "拨打时间段"}}:
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input name="assign_call_date_range" id="assign_call_date_range" type="text" readonly
+                                                    class="form-control" origin="{{.assignDateRange}}"
+                                                    placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.assignDateRange}}"/>
+                                        </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+          </div>
+    
+    
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tr>
+                  <th class="th_sort" id="Id">{{t .LangUse "Id"}}<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th>{{t .LangUse "借款ID"}}</th>
+                  <th>{{t .LangUse "工单类型"}}</th>
+                  <th>{{t .LangUse "话单ID"}}</th>
+                  <th>{{t .LangUse "用户姓名"}}</th>
+                  <th>{{t .LangUse "分机号"}}</th>
+                  <th>{{t .LangUse "主叫号码"}}</th>
+                  <th>{{t .LangUse "目标号码"}}</th>
+                  <th>{{t .LangUse "呼叫方向"}}</th>
+                  <th>{{t .LangUse "创建时间"}}</th>
+                  <th>{{t .LangUse "拨打时间"}}</th>
+                  <th>{{t .LangUse "应答时间"}}</th>
+                  <th>{{t .LangUse "结束时间"}}</th>
+                  <th>{{t .LangUse "是否接通"}}</th>
+                  <th>{{t .LangUse "通话时长"}}</th>
+                  <th>{{t .LangUse "接通前等待时长"}}</th>
+                  <th>{{t .LangUse "挂机方向"}}</th>
+                  <th>{{t .LangUse "挂机原因"}}</th>
+                  <th>{{t .LangUse "录音文件"}}</th>
+                  <th>{{t .LangUse "记录"}}</th>
+                </tr>
+                {{range .List}}
+                <tr>
+                   <!-- <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>-->
+                   <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td>{{.Id}}</td>
+                    <td>
+                        {{if eq .OrderId 0}}
+                            -
+                        {{else}}
+                            {{.OrderId}}
+                        {{end}}
+                    </td>
+                    <td>{{.ItemIdS}}</td>
+                    <td>
+                        {{if eq .CallId 0}}
+                            -
+                        {{else}}
+                            {{.CallId}}
+                        {{end}}
+                    </td>
+                    <td>{{.NickName}}</td>
+                    <td>{{.ExtNumber}}</td>
+                    <td>{{.DisNumber}}</td>
+                    <td>{{.DestNumber}}</td>
+                    <td>{{voipCallDirectionDisplay $.LangUse .CallDirection}}</td>
+                    <td>{{.Ctime | mDateMHS}}</td>
+                    <td>{{.StartTimestamp | mDateMHS}}</td>
+                    <td>{{.AnswerTimestamp | mDateMHS}}</td>
+                    <td>{{.EndTimestamp | mDateMHS}}</td>
+                    <td>{{voipIsDialDisplay $.LangUse .IsDial}}</td>
+                    <td>{{.BillSec}}</td>
+                    <td>{{.Duration}}</td>
+                    <td>{{voipHangupDisplay $.LangUse .HangupDirection}}</td>
+                    <td>{{voipHangupDisplay $.LangUse .HangupCause}}</td>
+                    <td>
+                        {{if gt .BillSec 0}}
+                            <audio preload="none" controls="controls" src="/resource/media/{{.Id}}">
+                                {{.AudioRecordName}}
+                            </audio>
+                        {{else}}
+                            -
+                        {{end}}
+                    </td>
+                    <td>{{voipCallMothodDisplay $.LangUse .CallMethod}}</td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

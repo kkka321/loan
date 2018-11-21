@@ -1,0 +1,369 @@
+<div class="content-wrapper">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" class="tab_a" data-toggle="tab" aria-expanded="true">
+            {{t $.LangUse "小组情况"}}
+            </a>
+        </li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">{{t $.LangUse "个人整体情况"}}</a></li>
+      </ul>
+    </div>
+
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="tab_1">
+        <!-- Content Header (Page header) -->
+        <!-- <section class="content-header">
+          <h1>
+            {{t .LangUse "个人整体情况"}}
+          </h1>
+        </section> -->
+
+        <!-- <section class="content"> -->
+          <div class="row">
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box" style="color:white;background-color:#81B5D3;">
+                <div class="inner">
+                  <h3>{{numberFormat $.lastestGroupStats.DiffTargetRepay}}</h3>
+
+                  <p>{{t $.LangUse "差值金额"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-pie-graph"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box"  style="color:white;background-color: #65C595;">
+                <div class="inner">
+                  <h3>{{$.lastestGroupStats.RepayAmountRate}}<sup style="font-size: 20px">%</sup></h3>
+                  <p>{{t $.LangUse "回收率"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-person-add"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box"  style="color:white;background-color: #F7BF70;">
+                <div class="inner">
+                  <h3>{{numberFormat $.lastestGroupStats.RepayTotal}}</h3>
+
+                  <p>{{t $.LangUse "回款总金额"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+              </div>
+            </div>
+            <!-- ./col -->
+
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box text-info"  style="color:white;background-color: #EA8A80;">
+                <div class="inner">
+                  <h3>{{numberFormat $.lastestGroupStats.LoadLeftUnpaidPrincipal}}</h3>
+
+                  <p>{{t $.LangUse "分案本金"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-shopping-cart"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6" >
+
+                    <div class="box" >
+                      <div class="box-header with-border">
+                          <h3 class="box-title">{{t $.LangUse "当前排名"}}</strong></h3>
+
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body" style="height:340px">
+                        <table id="groupRanking" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                            <th>{{t .LangUse "排名"}}</th>
+                            <th>{{t .LangUse "小组名称"}}</th>
+                            <th>{{t .LangUse "回收率"}}%</th>
+                            <th>{{t .LangUse "回款总金额"}}</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            {{range $.groupRankingList}}
+                          <tr>
+                            <td>{{.Ranking}}</td>
+                            <td>{{getRoleName .LeaderRoleID}}</td>
+                            <td  class="{{if ge .RepayAmountRate $.groupTargetRepayRate}}text-success{{else}}text-danger{{end}}">{{.RepayAmountRate}}</td>
+                            <td>{{numberFormat .RepayTotal}}</td>
+                          </tr>
+                          {{end}}
+                          </tbody>
+                          <tfoot>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.box-body -->
+                    </div>
+              <!-- /.box -->
+            </div>
+            <div class="col-md-6" >
+              <div class="box" >
+                <div class="box-header with-border">
+                  <h3 class="box-title">{{t $.LangUse "小组回收率"}}</h3>
+
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+
+                  </div>
+                </div>
+                <!-- /.box-header -->
+
+                <div class="box-body" style="height:340px">
+
+                  <div class="" id="groupChartContainer" style="width:100%;height:100%">
+
+                    <!-- /.col -->
+                  </div>
+                  <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
+
+                <!-- /.box-footer -->
+              </div>
+            </div>
+            <div class="col-md-12" >
+
+                    <div class="box" >
+                      <div class="box-header with-border">
+                          <h3 class="box-title">{{t $.LangUse "小组成员排名"}}</strong></h3>
+
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body" style="">
+                        <table id="groupMemberRanking" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                            <th>{{t .LangUse "排名"}}</th>
+                            <th>{{t .LangUse "姓名"}}</th>
+                            <th>{{t .LangUse "回收率"}}%</th>
+                            <th>{{t .LangUse "分案本金"}}</th>
+                            <th>{{t .LangUse "回款总金额"}}</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {{range $.rankingList}}
+                          {{if eq $.groupLeaderRoleID .LeaderRoleID}}
+                          <tr>
+                            <td>{{.Ranking}}</td>
+                            <td>{{operatorName .AdminUID}}</td>
+                            <td  class="{{if ge .RepayAmountRate $.standardRepayRate}}text-success{{else}}text-danger{{end}}">{{.RepayAmountRate}}</td>
+                            <td>{{numberFormat .LoadLeftUnpaidPrincipal}}</td>
+                            <td>{{numberFormat .RepayTotal}}</td>
+                          </tr>
+                          {{end}}
+                          {{end}}
+                          </tbody>
+                          <tfoot>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.box-body -->
+                    </div>
+              <!-- /.box -->
+            </div>
+          </div>
+        <!-- </section> -->
+      </div>
+      <div class="tab-pane" id="tab_2">
+        <!-- Content Header (Page header) -->
+        <!-- <section class="content-header">
+          <h1>
+            {{t .LangUse "个人整体情况"}}
+          </h1>
+        </section> -->
+
+        <!-- <section class="content"> -->
+          <div class="row">
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box" style="color:white;background-color:#81B5D3;">
+                <div class="inner">
+                  <h3>{{$.standardRepayRate}}%</h3>
+
+                  <p>{{t $.LangUse "KPI"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-pie-graph"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box"  style="color:white;background-color: #65C595;">
+                <div class="inner">
+                  <h3>{{$.lastestStatsData.RepayAmountRate}}<sup style="font-size: 20px">%</sup></h3>
+                  <p>{{t $.LangUse "回收率"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-person-add"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box"  style="color:white;background-color: #F7BF70;">
+                <div class="inner">
+                  <h3>{{numberFormat $.lastestStatsData.RepayTotal}}</h3>
+
+                  <p>{{t $.LangUse "回款总金额"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+              </div>
+            </div>
+            <!-- ./col -->
+
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box text-info"  style="color:white;background-color: #EA8A80;">
+                <div class="inner">
+                  <h3>{{numberFormat $.lastestStatsData.LoadLeftUnpaidPrincipal}}</h3>
+
+                  <p>{{t $.LangUse "分案本金"}}</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-shopping-cart"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+                <div class="row">
+                  <div class="col-md-6" >
+
+                    <div class="box" >
+                      <div class="box-header with-border">
+                          <h3 class="box-title">{{t $.LangUse "当前排名"}}: <strong>{{$.lastestStatsData.Ranking}}</strong></h3>
+
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body" style="height:730px">
+                        <table id="allMemberRanking" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                            <th>{{t .LangUse "排名"}}</th>
+                            <th>{{t .LangUse "姓名"}}</th>
+                            <th>{{t .LangUse "回收率"}}%</th>
+                            <th>{{t .LangUse "回款总金额"}}</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            {{range $.rankingList}}
+                          <tr>
+                            <td>{{.Ranking}}</td>
+                            <td>{{operatorName .AdminUID}}</td>
+                            <td  class="{{if ge .RepayAmountRate $.standardRepayRate}}text-success{{else}}text-danger{{end}}">{{.RepayAmountRate}}</td>
+                            <td>{{numberFormat .RepayTotal}}</td>
+                          </tr>
+                          {{end}}
+                          </tbody>
+                          <tfoot>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.box-body -->
+                    </div>
+              <!-- /.box -->
+            </div>
+            <div class="col-md-6" >
+              <div class="box" >
+                <div class="box-header with-border">
+                  <h3 class="box-title">{{t $.LangUse "今日到手Bonus"}}</h3>
+
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+
+                  </div>
+                </div>
+                <!-- /.box-header -->
+
+                <div class="box-body" style="height:318px">
+
+                  <div class="" id="chartContainer" style="width:100%;height:100%">
+
+                    <!-- /.col -->
+                  </div>
+                  <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
+
+                <!-- /.box-footer -->
+              </div>
+            </div>
+            <div class="col-md-6" >
+              <div class="box" >
+                <div class="box-header with-border">
+                  <h3 class="box-title">{{t $.LangUse "差值金额"}}</h3>
+
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+
+                  </div>
+                </div>
+                <!-- /.box-header -->
+
+                <div class="box-body" style="height:350px">
+
+                  <div class="" id="diffTargetRepayChart" style="width:100%;height:100%">
+
+                    <!-- /.col -->
+                  </div>
+                  <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
+
+                <!-- /.box-footer -->
+              </div>
+            </div>
+
+
+                </div>
+        <!-- </section> -->
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+  <!-- /.col-md-12 -->
+  </div>
+<!-- content-wrapper -->
+</div>

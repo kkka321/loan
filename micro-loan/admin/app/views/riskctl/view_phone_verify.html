@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info ">
+                  <div class="box-header with-border">
+                      <h1 class="box-title">{{t .LangUse "已完成电核"}}</h1>
+                      <div>{{t .LangUse "电核结论"}}: {{$.remark}}</div>
+                  </div>
+
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                            <table class="table table-bordered table-striped">
+                              <tr>
+                                <th>{{t .LangUse "Question"}}</th>
+                                <th>{{t .LangUse "Status"}}</th>
+                                <th>{{t .LangUse "Value"}}</th>
+                              </tr>
+                              {{range $val := $.list}}
+                              <tr>
+                                <td>{{$val.Question}}</td>
+                                <td>{{$val.Status}}</td>
+                                <td>{{$val.Value}}</td>
+                              </tr>
+                              {{end}}
+
+                            </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        {{if eq .checkStatus 10}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info ">
+                    <div class="box-header with-border">
+                        <h1 class="box-title">{{t .LangUse "失效原因"}}</h1>
+                    </div>
+
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "Question"}}</th>
+                                <th>{{t .LangUse "Value"}}</th>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse "失效原因"}}</td>
+                                <td>{{.invalidReason}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+        {{end}}
+    </section>
+    <!-- /.content -->
+</div>

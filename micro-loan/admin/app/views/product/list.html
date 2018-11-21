@@ -1,0 +1,121 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+           {{t .LangUse "产品列表"}}
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">{{t .LangUse "金融产品"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th class="th_sort" id="Id">ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "产品名称"}}</th>
+                            <th>{{t .LangUse "产品类型"}}</th>
+                            <th>{{t .LangUse "状态"}}</th>
+                            <th class="th_sort" id="DayInterestRate">{{t .LangUse "日利率"}}(‱)<i id="iDayInterestRate" class=" text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "利息类型"}}</th>
+                            <th class="th_sort" id="DayFeeRate">{{t .LangUse "日费率"}}(‱)<i id="iDayFeeRate" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "费用类型"}}</th>
+                            <th class="th_sort" id="DayGraceRate">{{t .LangUse "宽限期利率"}}(‱)<i id="iDayGraceRate" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th class="th_sort" id="DayPenaltyRate">{{t .LangUse "罚息利率"}}(‱)<i id="iDayPenaltyRate" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th class="th_sort" id="MinAmount">{{t .LangUse "最小金额"}}<i id="iMinAmount" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th class="th_sort" id="MaxAmount">{{t .LangUse "最大金额"}}<i id="iMaxAmount" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th class="th_sort" id="MinPeriod">{{t .LangUse "最短期限"}}<i id="iMinPeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th class="th_sort" id="MaxPeriod">{{t .LangUse "最长期限"}}<i id="iMaxPeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "期限单位"}}</th>
+                            <th>{{t .LangUse "取整方式"}}</th>
+                            <th>{{t .LangUse "取整单位"}}</th>
+                            <!-- <th>还款提醒</th>
+                            <th>逾期提醒</th> -->
+                            <th class="th_sort" id="GracePeriod">{{t .LangUse "宽限期"}}<i id="iGracePeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "还款顺序"}}</th>
+                            <th>{{t .LangUse "用户可见"}}</th>
+                            <th class="th_sort" id="Ctime">{{t .LangUse "时间"}}<i id="iCtime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                            <th>{{t .LangUse "操作"}}</th>
+                        </tr>
+
+                        {{range .List}}
+                        <tr>
+                            <td>{{.Id}}</td>
+                            <td>{{.Name}}</td>
+                            <td>{{typeDisplayProduct $.LangUse .ProductType}}</td>
+                            <td>{{statusDisplayProduct $.LangUse .Status | str2html}}</td>
+                            <td>{{.DayInterestRate}}</td>
+                            <td>{{chargeFeeTypeDisplay $.LangUse .ChargeInterestType}}</td>
+                            <td>{{.DayFeeRate}}</td>
+                            <td>{{chargeFeeTypeDisplay $.LangUse .ChargeFeeType }}</td>
+                            <td>{{.DayGraceRate}}</td>
+                            <td>{{.DayPenaltyRate}}</td>
+                            <td>{{.MinAmount}}</td>
+                            <td>{{.MaxAmount}}</td>
+                            <td>{{.MinPeriod}}</td>
+                            <td>{{.MaxPeriod}}</td>
+                            <td>{{.Period}}</td>
+                            <!-- <td>{{.RepayRemind}}</td>
+                            <td>{{.OverdueRemind}}</td> -->
+                            <td>{{ceilWayDisplay $.LangUse .CeilWay }}</td>
+                            <td>{{.CeilWayUnit}}</td>
+                            <td>{{.GracePeriod}}</td>
+                            <td>{{.RepayOrder}}</td>
+                            <td>{{.CustomerVisible}}</td>
+                            <td>{{mDateMHS .Ctime}}</td>
+                            <td>
+                              {{if ne .Status $.StatusValid}}
+                              <a href="/product/edit?id={{.Id}}">{{t $.LangUse "编辑"}}</a> |
+                              {{t $.LangUse "下架"}} |
+                              <a href="/product/up?id={{.Id}}">{{t $.LangUse "上架"}} </a>   |
+                              <a href="/product/trial_calc?id={{.Id}}">{{t $.LangUse "试算"}}</a>|
+                              <a href="/product/clone?id={{.Id}}">{{t $.LangUse "克隆"}}</a>
+                              {{else}}
+                               {{t $.LangUse "编辑"}} |
+                               <a href="/product/down?id={{.Id}}">{{t $.LangUse "下架"}} </a>  |
+                               {{t $.LangUse "上架"}} |
+                               <a href="/product/trial_calc?id={{.Id}}">{{t $.LangUse "试算"}}</a>|
+                               <a href="/product/clone?id={{.Id}}">{{t $.LangUse "克隆"}}</a>
+                              {{end}}
+                               |<a href="/product/opt/record?id={{.Id}}">{{t $.LangUse "操作流水"}}</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>暂无</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {{end}}
+
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+</div>

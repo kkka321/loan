@@ -1,0 +1,57 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "减免审核"}}
+        </h1>
+    </section>
+    <section class="content">
+        <form method="post" id="addForm"  action="/overdue/backend/reduction/confirm/save">
+            <input type="hidden" name="id" value="{{.Id}}"/>
+            <input type="hidden" name="op_action" value="{{.op_action}}"/>
+            <div class="box box-default color-palette-box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body no-padding">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "审批意见"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select id="confirm_option" class="form-control" required name="confirm_option">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                            {{range $v, $s := .OptionMap}}
+                                                <option value="{{$v}}" >{{t $.LangUse $s}}</option>
+                                            {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "审批说明"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+
+                                            <textarea name="remark" class="form-control" rows="3" required placeholder="{{t .LangUse "审批说明"}} ..." ></textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="hidden" value="{{$.cid}}" name="cid" id="cid" />
+
+                            <div class="box-footer">
+                                <button type="submit" id="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                                <button type="reset" id="resetForm" class="btn btn-default">{{t .LangUse "重置"}}</button>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

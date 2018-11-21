@@ -1,0 +1,133 @@
+<script>
+
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+
+  
+
+  $('#apply_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#apply_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+
+  $('#repay_date_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#repay_date_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $('#repay_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#repay_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $("#check_status").change(function () {
+    var check_status = $(this).children('option:selected').val();
+    if (check_status == "9" || check_status == "11") {
+      $("#div_left_amount").show();
+    }else{
+        $("#div_left_amount").hide();
+        //$("#left_amount").removeProp("min");
+        //$("#left_amount").removeProp("max");
+        $("#left_amount").val(0);
+    }
+  });
+
+  if($("#check_status").val() == "9" || $("#check_status").val() == "11"){
+      $("#div_left_amount").show();
+  }
+
+
+    $('#submitButton').on("click", function() {
+        console.log("click");
+        var orderId = $(".order_id").val()
+        var rTotal = $(".roll_back_total").val()
+        $.ajax('/repay/backend/repay_plan/rollback/do', {
+            type: 'POST',
+            data: {'order_id': orderId, 'roll_back_total': rTotal},
+            dataType: 'json',
+            success: function(data) {
+                page.reload()
+            },
+            error: function() {
+                error(output, 'Error communicating with remote server.');
+            }
+        });
+    });
+
+  $('#finish_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#finish_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  /*
+  $("#i_search").click(function(){
+    if($("#check_status").val() == "9" || $("#check_status").val() == "11"){
+      if($("#left_amount").val() <=0 || $("#left_amount").val() > 5500){
+        alert("please input the number greater than 0 less equal 5500");
+        return
+      }
+    }
+  });
+  */
+
+  var generateBtnIdPre = "generate_btn";
+  var repayBalancePre = "repay_balance_";
+  var generateTxtPre = "generate_text_";
+  var generateUrl = "/overdue/market_payment_code/generate";
+  var changeBalancePre = "change_balance_";
+
+  popUpModal4GeneratePaymentCode(generateBtnIdPre, repayBalancePre, generateTxtPre, generateUrl)
+  changePaymentCodeRepayMoney(changeBalancePre, repayBalancePre)
+
+
+
+  $("#i_search_va").on("click", function () {
+      var id = $("input[name='id']").val()
+      var mobile = $("input[name='mobile']").val()
+      var accountId = $("input[name='account_id']").val()
+      var vaCode = $("input[name='va_code']").val()
+      var paymentCode = $("input[name='payment_code']").val()
+
+      if (id=='' && mobile =='' && accountId ==''&& vaCode ==''&& paymentCode ==''){
+          console.log("id == nul")
+          alert("请至少填写一种(借款ID,手机号码,账户ID,VA&付款码)")
+          return false
+      }
+  });
+
+
+
+    $('#updateModal').on('hide.bs.modal', function (e) {
+        console.log("hide clear");
+        $(this).removeData();
+    });
+
+    $("#updateModal").on("hidden.bs.modal", function() {
+        console.log("hidden clear");
+        $(this).removeData("bs.modal");
+    });
+
+
+});
+
+</script>

@@ -1,0 +1,159 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "还款提醒管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/repay/remind_case/list" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "ID"}}:<input name="id" type="number" class="form-control" placeholder="{{t .LangUse "ID"}}" value="{{.id}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="order_id" type="number" class="form-control" placeholder="{{t .LangUse "借款"}}" value="{{if gt .orderID 0}}{{.orderID}}{{end}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "账户"}}ID:<input name="account_id" type="number" class="form-control" placeholder="{{t .LangUse "账户"}}" value="{{if gt .accountID 0}}{{.accountID}}{{end}}" />
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control" placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                    {{t .LangUse "手机号"}}:<input type="number" class="form-control pull-right" name="mobile" value="{{.mobile}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                    {{t .LangUse "创建时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="ctime_range"  id="ctime_range" type="text" readonly class="form-control" origin="{{.ctimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.ctimeRange}}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                              <div class="col-xs-3">
+                                  {{t .LangUse "案件级别"}}:
+                                  <select name="level" class="form-control">
+                                      <option value="">{{t .LangUse "全部"}}</option>
+                                      {{range $value, $show := $.RMCaseCreateDaysMap}}
+                                          <option value="{{$value}}"{{if eq $.level $value}} selected{{end}}>{{$value}}</option>
+                                      {{end}}
+                                  </select>
+                              </div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;
+                                    <input type="submit" id="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/repay/remind_case/list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+<!--                                <th class="th_sort" id="order_id">{{t .LangUse "借款"}}ID<i id="iorder_id" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+-->
+                                <th>{{t .LangUse "ID"}}</th>
+                                <th>{{t .LangUse "借款ID"}}</th>
+                                <th>{{t .LangUse "案件级别"}}</th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "手机号"}}</th>
+                                <th>{{t .LangUse "应还日期"}}</th>
+                                <th>{{t .LangUse "剩余应还金额"}}</th>
+                                <!-- <th class="th_sort" id="repay_date">{{t .LangUse "应还日期"}}<i id="irepay_date" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th class="th_sort" id="total_repay">{{t .LangUse "剩余应还金额"}}<i id="itotal_repay" class="text-primary glyphicon glyphicon-resize-vertical"></i></th> -->
+                                <th>{{t .LangUse "操作员"}}</th>
+                                <th>{{t .LangUse "提醒结果"}}</th>
+                                <th>{{t .LangUse "创建时间"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.Id}}</td>
+                                <td>{{.OrderId}}</td>
+                                <td>{{.Level}}</td>
+                                <td><a href="/customer/detail?id={{.UserAccountId}}">{{.Realname}}</a></td>
+                                <td><a href="/customer/detail?id={{.UserAccountId}}">{{.Mobile}}</a></td>
+                                <td>{{.RepayDate | mDateMHSDate}}</td>
+                                <td>{{.TotalRepay}}</td>
+                                <td>{{.OpUid | operatorName}}</td>
+                                <td>{{.Result}}</td>
+                                <td>{{.Ctime | mDateMHS}}</td>
+                                <td>
+                                  <a href="/repay/remind_case/log?order_id={{.OrderId}}" target="_blank" />{{t $.LangUse "提醒记录"}}</a>
+                                  {{if eq .Status 1}}
+                                  |  <a href="/repay/remind_case/handle?id={{.Id}}" target="_blank" />{{t $.LangUse "提醒"}}</a>
+                                  {{end}}
+
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+<script>
+    $(function () {
+        $('.schema_op').click(function() {
+            var op = $(this).data("op")
+            var id = $(this).data("id")
+            var str = ""
+            if (op == "1") {
+                str = "是否启动该任务"
+            } else {
+                str = "是否停止该任务"
+            }
+
+            var re = window.confirm(str);
+            if (re != true) {
+                return false
+            }
+
+            window.location.href = "/schema/push_active?op=" + op + "&id=" + id
+
+            return false
+        });
+
+        $("#check_all").on("click", function(e){
+
+            var checkd = $('#check_all')[0].checked
+
+            //选择所有items
+            var fruitItems = document.getElementsByName('check_single');
+            for(var i=0; i<fruitItems.length; i++) {
+                if(fruitItems[i].checked !=  checkd) {
+                    fruitItems[i].checked = checkd;
+                }
+            }
+        });
+
+        $("#run_task").on("click", function(e){
+            var str='确定执行任务'
+            if (!confirm(str)){
+                return false
+            }
+
+            // collect ids
+            var ids = new Array()
+            var items = document.getElementsByName('check_single');
+            for(var i=0; i<items.length; i++) {
+                if(items[i].checked ==  true) {
+                    ids.push(items[i].value)
+                }
+            }
+
+            if (ids.length==0){
+                return false
+            }
+
+            $.ajax({
+                url:"/schema/run",
+                data:{ids:ids},
+                dataType:'json',
+                cache:false,
+                type:"POST",
+                success:function(result) {
+                    location.reload();
+                },
+            });
+
+            return false
+        });
+    });
+
+</script>

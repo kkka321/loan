@@ -1,0 +1,22 @@
+<script>
+    $(function () {
+        $('#distr_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#distr_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+        $('#used_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#used_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+    });
+
+</script>

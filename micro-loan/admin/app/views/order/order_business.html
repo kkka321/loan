@@ -1,0 +1,62 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "业务流水"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "操作"}}</th>
+                                <th>{{t .LangUse "操作时间"}}</th>
+                                <th>{{t .LangUse "操作员"}}</th>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse "提交借款申请"}}</td>
+                                <td>{{.orderBusiness.ApplyTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.ApplyOperator}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse "提交借款审核"}}</td>
+                                <td>{{.orderBusiness.CheckTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.CheckOperator}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse "反欺诈规则"}}</td>
+                                <td>{{.orderBusiness.RiskCtlFinishTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.OpUid | operatorName}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse "电核完成"}}</td>
+                                <td>{{.orderBusiness.PhoneVerifyTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.PhoneVerifyOperator}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse .orderBusiness.LoanStatus}}</td>
+                                <td>{{.orderBusiness.LoanTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.OpUid | operatorName}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t .LangUse .orderBusiness.PayStatus}}</td>
+                                <td>{{.orderBusiness.PayTime | mDateMHS}}</td>
+                                <td>{{.orderBusiness.PayOperator}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

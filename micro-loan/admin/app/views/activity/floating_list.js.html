@@ -1,0 +1,139 @@
+<script>
+    $(document).ready(function () {
+        $('#show_create_form').click(function () {
+            $('#create_form').removeClass('hide'); 
+            for (i=0;i < document.getElementsByTagName('input').length; i++){
+                if (i != 7){
+                    document.getElementsByTagName('input')[i].value=""
+                }
+            }
+           
+        });
+        $('#hide_create_form').click(function () {
+            $('#create_form').addClass('hide');
+        });
+    });
+$(function () {
+    $('#stime_range').datetimepicker({
+      format:'Y-m-d H:i:s',
+      step: 5
+    });
+    
+    $('#etime_range').datetimepicker({
+      format:'Y-m-d H:i:s',
+      step: 5
+    });
+});
+
+$(function () {
+
+$("#file0").on("change",function(){
+  xmTanUploadImg($("#file0")[0], "image0")
+  increaseFileNum()
+   
+  var file = document.getElementById("file1");
+  file.style.display = 'block'
+  var img = document.getElementById("image1");
+  img.style.display = 'block'
+});
+
+
+function increaseFileNum(){
+  var fileNum = document.getElementById("file_num");
+  console.log("fileNum.value:"+fileNum.value);
+  var num = parseInt(fileNum.value)
+  console.log("num:"+num);
+  num = num+1
+  fileNum.value =num
+}
+
+
+function xmTanUploadImg(obj, imageName) {        
+    var file =  obj.files[0];
+    
+    console.log(obj);
+    console.log(file);
+    console.log("file.size = " + file.size);  //file.size 单位为byte
+    if (file.size >= 5100000){
+        alert("the file is too large exceeds 5M")
+        // var img = document.getElementById(imageName);
+        // img.src="";
+        // $("#file0").val("");
+        // return false
+    }
+    var reader = new FileReader();
+
+    //读取文件过程方法
+    reader.onloadstart = function (e) {
+        console.log("开始读取....");
+    }
+    reader.onprogress = function (e) {
+        console.log("正在读取中....");
+    }
+    reader.onabort = function (e) {
+        console.log("中断读取....");
+    }
+    reader.onerror = function (e) {
+        console.log("读取异常....");
+    }
+    reader.onload = function (e) {
+        console.log("成功读取....");
+
+        var img = document.getElementById(imageName);
+        img.src = e.target.result;
+        
+        img.style.width = "90px"
+        img.style.height = "90px"
+    }
+
+    reader.readAsDataURL(file)
+}
+});
+
+$('.modify-config').click(function () {
+        $('#create_form').removeClass('hide');
+
+        var obj = $(this);
+        $('#ids').attr("value", obj.attr('id_tmp'));
+        $('#r_id').attr("value", obj.attr('r_id'));
+        $("#floating_tags").val(obj.attr('tags')).select();
+        $('#link_url').attr('value', obj.attr('link_url'));
+        $('#source_page').attr('value', obj.attr('source_page'));
+        $('#stime_range').attr('value', obj.attr('s_time'));
+        $('#etime_range').attr('value', obj.attr('e_time'));
+    });
+
+$('.super_delete_customer').click(function() {
+         if (deleteConfirm()){
+            var id = $(this).attr('data-id')
+           
+            $.ajax({
+                url:"/activity/del_floating?Id=" + id,
+                dataType:'json',
+                cache:false,
+                type:"GET",
+                success: function (data) {
+                    console.log(data);
+                    if(data.data == false){
+                        alert("delete falied");
+                        return 
+                    }
+                },
+                complete:function() {
+                    location.reload();
+                }
+            });
+        }else{
+            return 
+        }
+    });
+    function deleteConfirm() {
+　　　　if (window.confirm("你确定要删除吗？")) {
+　　　　　　return true;//确定返回真
+　　　　}
+　　　　else {
+　　　　　　return false;//取消返回假
+　　　　}
+　　}
+</script>
+    

@@ -1,0 +1,44 @@
+<div class="content-wrapper">
+<!-- Main content -->
+<section class="content">
+  <!-- Info boxes -->
+  <div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+         <form role="form" method="post" action="/crypto">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="text">密文</label>
+                  <textarea name="text" rows="10" cols="150"></textarea>
+                </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+          </form>
+        </div>
+    </div>
+  </div>
+</section>
+
+{{if .isShow}}
+<section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+      <div class="col-md-12">
+          <div class="box box-primary">
+              <div class="box-body">
+                <p>解密后的明文</p>
+              </div>
+              <div class="box-body">
+              <pre>
+{{.jsonStr}}
+              </pre>
+              </div>
+          </div>
+      </div>
+    </div>
+  </section>
+{{end}}
+
+</div>

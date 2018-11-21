@@ -1,0 +1,119 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "退款"}}
+        </h1>
+    </section>
+    <section class="content">
+        <form method="post" id="addForm"  action="/customer/refund/do" enctype="multipart/form-data">
+            <div class="box box-default color-palette-box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body no-padding">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "金额"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="balance" name="balance" value="{{.One.Balance}}"  class="form-control" rows="3" disabled></input>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "退款类型"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <select id="refund_type" class="form-control" name="refund_type">
+                                                <option value="1">{{t $.LangUse "退款到借款订单"}}</option>
+                                                <option value="2">{{t $.LangUse "退款到银行账户"}}</option>
+                                                <option value="3">{{t $.LangUse "退款到他人账户"}}</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "退款金额"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="refund_amount" name="refund_amount" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." value="0" />
+                                        </div>
+                                    </td>
+                                </tr>
+                             
+                                <tr class = "group_fee" hidden>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "扣除手续费"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="fee" name="fee" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." value="{{.Fee}}"  disabled/>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class = "group_order_id">
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "订单"}}ID *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="order_id" name="order_id" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." value="0" />
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class = "group_other_account" hidden>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "目的账户"}}ID *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="other_account" name="other_account" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." value="0" />
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class = "group_file" hidden>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "多还款凭证"}} *</p>
+                                    </td>
+                                    <td>
+                                        <input type="file" name="file0"  id = "file0" value={{t .LangUse "请上传图片"}}/>
+                                        <img id="image0"/>
+                                        
+                                        <input type="file" name="file1"  id = "file1" style="display:none" value={{t .LangUse "请上传图片"}}/>
+                                        <img id="image1"/>
+                                        
+                                        <input type="file" name="file2"  id = "file2" style="display:none"  value={{t .LangUse "请上传图片"}}/>
+                                        <img id="image2"/>
+                                        
+                                        <input type="file" name="file3"  id = "file3" style="display:none"  value={{t .LangUse "请上传图片"}}/>
+                                        <img id="image3"/>
+                                        
+                                        <input type="file" name="file4"  id = "file4" style="display:none"  value={{t .LangUse "请上传图片"}}/>
+                                        <img id="image4"/>
+                                    </td>
+                                </tr>
+                             
+                            </table>
+                            <input type="hidden" value="{{$.Cid}}" name="Cid" id="Cid" />
+                            <input type="hidden" value="0" name="file_num" id="file_num" />
+                            <div class="box-footer">
+                                <button type="submit" id="submit"  class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                                <button type="reset" id="resetForm" class="btn btn-default">{{t .LangUse "重置"}}</button>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

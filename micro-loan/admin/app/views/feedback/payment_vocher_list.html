@@ -1,0 +1,221 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "还款问题反馈列表"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/feedback/paymentvocher" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            
+                            <div class="col-xs-3">
+                                {{t .LangUse "订单"}}ID: <input name="order_id" type="text" class="form-control" placeholder="{{t .LangUse "订单"}} ID" value="{{$.orderId}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "客户"}}ID: <input name="account_id" type="text" class="form-control" placeholder="{{t .LangUse "客户"}} ID" value="{{$.accountID}}">
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "手机号"}}: <input name="mobile" type="text" class="form-control" placeholder="{{t .LangUse "手机号"}}" value="{{$.mobile}}">
+                                </div>
+                            <div class="col-xs-3">{{t .LangUse "订单状态"}}:
+                                <select name="check_status" title={{t .LangUse "请选择"}} class="statusSelectMultiBox
+                                        selectpicker form-control" multiple="multiple" data-hide-disabled="true"
+                                data-size="5">
+                            {{range $value, $show := .check_status}}
+                                <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                            {{end}}
+                                </select>
+                            </div>
+                            <div class="col-xs-3">
+                                {{t .LangUse "还款渠道"}}:
+                                    <select name="remib_tags" class="tagSelectMultiBox selectpicker form-control" data-hide-disabled="multiple" data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagRemibMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedTagRemibMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                           
+                        </div>
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "反馈时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="ctime_range"  id="ctime_range" type="text" readonly class="form-control" origin="{{$.ctimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.ctimeRange}}" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/feedback/paymentvocher" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                           
+                        </div>
+                        <!--  -->
+                        
+                        <!--  -->
+                    </div>
+                </form>
+                <!-- 1 -->
+              
+                <!--  1-->
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+      <div>
+        <form class="form-horizontal" action="/feedback/update_payment_vocher" method="get">
+        <div class="row hide" id="create_form">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <i class="fa fa-edit"></i>
+                        <h3 class="box-title">{{t .LangUse "处理结果"}}</h3>
+                    </div>
+                    <div class="box-body pad table-responsive">
+                        <table class="table table-bordered text-center">
+                            <tbody><tr>
+                                <th>{{t .LangUse "处理结果"}}</th>
+                                <th>{{t .LangUse "备注"}}</th>
+                            </tr>
+                            
+                            <tr class = "group_file" show> 
+                                    <td>
+                                        <div class="col-xs-9"> 
+                                                <select name="result_tags" class="tagSelectMultiBox selectpicker form-control" data-hide-disabled="multiple" data-hide-disabled="true" data-size="5">
+                                                {{range $value, $show := $.tagResultMap}}
+                                                    <option value="{{$value}}"{{if isInMap $.selectedTagResultMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                                {{end}}
+                                                </select>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                    <input name="comment" id="comment" type="text" class="form-control" rows="2" origin="{{$.comment}}" placeholder={{t .LangUse "备注"}}></textarea>
+                                    </td>
+                                    <td>
+                                        <input name="ids" id="ids" type="hidden" class="form-control" rows="2" origin="{{$.ids}}"  placeholder = 0></textarea>
+                                      </td> 
+                                </tr>
+                            <tr>   
+                            <td>
+                                &nbsp;<input id="submit"  type="submit"  class=" btn-primary" value="{{t .LangUse "提交"}}"> 
+                            </td>
+                            
+                            <td>
+                                <button id="hide_create_form" type="button" class=" btn-primary">{{t .LangUse "收起"}}</button>
+                            </td>
+                                   
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+    </form>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                <tr>
+                  <th>{{t .LangUse "订单"}}ID</th>
+                  <th>{{t .LangUse "客户"}}ID</th>
+                  <th>{{t .LangUse "手机号"}}</th>
+                  <th>{{t .LangUse "订单应还款金额"}}</th>
+                  <th>{{t .LangUse "订单状态"}}</th>
+                  <th>{{t .LangUse "凭证查看"}}</th>
+                  <th>{{t .LangUse "反馈时间"}}</th>
+                  <th>{{t .LangUse "还款方式"}}</th>
+                  <th>{{t .LangUse "还款渠道"}}</th>
+                  <th>{{t .LangUse "处理状态"}}</th>
+                  <th>{{t .LangUse "处理结果"}}</th>
+                 
+                </tr>
+                {{range .List}}
+                <tr>
+                    <td><a href="/ticket/list?order_id={{.OrderId}}&submit=true">{{.OrderId}}</a></td>
+                    <td>{{.AccountId}}</td>
+                    <td>{{.Mobile}}</td>
+                    <td>{{.TotalPayment}}</td>
+                    <td>{{getLoanStatusDesc $.LangUse .CheckStatus}}</td>
+                    <td>
+                   <a href="/feedback/payment_vocher_image?cid={{.OrderId}}" target="_blank">{{t $.LangUse "凭证"}}</a>
+                    </td> 
+                    <td>{{mDateMHS .Ctime}}</td>
+                    <td>{{.ReimbMeans}}</td>
+                    <td> 
+                        {{if eq .ReimbChannel 1}} 
+                        Xendit
+                        {{ else if eq .Status 2}}
+                        DoKu 
+                        {{else}}
+                         -
+                        {{end}}
+                    </td>
+                    <td>
+                        {{if eq .Status 0}} 
+                            -
+                        {{ else if eq .Status 1}}  
+                        已发送跟进
+                        {{else if eq .Status 2}}
+                        待二次更新
+                        {{else if eq .Status 3}}
+                        退款
+                        {{else if eq .Status 4}}
+                        重新回调
+                        {{end}}
+                    </td>
+                    <td> 
+                    <button type="button" class="btn bg-orange btn-flat modify-config" id_tmp = "{{.Id}}" >{{t $.LangUse "处理结果"}}</button>
+                    </td>             
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>
+{{.statusSelectMultiBox | str2html}}

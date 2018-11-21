@@ -1,0 +1,201 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t $.LangUse "我的工单"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t $.LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/ticket/me" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "Ticket"}} {{t .LangUse "ID"}}: <input name="id" type="text" class="form-control" placeholder="{{t $.LangUse "ID"}}" value="{{if gt $.id 0}}{{$.id}}{{end}}">
+                            </div>
+                            <div class="col-xs-3">
+                            {{t $.LangUse "工单分类"}}:
+                                <select name="item_id" class="form-control">
+                                    <option value="-1" selected="selected">{{t $.LangUse "请选择"}}</option>
+                                {{range $value, $show := $.ticketItemMap}}
+                                    <option value="{{$value}}"{{if eq $.itemID $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="col-xs-3">
+                              {{t $.LangUse "Case ID"}}:<input name="related_id" type="number" class="form-control" placeholder="{{t $.LangUse "Case ID"}}" value="{{if gt $.relatedID 0}}{{$.relatedID}}{{end}}">
+                            </div>
+                        </div>
+                        <div class="row"><p>&nbsp;</p></div>
+
+                        <div class="row">
+                          <div class="col-xs-3">
+                          {{t .LangUse "借款"}} ID:<input name="order_id" type="number" class="form-control"
+                                                                                   placeholder="{{t .LangUse "借款"}} ID" value="{{if gt $.orderID 0}}{{$.orderID}}{{end}}"/>
+                          </div>
+
+                          <div class="col-xs-3">
+                          {{t .LangUse "风险评级"}}:
+                              <select name="risk_level" class="form-control">
+                                  <option value="-1">{{t .LangUse "请选择"}}</option>
+                              {{range $value, $show := $.RiskLevelMap}}
+                                  <option value="{{$value}}"{{if eq $.riskLevel $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                              {{end}}
+                              </select>
+                          </div>
+                          <div class="col-xs-3">
+                          {{t $.LangUse "状态"}}:
+                              <select name="status" title="{{t $.LangUse "请选择"}}" class="form-control selectpicker" multiple="multiple" data-hide-disabled="true" data-size="5">
+                            {{range $value, $show := $.ticketStatusMap}}
+                                <option value="{{$value}}"{{if isInMap $.selectedStatusMap $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                            {{end}}
+                              </select>
+                          </div>
+                        </div>
+
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                          <div class="col-xs-3">
+                          {{t $.LangUse "创建时间"}}:
+                              <div class="input-group">
+                                  <div class="input-group-addon">
+                                      <i class="fa fa-calendar"></i>
+                                  </div>
+                                  <input name="ctime_range"  id="ctime_range" type="text" readonly class="form-control" origin="{{$.ctimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.ctimeRange}}" />
+                              </div>
+                          </div>
+                            <div class="col-xs-3">
+                            {{t $.LangUse "完成时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="complete_time_range"  id="complete_time_range" type="text" readonly class="form-control" origin="{{.completeTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.completeTimeRange}}" />
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                            {{t $.LangUse "关闭时间"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="close_time_range"  id="close_time_range" type="text" readonly class="form-control" origin="{{.closeTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.closeTimeRange}}" />
+                                </div>
+                            </div>
+                            <input name="is_search" type="hidden" value="1" />
+                        </div>
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                <input type="submit" class="form-control btn btn-block btn-info" value="{{t $.LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                <a href="/ticket/me" class="form-control">{{t $.LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                <a href="javascript:void(0)" class="form-control reload-page">{{t $.LangUse "刷新"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                              <button type="button" class="toggoleSelfOnlineStatus btn btn-warning" data-tostop="{{t $.LangUse "暂停接单"}}"   data-tostart="{{t $.LangUse "恢复接单"}}" data-workerstatus="{{if $.IsWorkerAcceptTicket}}1{{else}}0{{end}}" data-lock="0">
+                                {{if $.IsWorkerAcceptTicket}}
+                                  {{t $.LangUse "暂停接单"}}
+                                {{else}}
+                                  {{t $.LangUse "恢复接单"}}
+                                {{end}}
+                              </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body" style="overflow:scroll;">
+              <table class="table table-bordered table-striped">
+                <tr>
+                  <th>{{t .LangUse "操作"}}</th>
+                  <th>{{t .LangUse "Ticket"}} {{t .LangUse "ID"}}</th>
+                  <th>{{t $.LangUse "工单分类"}}</th>
+                  <th>{{t .LangUse "Case ID"}}</th>
+                  <th>{{t .LangUse "借款"}}ID</th>
+                  <th>{{t .LangUse "状态"}}</th>
+                  <th>{{t .LangUse "交流方式"}}</th>
+                  <th>{{t .LangUse "是否是空号"}}</th>
+                  <th>{{t .LangUse "风险评级"}}</th>
+                  <th>{{t .LangUse "创建时间"}}</th>
+                  <th>{{t .LangUse "分配时间"}}</th>
+                  <th>{{t .LangUse "开始时间"}}</th>
+                  <th>{{t .LangUse "处理次数"}}</th>
+                  <th class="th_sort" id="last_handle_time">{{t .LangUse "上次处理时间"}}<i id="ilast_handle_time" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th class="th_sort" id="next_handle_time">{{t .LangUse "下次沟通时间"}}<i id="inext_handle_time" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th>{{t .LangUse "客户期望电核时间"}}</th>
+                  <th>{{t .LangUse "部分完成时间"}}</th>
+                  <th>{{t .LangUse "完成时间"}}</th>
+                  <th>{{t .LangUse "关闭时间"}}</th>
+                  <th>{{t .LangUse "过期时间"}}</th>
+                  <th>{{t .LangUse "关闭原因"}}</th>
+                </tr>
+                {{range .List}}
+                <tr class="{{if gt .LastHandleTime $.TodayStartTime}} bg-navy {{end}}" >
+                    <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td>
+                      {{if eq .Status $.TicketStatusAssigned}}
+                      <a  class="startTicket" link="{{.Link}}" href="javascirpt:;">{{t $.LangUse "开始"}}</a>
+                      {{else if ne .Status $.TicketStatusClosed}}
+                      <a  class="viewTicket" href="{{.Link}}" target="_blank">{{t $.LangUse "直达链接"}}</a>
+                      {{end}}
+                    </td>
+                    <td>{{.Id}}</td>
+                    <td>{{getTicketItemDisplay $.LangUse .ItemID}}</td>
+                    <td>{{.RelatedID}}</td>
+                    <td>{{.OrderID}}</td>
+                    <td>{{getTicketStatusDisplay $.LangUse .Status}}</td>
+                    <td>{{getCommunicationWayDisplay $.LangUse .CommunicationWay}}</td>
+                    <td>{{getIsEmptyDisplay $.LangUse .IsEmptyNumber}}</td>
+                    <td>{{getRiskLevelDisplay $.LangUse .RiskLevel}}</td>
+                    <td>{{mDateMHS .Ctime}}</td>
+                    <td>{{mDateMHS .AssignTime}}</td>
+                    <td>{{mDateMHS .StartTime}}</td>
+                    <td>{{.HandleNum}}</td>
+                    <td>{{mDateMHS .LastHandleTime}}</td>
+                    <td>{{mDateMHS .NextHandleTime}}</td>
+                    <td>{{.CustomerBestTime}}</td>
+                    <td>{{mDateMHS .PartialCompleteTime}}</td>
+                    <td>{{mDateMHS .CompleteTime}}</td>
+                    <td>{{mDateMHS .CloseTime}}</td>
+                    <td>{{mDateMHS .ExpireTime}}</td>
+                    <td>{{t $.LangUse .CloseReason}}</td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

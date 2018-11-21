@@ -1,0 +1,43 @@
+<script>
+
+$(function () {
+
+    $('#assignModal').on('hide.bs.modal', function (e) {
+        console.log("hide clear");
+        $(this).removeData();
+    });
+
+    $("#assignModal").delegate("#submitAssignButton","click",function(e){
+       
+        var form = $("#assignForm")
+        $.ajax({
+            url:"/extension/assign",
+            data:form.serialize(),
+            dataType:'json',
+            cache:false,
+            type:form.attr('method'),
+            success:function(result) {
+                if (result.hasOwnProperty('error') ) {
+                    showWarningBox(result.error);
+                } else {
+                    console.log("success");
+                    $('#assignModal').modal('hide');
+                    window.location.reload();
+                }
+            },
+        });
+    })
+
+
+  $('#assign_call_date_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label){
+    $('#assign_call_date_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+});
+
+</script>

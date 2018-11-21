@@ -1,0 +1,18 @@
+<div class="modal-header createPayMethodFormTitle">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="updateModalLabel">更新操作</h4>
+</div>
+<form role="form" id="updateForm" method="post" action="/rbac/operation/update">
+    <div class="modal-body">
+        <!-- text input -->
+        <div class="form-group">
+            <label>名称</label>
+            <input type="text" class="form-control" placeholder="输入名称" name="name" value="{{$.data.Name}}">
+        </div>
+        <input type="hidden" class="form-control" name="id" value="{{$.data.Id}}">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{t .LangUse "取消"}}</button>
+        <button type="submit" class="btn btn-success" id="submitButton" >{{t .LangUse "提交"}}</button>
+    </div>
+</form>

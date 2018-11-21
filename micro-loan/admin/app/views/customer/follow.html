@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "客户沟通"}}
+        </h1>
+    </section>
+    <section class="content">
+      <form method="post" action="/customer/follow/confirm">
+      <input type="hidden" name="cid" value="{{.BaseInfo.Id}}"/>
+        <div class="box box-default color-palette-box">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box-body no-padding">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "沟通时间"}}</p>
+                                </td>
+                                <td><div class="col-md-6">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="datetimepicker" name="follow_time" value="{{tplTimeNow}}" required readonly/>
+                                    </div>
+                                </div></td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "沟通人"}}</p>
+                                </td>
+                                <td>
+                                    {{.LoginNickname}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "沟通内容"}}</p>
+                                </td>
+                                <td>
+                                    <textarea name="content" class="form-control" rows="3" placeholder="{{t .LangUse "沟通内容"}} ..." required></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bg-light-blue color-palette">
+                                    <p class="text-center">{{t .LangUse "备注"}}</p>
+                                </td>
+                                <td>
+                                    <textarea name="remark" class="form-control" rows="3" placeholder="{{t .LangUse "备注"}} ..."></textarea>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                            <button type="reset" class="btn btn-default">{{t .LangUse "重置"}}</button>
+                        </div>
+
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+      </form>
+    </section>
+</div>

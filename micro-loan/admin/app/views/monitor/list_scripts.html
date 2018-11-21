@@ -1,0 +1,156 @@
+<script>
+    $(function() {
+        function getParam(name){
+            var sValue=location.search.match(new RegExp(name + "=([^&]*)(&|$)"))
+            return sValue?sValue[1]:sValue
+        }
+
+        var data_type = ""
+        var chart_type = ""
+        var thirdparty = ""
+        data_type = getParam("data_type")
+        chart_type = getParam("chart_type")
+        var obj = document.getElementById("thirdparty")
+        if (obj != null) {
+            thirdparty = obj.value
+        }
+
+        function createHistChart(response) {
+            var chartDatas = []
+            var xDatas = []
+            var resp = response
+            for(var item in resp) {
+                xDatas.push(resp[item].Name)
+                chartDatas.push(resp[item].Num)
+            }
+
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: xDatas
+                },
+                legend: {
+                    shadow: true
+                },
+                series:  [{
+                    name: "millisecond",
+                    data: chartDatas
+                }]
+            });
+        }
+
+        function createLineChart(response) {
+            var chartDatas = []
+            var xDatas = []
+            var xMin
+            var resp = response
+            for(var item in resp) {
+                var name = resp[item].Name
+                var datas = []
+                var list = resp[item].List
+                for (var i in list) {
+                    datas.push(list[i].Num)
+                }
+                var line_data = {
+                    name : name,
+                    data : datas
+                }
+                chartDatas.push(line_data)
+            }
+            for(var item in resp) {
+                var list = resp[item].List
+                for (var i in list) {
+                    xDatas.push(list[i].Date)
+                }
+                xMin = xDatas[0]
+                break
+            }
+            Highcharts.chart('container', {
+                title: {
+                    text: ''
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+                xAxis: {
+                    categories: xDatas,
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: ''
+                    }
+                },
+
+                plotOptions: {
+                    series: {
+                        label: {
+                            connectorAllowed: false
+                        },
+                    }
+                },
+
+                series: chartDatas,
+
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                }
+
+            });
+        }
+
+        function load_data() {
+            $.ajax({
+                url: '/monitor/list?' + "data_type=" + data_type + "&chart_type=" + chart_type + "&thirdparty=" + thirdparty,
+                data: {DataType: 1},
+                dataType: 'json',
+                cache: false,
+                type: 'POST',
+                error: function () {
+                    console.log('Request Failed');
+                },
+                success: function (result) {
+                    if (result.errorCode > 0) {
+                        console.log(result.errorMessage);
+                    } else {
+                        if (chart_type == "1") {
+                            createHistChart(result.response)
+                        } else {
+                            createLineChart(result.response)
+                        }
+                    }
+                },
+            })
+        }
+
+        $(".thirdparty_select").on("change",function(){
+            var obj = document.getElementById("thirdparty")
+            if (obj != null) {
+                thirdparty = obj.value
+            }
+            load_data()
+        })
+
+        load_data()
+
+    });
+</script>

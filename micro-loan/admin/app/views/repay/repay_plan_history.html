@@ -1,0 +1,97 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+           {{t .LangUse "还款计划历史"}}
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>{{t .LangUse "序号"}} </th>
+                            <th>{{t .LangUse "应还日期"}}</th>
+                            <th>{{t .LangUse "出帐日期"}}</th>
+                            <th>{{t .LangUse "应还本金"}}</th>
+                            <th>{{t .LangUse "应还服务费"}}</th>
+                            <th>{{t .LangUse "应还利息"}}</th>
+                            <th>{{t .LangUse "应还宽限期利息"}}</th>
+                            <th>{{t .LangUse "应还罚息"}}</th>
+                            <th>{{t .LangUse "入账日期"}}</th>
+                            <th>{{t .LangUse "实还本金"}}</th>
+                            <th>{{t .LangUse "实还服务费"}}</th>
+                            <th>{{t .LangUse "实还利息"}}</th>
+                            <th>{{t .LangUse "实还宽限期利息"}}</th>
+                            <th>{{t .LangUse "实还罚息"}}</th>
+                            <th>{{t .LangUse "减免本金"}}</th>
+                            <th>{{t .LangUse "减免宽限期利息"}}</th>
+                            <th>{{t .LangUse "减免罚息"}}</th>
+                        </tr>
+
+                        {{range .repayPlanHistory}}
+                        <tr>
+                            <td>{{.Id}}</td>
+                            <td>{{mDateMHSDate .Plan.RepayDate}}</td>
+                            <td>{{mDateMHS .PayOutTime}}</td>
+                            <td>{{.Plan.Amount}}</td>
+                            <td>{{.Plan.ServiceFee}}</td>
+                            <td>{{.Plan.PreInterest}}</td>
+                            <td>{{.Plan.GracePeriodInterest}}</td>
+                            <td>{{.Plan.Penalty}}</td>
+                            <td>{{mDateMHS .PayInTime}}</td>
+                            <td>{{.Plan.AmountPayed}}</td>
+                            <td>{{.Plan.ServiceFeePayed}}</td>
+                            <td>{{.Plan.PreInterestPayed}}</td>
+                            <td>{{.Plan.GracePeriodInterestPayed}}</td>
+                            <td>{{.Plan.PenaltyPayed}}</td>
+                            <td>{{.Plan.AmountReduced}}</td>
+                            <td>{{.Plan.GracePeriodInterestReduced}}</td>
+                            <td>{{.Plan.PenaltyReduced}}</td>
+                        </tr>
+                        {{end}}
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        </div>
+    </section>
+    <!-- /.content -->
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">View Diff</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+              <th>Column</th>
+              <th>Original</th>
+              <th>Edited</th>
+              <!-- <th>Is Changed</th> -->
+            </tr>
+            </thead>
+            <tbody id="displayDiff">
+            </tbody>
+          </table>
+          <!-- <pre id="displayDiff"></pre> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

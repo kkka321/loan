@@ -1,0 +1,126 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            {{t .LangUse .TitlePrefix}}{{t .LangUse "风险"}}
+        </h1>
+    </section>
+    <section class="content">
+        <form method="post" id="addForm"  action="/customer/risk_report/save">
+            <input type="hidden" name="cid" value="{{.cid}}"/>
+            <input type="hidden" name="op_action" value="{{.op_action}}"/>
+            <div class="box box-default color-palette-box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body no-padding">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险项"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select id="riskItem" class="form-control" name="risk_item">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                                {{range $v, $s := .RiskItemMap}}
+                                                    <option value="{{$v}}"{{if $.IsRelieve}}{{if eq $v $.Risk.RiskItem}} selected{{end}}{{end}}>{{t $.LangUse $s}}</option>
+                                                {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险类型"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control" name="risk_type">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                            {{range $v, $s := .RiskTypeMap}}
+                                                <option value="{{$v}}"{{if $.IsRelieve}}{{if eq $v $.Risk.RiskType}} selected{{end}}{{end}}>{{t $.LangUse $s}}</option>
+                                            {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse "风险值"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-12">
+                                            <input id="riskValue" name="risk_value" class="form-control" rows="3" placeholder="{{t .LangUse "请填写"}} ..." required {{if $.IsRelieve}} value="{{.Risk.RiskValue}}" {{end}}/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse .TitlePrefix}}{{t .LangUse "原因"}} *</p>
+                                    </td>
+                                    <td>
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control" required name="reason">
+                                                <option value="0">{{t .LangUse "请选择"}}</option>
+                                              {{if eq .op_action "report"}}
+                                                   {{range $v, $s := .RiskReportReasonMap}}
+                                                   <option value="{{$v}}">{{t $.LangUse $s}}</option>
+                                                   {{end}}
+                                              {{else}}
+                                                  {{range $v, $s := .RiskRelieveReason}}
+                                                      <option value="{{$v}}">{{t $.LangUse $s}}</option>
+                                                  {{end}}
+                                              {{end}}
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse .TitlePrefix}}{{t .LangUse "借款"}}ID *</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+                                        <input name="order_ids" id="order_ids" class="form-control" rows="2" placeholder="{{t .LangUse "借款"}} ID1,ID2,ID3 ..."></input>
+                                      </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse .TitlePrefix}}{{t .LangUse "客户"}}ID *</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+                                        <input name="user_account_ids" id="user_account_ids"  class="form-control" rows="2" required placeholder="{{t .LangUse "客户"}} ID1,ID2,ID3 ..." {{if gt .cid 0}} value="{{.cid}}" {{end}}></input>
+                                      </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="bg-light-blue color-palette">
+                                        <p class="text-center">{{t .LangUse .TitlePrefix}}{{t .LangUse "说明"}} *</p>
+                                    </td>
+                                    <td>
+                                      <div class="form-group col-md-12">
+
+                                        <textarea name="remark" class="form-control" rows="3" required placeholder="{{t .LangUse "说明"}} ..." ></textarea>
+                                      </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="hidden" value="{{$.cid}}" name="cid" id="cid" />
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                                <button type="reset" id="resetForm" class="btn btn-default">{{t .LangUse "重置"}}</button>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

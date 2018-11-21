@@ -1,0 +1,207 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+      <h1>
+          角色管理
+      </h1>
+  </section>
+
+  <section class="content" style="">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- <div class="box box-solid">
+          <div class="box-header with-border">
+            <h3 class="box-title">过滤</h3>
+
+            <div class="box-tools">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active">
+                <a href="#">
+                  <i class="fa fa-hourglass-1"></i> 正常
+                </a>
+              </li>
+              <li><a href="/rbac/role?status=-1"><i class="fa fa-hourglass"></i> 所有</a></li>
+            </ul>
+          </div>
+        </div> -->
+        <!-- /. box -->
+
+        <!-- /.box -->
+      </div>
+
+      <div class="col-md-5">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">角色列表</h3>
+          </div>
+          <section class="sidebar" style="height: auto;">
+                <ul class="sidebar-menu tree" data-widget="tree" >
+                  {{range .List}}
+
+                  <li class="treeview {{if .IsActive}} active {{end}} " >
+                      <a href="#">
+                          <i class="fa fa-diamond" href=""></i> <span>{{getRoleNameDisplay $.LangUse .Type .Name}}</span>
+                          <span class="pull-right-container">
+                              <i class="fa fa-angle-left pull-right"></i>
+                          </span>
+                          {{if eq .Status 0}}
+                          <span class="btn-group center btn-group-xs">
+                            <button type="button" class="btn btn-default btn-small disabled" >已失效</button>
+                          </span>
+                          {{end}}
+                          <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+
+                              <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-target="#updateModal" data-remote="/rbac/role/update_page?id={{.Id}}" data-toggle="modal">编辑</button>
+                          </span>
+                      </a>
+                        <ul class="treeview-menu">
+
+                        {{range .SubList}}
+                        <li class="treeview {{if .IsActive}} active {{end}}" >
+                            <a href="#">
+                                <i class="fa fa-users" href=""></i> <span>{{getRoleNameDisplay $.LangUse .Type .Name}}</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                                {{if eq .Status 0}}
+                                <span class="btn-group center btn-group-xs">
+                                  <button type="button" class="btn btn-default btn-small disabled" >已失效</button>
+                                </span>
+                                {{end}}
+                                <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+                                    <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-target="#updateModal" data-remote="/rbac/role/update_page?id={{.Id}}" data-toggle="modal">编辑</button>
+                                </span>
+                            </a>
+                              <ul class="treeview-menu">
+
+                              {{range .SubList}}
+                              <li class="treeview {{if .IsActive}} active {{end}}">
+                                  <a href="#">
+                                      <i class="fa fa-user-circle" href=""></i> <span>{{getRoleNameDisplay $.LangUse .Type .Name}}</span>
+                                      {{if eq .Status 0}}
+                                      <span class="btn-group center btn-group-xs">
+                                        <button type="button" class="btn btn-default btn-small disabled" >已失效</button>
+                                      </span>
+                                      {{end}}
+                                      <span class="menuOpertaionButton btn-group  pull-right btn-group-xs" style="right:50px;">
+                                          <button type="button" class="updateMenu btn btn-primary btn-small" data-id="{{.Id}}" data-target="#updateModal" data-remote="/rbac/role/update_page?id={{.Id}}" data-toggle="modal">编辑</button>
+                                      </span>
+                                  </a>
+
+                              </li>
+                              {{end}}
+                              <li class="">
+                                <a href="javascript:;" data-pid="{{.Id}}" data-pname="{{.Name}}" data-typeid="{{.Type}}" data-roletype="{{getRoleTypeDisplay $.LangUse .Type}}" class="addNewMenu" data-toggle="modal" data-target="#myModal">
+                                  <i class="active glyphicon glyphicon-plus-sign"></i>新增下级...
+                                </a>
+                              </li>
+                              </ul>
+                        </li>
+                        {{end}}
+                        <li class="">
+                          <a href="javascript:;" data-pid="{{.Id}}" data-pname="{{.Name}}" data-typeid="{{.Type}}" data-roletype="{{getRoleTypeDisplay $.LangUse .Type}}" class="addNewMenu" data-toggle="modal" data-target="#myModal">
+                            <i class=" active glyphicon glyphicon-plus-sign"></i>新增下级...
+                          </a>
+                        </li>
+                      </ul>
+
+                    </li>
+                    {{end}}
+                  </ul>
+
+
+            </section>
+          </section>
+        </div>
+      </div>
+
+    </div>
+</section>
+  </div>
+
+
+  <!-- Add Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header createPayMethodFormTitle">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">创建 << <strong></strong> >> 下级</h4>
+        </div>
+        <form role="form" id="addForm" method="post" action="/rbac/role/create">
+            <div class="modal-body">
+                <input type="hidden" id="rolePid" name="pid" value="">
+                <input type="hidden" id="roleTypeInput" name="type" value="">
+                <!-- text input -->
+                <div class="form-group">
+                    <label>名称</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="roleType"></span>
+                        <input type="text" class="form-control" placeholder="输入名称" name="name" value="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>状态</label>
+                    <select class="form-control input-sm" name="status" id="">
+                      <option value="1" selected>正常</option>
+
+                      <option value="0">无效</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-success" id="submitButton" >提交</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+      </div>
+    </div>
+  </div>
+
+  <!-- delete Modal -->
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" id="deleteModal">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" >移除菜单</h4>
+              </div>
+              <div class="modal-body">
+                  确认删除菜单 <strong></strong> 吗?
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                  <button type="submit" class="btn btn-success" data-id="" data-pid="" id="deleteSubmitButton" >确认</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="smallModalLabel">Tag</h4>
+              </div>
+              <div class="modal-body" id="resultMessage">
+                  Loading...
+              </div>
+          </div>
+      </div>
+  </div>

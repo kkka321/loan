@@ -1,0 +1,151 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "广告"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                   
+                    <form class="form-horizontal" action="/operation/add_advertisement" method="post" enctype="multipart/form-data">
+                        <div class="box-body">
+                            <div class="row"><p></p></div>
+                        </div>
+                        <div class="row box-body">
+                            <div class="col-xs-2">
+                                <button id="show_create_form" type="button" class="btn btn-block btn-warning">{{t .LangUse "新增广告页"}}</button>
+                            </div>
+                        </div>
+
+                        <div class="row hide" id="create_form">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <i class="fa fa-edit"></i>
+                                            <h3 class="box-title">{{t .LangUse "新增广告页"}}</h3>
+                                        </div>
+                                        <div class="box-body pad table-responsive">
+                                            <table class="table table-bordered text-center">
+                                                <tbody><tr>
+                                                    <th>{{t .LangUse "图片添加"}}</th>
+                                                    <th>{{t .LangUse "跳转链接"}}</th>
+                                                    <th>{{t .LangUse "原生映射值"}}</th>
+                                                    <th>{{t .LangUse "显示时间段"}}</th>
+                                                </tr>
+                                                
+                                                <tr class = "group_file" show>
+                                                        <td>
+                                                                <input type="file" name="file0"  id = "file0" value={{t .LangUse "请上传图片"}}/>
+                                                                <img id="image0"/>
+                                                               
+                                                        </td>
+                                                        <td>
+                                                                <input name="link_url" id="link_url" type="text" class="form-control" rows="2" origin="{{$.linkUrl}}" placeholder={{t .LangUse "跳转链接"}}></textarea>
+                                                        </td>
+                                                        <td>
+                                                                <input name="source_page" id="source_page" type="text" class="form-control" rows="2" origin="{{$.sourcePage}}" placeholder={{t .LangUse "原生映射值"}}></textarea>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                                <div class="col-xs-9">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </div>
+                                                                        <input name="stime_range"  id="stime_range" type="text" readonly class="form-control" origin="{{$.stimeRange}}" placeholder="{{t $.LangUse "选择开始日期"}}" value="{{$.ctimeRange}}" />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-xs-9">
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-addon">
+                                                                                <i class="fa fa-calendar"></i>
+                                                                            </div>
+                                                                            <input name="etime_range"  id="etime_range" type="text" readonly class="form-control" origin="{{$.etimeRange}}" placeholder="{{t $.LangUse "选择结束日期"}}" value="{{$.ctimeRange}}" />
+                                                                        </div>
+                                                                    </div>
+                                                            </td>
+                                                    </tr>
+                                                <tr>   
+
+                                                     <input type="hidden" value="0" name="file_num" id="file_num" />
+                                                        <td>
+                                                            <button id="submit"  type="submit"  class=" btn-primary">{{t .LangUse "提交"}}</button>
+                                                        </td>
+                                                        <td>
+                                                            <button id="hide_create_form" type="button" class=" btn-primary">{{t .LangUse "收起"}}</button>
+                                                        </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.box -->
+                                    </div>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "图片"}}</th>
+                                <th>{{t .LangUse "跳转链接"}}</th>
+                                <th>{{t .LangUse "原生映射值"}}</th>
+                                <th>{{t .LangUse "开启状态"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                                <th>{{t .LangUse "开始时间"}}</th>
+                                <th>{{t .LangUse "结束时间"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td><img src={{.PicUrl}} style="height:200px;width=200px;" /></td>
+                                    <td>{{.LinkUrl}}</td>
+                                <th>{{.SourcePage}}</th>
+                                <th>
+                                {{if eq .IsShow 1 }}
+                                    开启
+                                {{else}}
+                                    关闭
+                                {{end}}
+                                </th>
+
+                                <th>
+                                    {{if eq .IsShow 1 }}
+                                    <a href="/operation/update_advertisement?Id={{.Id}}&is_show=0">{{t $.LangUse "关闭"}}</a>| 
+                                    <label style="cursor:pointer" data-id="{{.Id}}" class="super_delete_customer text-light-blue">{{t $.LangUse "删除"}}</label>
+                                    {{else}}
+                                    <a href="/operation/update_advertisement?Id={{.Id}}&is_show=1">{{t $.LangUse "开启"}}</a> | 
+                                    <label style="cursor:pointer" data-id="{{.Id}}" class="super_delete_customer text-light-blue">{{t $.LangUse "删除"}}</label>
+                                    {{end}}
+                                    </th>
+                                <td>{{.StartTm  | mDateMHS}}</td>
+                                <td>{{.EndTm  | mDateMHS}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

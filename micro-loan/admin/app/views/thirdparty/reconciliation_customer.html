@@ -1,0 +1,147 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "客户对账"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/thirdparty/reconciliation_customer" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                        {{t .LangUse "客户"}}ID:<input name="user_account_id" type="number" class="form-control" placeholder="{{t .LangUse "客户"}}ID" value="{{if gt .userAccountId 0}}{{.userAccountId}}{{end}}" />
+                                </div>
+
+                                <div class="col-xs-3">
+                                        {{t .LangUse "手机号"}}ID:<input name="mobile" type="number" class="form-control" placeholder="{{t .LangUse "手机号"}}" value="{{.mobile}}" />
+                                </div>
+                               
+                            </div>
+
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                        {{t .LangUse "来源渠道"}}: <input value="{{$.mediaSource}}" name="media_source" type="text" class="form-control" placeholder="-1 {{t .LangUse "尚未识别"}}">
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "Campaign"}}: <input value="{{$.campaign}}" name="campaign" type="text" class="form-control" placeholder="{{t .LangUse "子渠道/广告投放标识"}}">
+                                </div>                                
+                            </div>
+
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                    <div class="col-xs-1">
+                                        <input id="i_search" type="submit" class="form-control btn btn-block btn-info"
+                                               value="{{t .LangUse "搜索"}}">
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <a href="/thirdparty/reconciliation_customer" class="form-control">{{t .LangUse "清除"}}</a>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <a href="javascript:void(0)"
+                                           class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                    </div>
+                                </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- statistic-->
+                    <!-- <div class="box-header clearfix">
+                        <ul class="statistic pull-right">
+                        {{template "inc/statisticThirdparty.html" .}}
+                        </ul>
+                    </div> -->
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "客户"}}ID</th>
+                                <th>{{t .LangUse "手机号"}}</th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "来源渠道"}}</th>
+                                <th>{{t .LangUse "Campaign"}}</th>
+                                <th>{{t .LangUse "当前总支出"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .list}}
+                            <tr>
+                                <td>{{.Customer.UserAccountId}}</td>
+                                <td>{{.Customer.Mobile}}</td>
+                                <td>{{.Realname}}</td>
+                                <td>{{if ne .MediaSource ""}}{{.MediaSource}}{{else}}{{t $.LangUse "尚未识别"}}{{end}}</td>
+                                <td>{{if ne .Campaign ""}}{{.Campaign}}{{else}}{{t $.LangUse "尚未识别"}}{{end}}</td>
+                                <td>{{.Customer.CutomerTotalCost}}</td>
+                                <td>
+                                    <a href="#" data-id="{{.Customer.UserAccountId}}" data-toggle="modal" data-target="#myModal" onMouseOut='this.style.color="blue"' onMouseOver='this.style.color="red"'>{{t $.LangUse "明细"}}</a>
+                                  
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Detail</h4>
+        </div>
+        <div class="modal-body">
+            <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>API</th>
+                <th>CallCount</th>
+                <th>SuccessCount</th>
+                <th>HitCount</th>
+                <th>ApiFee</th>
+            </tr>
+            </thead>
+            <tbody id="displayDiff">
+            </tbody>
+            </table>
+            <!-- <pre id="displayDiff"></pre> -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>

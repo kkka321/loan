@@ -1,0 +1,143 @@
+<script>
+    $(function () {
+      // 初始化时间范围选择插件
+      // $('#apply_time_range').daterangepicker({locale: {
+      //     format: 'YYYY-MM-DD'
+      // }});
+    
+  $("#selectAll").on("click", function(){
+    var isCheckedAll = $(this).is(':checked')
+    if(isCheckedAll == true ){
+      $(".listCheckBox").prop("checked",true)
+    } else {
+      $(".listCheckBox").prop("checked",false)
+    }
+
+  });
+
+
+      $('#entrust_apply_range').daterangepicker({
+    
+        locale: {
+          format: 'YYYY-MM-DD',
+        },
+        "autoUpdateInput": false,
+      }, function(start, end, label) {
+        $('#entrust_apply_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+      });
+
+    
+      $('#promise_repay_time').datetimepicker({
+         format:'Y-m-d H:i',
+         step: 5
+      });
+    
+    
+      function showWarningBox(messageContent) {
+          var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+          showBoxMsg(warningBoxContent);
+      }
+    
+      function showBoxMsg(msg) {
+          $("#smallModal div.modal-body").html(msg);
+          $("#smallModal").modal('show');
+      }
+    
+      $("#submit").on("click", function(){
+        var overdueDaysStart = $('#overdue_days_start').val();
+        var overdueDaysEnd = $('#overdue_days_end').val();
+    
+        var rS = parseInt(overdueDaysStart)
+        var rE = parseInt(overdueDaysEnd)
+        if(rS>rE) {
+           showBoxMsg('{{t .LangUse "逾期天数起始值大于终止值"}}')
+           //e.preventDefault();
+           return false
+        }
+      });
+    
+    });
+
+    $('#batchAssignModal').on('shown.bs.modal', function (event) {
+    var assignTickets = '';
+    var count = 0
+    $('input:checkbox[name=listCheckBox]:checked').each(function(k){
+        if(k == 0){
+            assignTickets = $(this).val();
+        }else{
+            assignTickets += ','+$(this).val();
+        }
+        count++
+    })
+    $("#selectedTicketCount").html(count)
+    $("#batchAssignIdContainer").val(assignTickets)
+    batchAssignSubmitCheck()
+  });
+
+  $("#batchAssignModal").delegate("#submitBatchAssignButton","click",function(e){
+    var form = $("#batchAssignForm")
+    $.ajax({
+        url:"/overdue/entrust_approval/batch_assign",
+        data:form.serialize(),
+        dataType:'json',
+        cache:false,
+        type:form.attr('method'),
+        success:function(result) {
+
+        console.log("result"+result)
+
+            if (result.hasOwnProperty('error') ) {
+                showWarningBox(result.error);
+            } else {
+              $("#resultMessage").html(result.result);
+              $('#smallModal').modal('show')
+                  .on('hidden.bs.modal', function (e) {
+                      window.location.reload()
+                  })
+            }
+        },
+    });
+  })
+  $("#batchAssignModal").delegate("#pname","change",function(e){
+    batchAssignSubmitCheck()
+  })
+  $("#batchAssignModal").delegate("input[name=is_agree]","click",function(){
+    batchAssignSubmitCheck()
+  })
+  $("#batchAssignModal").delegate("#audit_comment","keydown",function(){
+    batchAssignSubmitCheck()
+  })
+
+  function batchAssignSubmitCheck(){
+    var selectedTicketCount = parseInt($("#selectedTicketCount").html())
+    var is_agree=parseInt($("input[name=is_agree]:checked").val())
+    var submit=false
+    if (is_agree==0){
+       var audit_comment=$("#audit_comment").val()
+      if (audit_comment!=""){
+        submit=true
+      }
+    }
+    if (is_agree==1){
+      var pname=$("#pname").val()
+      var audit_comment=$("#audit_comment").val()
+      if (audit_comment!="" && pname!="-1"){
+        submit=true
+      }
+    }
+    // console.log($("input[name=is_agree]"))
+    // console.log(pname)
+    // console.log(audit_comment)
+    // console.log("is_agree"+is_agree)
+    // console.log(submit)
+
+    if(selectedTicketCount>0 && submit){
+      $("#submitBatchAssignButton").attr("class","btn btn-success").prop("disabled",false)
+    } else {
+      $("#submitBatchAssignButton").attr("class","btn btn-default").prop("disabled",true)
+    }
+  }
+    
+    
+    </script>
+    

@@ -1,0 +1,24 @@
+<script>
+$(function () {
+    $("#submit").on("click", function(){
+      var v = $("#confirm_option").val()
+        if (v == "0"){
+            alert('{{t .LangUse "请选择审批意见"}}')
+            return false
+        }
+        return true
+    });
+
+
+    $("#order_ids").keyup(function(){
+      // console.log($("#order_ids").val())
+      this.value = this.value.match('^[0-9,]+','')
+    });
+
+    $("#user_account_ids").keyup(function(){
+      // console.log($("#user_account_ids").val())
+      this.value = this.value.match('^[0-9,]+','')
+    });
+});
+
+</script>

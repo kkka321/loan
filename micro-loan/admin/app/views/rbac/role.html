@@ -1,0 +1,157 @@
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+      <h1>
+          {{t $.LangUse "角色管理"}}
+      </h1>
+  </section>
+
+   <section class="content">
+     <div class="row">
+         <div class="col-md-12">
+             <!-- Horizontal Form -->
+             <div class="box box-info">
+                 <div class="box-header with-border">
+                     <h3 class="box-title">{{t $.LangUse "搜索"}}</h3>
+                 </div>
+                 <!-- /.box-header -->
+                 <!-- form start -->
+                 <form class="form-horizontal" action="/rbac/role" method="get">
+                     <div class="box-body">
+                       <div class="row">
+                           <div class="col-xs-2">
+                               {{t $.LangUse "角色名"}}:<input name="name" type="text" class="form-control" placeholder="{{t $.LangUse "角色名"}}" value="{{.name}}" />
+
+                           </div>
+                           <div class="col-xs-1">
+                               &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t $.LangUse "搜索"}}">
+                           </div>
+                           <div class="col-xs-1">
+                               &nbsp;<a href="/rbac/role" class="form-control">{{t $.LangUse "清除"}}</a>
+                           </div>
+                           <div class="col-xs-1">
+                               &nbsp;<input type="button" data-toggle="modal" data-target="#myModal" class="form-control btn btn-block btn-info" value="新增角色">
+                           </div>
+                       </div>
+                         <div class="row"><br/></div>
+
+                         <div class="row"><br/></div>
+
+                     </div>
+                 </form>
+             </div>
+             <!-- /.box -->
+         </div>
+     </div>
+
+
+     <div class="row">
+       <div class="col-xs-12">
+         <div class="box">
+
+           <!-- /.box-header -->
+           <div class="box-body">
+             <table id="oplog-list" class="table table-bordered table-striped">
+               <thead>
+               <tr>
+                 <th>ID</th>
+                 <th>{{t $.LangUse "类型/部门"}}</th>
+                 <th>{{t $.LangUse "名称"}}</th>
+                 <th>{{t $.LangUse "上级"}}</th>
+                 <th>{{t $.LangUse "状态"}}</th>
+                 <th>{{t $.LangUse "创建时间"}}</th>
+                 <th>{{t $.LangUse "更新时间"}}</th>
+                 <th>操作</th>
+               </tr>
+               </thead>
+               <tbody>
+               {{range .List}}
+               <tr>
+                 <td>{{.Id}}</td>
+                 <td>{{getRoleTypeDisplay $.LangUse .Type}}</td>
+                 <td>{{t $.LangUse .Name}}</td>
+                 <td>{{.Pid}}</td>
+                 <td>{{statusDisplay $.LangUse .Status | str2html}}</td>
+                 <td>{{mDateMHS .Ctime}}</td>
+                 <td>{{mDateMHS .Utime}}</td>
+                 <td>
+                   <a href="#" data-id="{{.Id}}" data-toggle="modal" data-target="#updateModal" data-remote="/rbac/role/update_page?id={{.Id}}">{{t $.LangUse "修改"}}</a>
+
+                 </td>
+
+               </tr>
+               {{end}}
+               </tbody>
+             </table>
+           </div>
+           <!-- /.box-body -->
+           <div class="box-footer clearfix">
+
+           </div>
+         </div>
+         <!-- /.box -->
+       </div>
+       <!-- /.col -->
+     </div>
+     <!-- /.row -->
+   </section>
+</div>
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header createPayMethodFormTitle">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{t $.LangUse "创建角色"}}</h4>
+      </div>
+      <form role="form" id="addForm" method="post" action="/rbac/role/create">
+          <div class="modal-body">
+              <!-- text input -->
+              <div class="form-group">
+                  <label>{{t $.LangUse "名称"}}</label>
+                  <input type="text" class="form-control" placeholder="{{t $.LangUse "输入名称"}}" name="name" value="">
+              </div>
+
+              <div class="form-group">
+                  <label>{{t $.LangUse "状态"}}</label>
+                  <select class="form-control input-sm" name="status" id="">
+                    <option value="1" selected>{{t $.LangUse "正常"}}</option>
+
+                    <option value="0">{{t $.LangUse "无效"}}</option>
+                  </select>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{t $.LangUse "取消"}}</button>
+              <button type="submit" class="btn btn-success" id="submitButton" >{{t $.LangUse "提交"}}</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Tag</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

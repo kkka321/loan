@@ -1,0 +1,148 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "分机管理"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/extension/list" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                {{t .LangUse "用户姓名"}}: <input name="name" type="text" class="form-control" placeholder="{{t .LangUse "用户姓名"}}" value="{{$.name}}">
+                            </div>
+                               
+                            <div class="col-xs-3">
+                                {{t .LangUse "分机号码"}}: <input name="ext_number" type="text" class="form-control" placeholder="{{t .LangUse "分机号码"}}" value="{{$.ext_number}}">
+                            </div>
+
+                            <div class="col-xs-3">
+                                {{t .LangUse "分机状态"}}:
+                                    <select name="call_status" class="tagSelectMultiBox selectpicker form-control"  data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagCallStatusMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedCallStatusMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                {{t .LangUse "是否启用"}}:
+                                    <select name="enable_status" class="tagSelectMultiBox selectpicker form-control"  data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagExtIsUseMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedEnableStatusMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                        </div>
+
+                        <div class="row"><p>&nbsp;</p></div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                {{t .LangUse "分配状态"}}:
+                                    <select name="assign_status" class="tagSelectMultiBox selectpicker form-control"  data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := $.tagExtStatusMap}}
+                                        <option value="{{$value}}"{{if isInMap $.selectedAssignStatusMap $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+
+                            <div class="col-xs-1">
+                                &nbsp;
+                                <a href="/extension/update_ext_info?">
+                                <input type="button" class="form-control btn btn-block btn-info" value="{{t .LangUse "更新"}}">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tr>
+                  <th>{{t .LangUse "用户姓名"}}</th>
+                  <th>{{t .LangUse "分机号码"}}</th>
+                  <th>{{t .LangUse "分机通话状态"}}</th>
+                  <th>{{t .LangUse "是否启用"}}</th>
+                  <th>{{t .LangUse "操作"}}</th>
+                  <th>{{t .LangUse "分配状态"}}</th>
+                </tr>
+                  {{range .List}}
+                <tr>
+                    <td>{{.NickName}}</td>
+                    <td>{{.ExtNumber}}</td>
+                    <td>{{t $.LangUse .CallStatusStr}}</td>
+                    <td> {{if eq .EnableStatus 1}}
+                            {{t $.LangUse "启用"}}
+                        {{else if eq .EnableStatus 0}}
+                            {{t $.LangUse "禁用"}}
+                        {{end}}
+                    </td>
+                    <td>
+                        {{if eq .AssignStatus 0}}
+                            <a  class="assginExtension" href="javascript:;" target="_blank" data-remote="/extension/assign_page?extnumber={{.ExtNumber}}&is_assign=1" data-toggle="modal" data-target="#assignModal">{{t $.LangUse "分配"}}</a>
+                        {{else if eq .AssignStatus 1}}
+                            <a href="/extension/cancelassign?extnumber={{.ExtNumber}}&is_assign=0&assign_id={{.AssignId}}" target="_blank">{{t $.LangUse "取消分配"}}</a>
+                        {{end}}
+                        | <a href="/extension/ext_history?extnumber={{.ExtNumber}}" target="_blank">{{t $.LangUse "分配历史"}}</a>
+                    </td>
+                    <td>
+                        {{if eq .AssignStatus 0}}
+                            {{t $.LangUse "未分配"}}
+                        {{else if eq .AssignStatus 1}}
+                            {{t $.LangUse "已分配"}}
+                        {{end}}
+                    </td>
+                </tr>
+                 {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+
+          </div>
+        </div>
+</div>

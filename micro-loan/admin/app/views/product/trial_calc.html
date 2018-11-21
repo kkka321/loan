@@ -1,0 +1,208 @@
+<script>
+   var minPeriod = {{.product.MinPeriod}};
+   var maxPeriod = {{.product.MaxPeriod}};
+   var minAmount = {{.product.MinAmount}};
+   var maxAmount = {{.product.MaxAmount}};
+</script>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "产品试算"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "试算字段"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/product/trial_calc" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    {{t .LangUse "产品"}}ID:<input name="id" type="number" class="form-control" placeholder="{{t .LangUse "产品"}}ID" value="{{if gt .id 0 }}{{.id}}{{end}}" required/>
+                                </div>
+                                <div class="col-xs-2">
+                                    {{t .LangUse "放款金额"}}:<input name="loan" id="loan" type="number" class="form-control" placeholder="{{t .LangUse "放款金额"}}" value="{{if gt .loan 0 }}{{.loan}}{{end}}"/>
+                                </div>
+                                <div class="col-xs-2">
+                                    {{t .LangUse "借款金额"}}:<input name="amount" id="amount" type="number" class="form-control" placeholder="{{t .LangUse "借款金额"}}" value="{{if gt .amount 0 }}{{.amount}}{{end}}"/>
+                                </div>
+                                <div class="col-xs-2">
+                                    {{t .LangUse "借款期限"}}:<input name="period" id="period" type="number" class="form-control" placeholder="{{t .LangUse "借款期限"}}" value="{{if gt .period 0}}{{.period}}{{end}}" required/>
+                                </div>
+                                <!-- <div class="col-xs-2">
+                                    {{t .LangUse "期限单位"}}:
+                                    <select name="period_unit" class="form-control select2" style="width: 100%;">
+                                    {{range  $i, $v :=$.productPeriodMap}}
+                                      {{if eq $i $.periodUnit }}
+                                            <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                      {{else}}
+                                            <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                      {{end}}
+                                    {{end}}
+                                   </select>
+                                </div> -->
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    {{t .LangUse "放款日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="loan_date"  id="loan_date" type="text" readonly class="form-control" origin="{{.loanDate}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.loanDate}}" required/>
+                                    </div>
+
+                                </div>
+                                <div class="col-xs-2">
+                                    {{t .LangUse "当前日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="current_date"  id="current_date" type="text" readonly class="form-control" origin="{{.currentDate}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.currentDate}}" required />
+                                    </div>
+                                </div>
+                                 <div class="col-xs-2">
+                                    {{t .LangUse "实还日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="repay_date"  id="repay_date" type="text" readonly class="form-control" origin="{{.repayDate}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.repayDate}}" required />
+                                    </div>
+                                </div>
+                                <div class="col-xs-2">
+                                    {{t .LangUse "已还总额"}}:<input name="repayed_total" id="repayed_total" type="number" class="form-control" placeholder="{{t .LangUse "已还总额"}}" value="{{if gt .repayedTotal 0}}{{.repayedTotal}}{{end}}" />
+                                </div>
+                                <!-- <div class="col-xs-2">
+                                    {{t .LangUse "用户标识"}}:<input name="user_tag" type="number" class="form-control" placeholder="{{t .LangUse "用户标识"}}" value="{{.userTag}}" />
+                                </div> -->
+                            </div>
+
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <input type="submit" id="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "试算"}}">
+                                    <!-- <input type="number" id="min_period" class="form-control btn btn-block btn-info" value="{{.product.MinPeriod}}"> -->
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="/product/trial_calc" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                  <!-- statistic-->
+                  <div class="box">
+                    <div class="box-header clearfix">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{{t .LangUse "试算结果"}}</h3>
+                        </div>
+                    </div>
+                    <!-- <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{{t .LangUse "试算结果"}}</h3>
+                        </div>
+                    </div> -->
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th class="th_sort" id="Id">{{t .LangUse "产品"}}ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th>{{t .LangUse "产品名称"}}</th>
+                                <th>{{t .LangUse "期数"}}</th>
+                                <th>{{t .LangUse "应还日期"}}</th>
+                                <th>{{t .LangUse "放款金额"}}</th>
+                                <th>{{t .LangUse "逾期天数"}}</th>
+                                <th>{{t .LangUse "还款状态"}}</th>
+                                <th>{{t .LangUse "应还总额"}}</th>
+                                <th>{{t .LangUse "应还本金"}}</th>
+                                <th>{{t .LangUse "应还利息"}}</th>
+                                <th>{{t .LangUse "应还服务费"}}</th>
+                                <th>{{t .LangUse "应还宽限期利息"}}</th>
+                                <th>{{t .LangUse "应还罚息"}}</th>
+                                <th>{{t .LangUse "应还滞纳金"}}</th>
+                                <th>{{t .LangUse "实还日期"}}</th>
+                                <th>{{t .LangUse "已还总额"}}</th>
+                                <th>{{t .LangUse "已还本金"}}</th>
+                                <th>{{t .LangUse "已还利息"}}</th>
+                                <th>{{t .LangUse "已还服务费"}}</th>
+                                <th>{{t .LangUse "已还宽限期利息"}}</th>
+                                <th>{{t .LangUse "已还罚息"}}</th>
+                                <th>{{t .LangUse "已还滞纳金"}}</th>
+                            </tr>
+                        {{range .result}}
+                            <tr>
+                                <td>
+                                  <a href="/product/edit?id={{.ID}}">{{.ID}}</a>
+                                </td>
+                                <td>{{t $.LangUse .Name}}</a></td>
+                                <td>{{.NumberOfPeriods}}</td>
+                                <td>{{.RepayDateShould | mDateUTC}}</td>
+                                <td>{{.Loan}}</td>
+                                <td>{{.OverdueDays}}</td>
+                                <td>{{statusDisplayProductRepay $.LangUse .RepayStatus}}</td>  
+                                <td>{{.RepayTotalShould}}</td>
+                                <td>{{.RepayAmountShould}}</td>
+                                <td>{{.RepayInterestShould}}</td>
+                                <td>{{.RepayFeeShould}}</td>
+                                <td>{{.RepayGraceInterestShould}}</td>
+                                <td>{{.RepayPenaltyShould}}</td>
+                                <td>{{.ForfeitPenalty}}</td>
+                                <td>{{.RepayedDate | mDateUTC}}</td>
+                                <td>{{.RepayedTotal}}</td>
+                                <td>{{.RepayedAmount}}</td>
+                                <td>{{.RepayedInterest}}</td>
+                                <td>{{.RepayedFee}}</td>
+                                <td>{{.RepayedGraceInterest}}</td>
+                                <td>{{.RepayedPenalty}}</td>
+                                <td>{{.RepayedForfeitPenalty}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

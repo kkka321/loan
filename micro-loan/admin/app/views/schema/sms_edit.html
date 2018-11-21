@@ -1,0 +1,124 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1 id="page_title">
+        {{t .LangUse "新增消息任务"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="box box-info">
+            <div class="row">
+                <div class="col-xs-4">
+                    <form class="form-horizontal" id="addForm" action="/schema/sms_save" method="post">
+                        <input type="hidden" name="op" value="{{$.op}}">
+                        <input type="hidden" name="id" value="{{$.id}}">
+                        <div class="box-body">
+                            <div class="row col-xs-9">
+                            {{t .LangUse "任务名称"}}: <input name="task_name" type="text" class="form-control task-op" placeholder="{{t .LangUse "任务名称"}}" value="{{$.task_name}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                            {{t .LangUse "任务描述"}}: <input name="task_desc" type="text" class="form-control task-op" placeholder="{{t .LangUse "任务描述"}}" value="{{$.task_desc}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div>
+                                <div class="row col-xs-9">
+                                {{t .LangUse "发送对象"}}:
+                                    <select name="sms_target" id="sms_target" class="form-control task-op">
+                                    {{range $value, $show := .SmsTarget}}
+                                        <option value="{{$value}}"{{if eq $.sms_target $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    &nbsp<button type="button" class="form-control btn bg-blue btn-flat modify-config" data-toggle="modal" data-target="#target_list">{{t $.LangUse "发送名单"}}</button>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                            {{t .LangUse "短信提供商"}}:
+                                <select name="sender" id="sender" class="form-control task-op">
+                                {{range $value, $show := .SmsSender}}
+                                    <option value="{{$value}}"{{if eq $.sender $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                            {{t .LangUse "短信模板"}}: <textarea name="body" id="body" type="text" class="form-control task-op" style="min-height:200px;" placeholder="{{t .LangUse "短信模板"}}">{{$.body}}</textarea>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9 date_div">
+                            {{t .LangUse "发送日期"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="schema_date"  id="schema_date" type="text" readonly class="form-control task-op" origin="{{$.schema_date}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.schema_date}}" />
+                                </div>
+                            </div>
+                            <div class="row date_div"><p>&nbsp;</p></div>
+                            <div class="row date_div"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                            {{t .LangUse "发送时间"}}: <input name="schema_time" type="text" class="form-control task-op" placeholder="{{t .LangUse "发送时间"}}" value="{{$.schema_time}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                            {{t .LangUse "任务分类"}}:
+                                <select name="schema_mode" id="schema_mode" class="form-control task-op">
+                                {{range $value, $show := .SchemaMode}}
+                                    <option value="{{$value}}"{{if eq $.schema_mode $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-9">
+                                <div>
+                                    <input type="submit" id="btn_submit" class="form-control btn btn-block btn-info" value="{{t $.LangUse "提交"}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="target_list" tabindex="-1" role="dialog">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">发送对象</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <textarea name="target_list" class="form-control task-op" rows="3" style="min-height:800px;">{{$.target_list}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-4">
+                    <div class="row"><p>&nbsp;</p></div>
+                    <div class="row"><p>&nbsp;</p></div>
+                    <div class="row">
+                        <label>&nbsp&nbsp;&nbsp;&nbsp;变量以'#'开头</label>
+                    </div>
+                    <select multiple class="form-control" style="min-height:600px;">
+                        {{range $k, $v := .TplVar}}
+                            <option class="tpl_field" data-value="{{$k}}">{{$k}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp//{{$v}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+

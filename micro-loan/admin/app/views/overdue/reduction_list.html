@@ -1,0 +1,156 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "减免管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/overdue/backend/reduction/list" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "案件"}} ID:<input name="case_id" type="number" class="form-control" placeholder="{{t .LangUse "案件"}}" value="{{if gt .caseId 0}}{{.caseId}}{{end}}" />
+                                </div>
+
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}} ID:<input name="order_id" type="number" class="form-control" placeholder="{{t .LangUse "借款"}}" value="{{if gt .orderId 0}}{{.orderId}}{{end}}" />
+                                </div>
+
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户"}} ID:<input name="account_id" type="number" class="form-control" placeholder="{{t .LangUse "客户"}}" value="{{if gt .accountId 0}}{{.accountId}}{{end}}" />
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    {{t .LangUse "减免类型"}}:
+                                    <select id="reduce_type" class="form-control" required name="reduce_type">
+                                        <option value="0">{{t .LangUse "请选择"}}</option>
+                                    {{range $v, $s := .ReduceTypeMap}}
+                                        <option value="{{$v}}" {{if eq $.ReduceType $v}} selected {{end}} >{{t $.LangUse $s}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3">
+                                {{t .LangUse "减免状态"}}:
+                                    <select id="reduce_status" class="form-control" required name="reduce_status">
+                                        <option value="0">{{t .LangUse "请选择"}}</option>
+                                    {{range $v, $s := .ReduceStatusMap}}
+                                        <option value="{{$v}}" {{if eq $.ReduceStatus $v}} selected{{end}} >{{t $.LangUse $s}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;
+                                    <input type="submit" id="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/overdue/backend/reduction/list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "案件"}} ID</th>
+                                <th>{{t .LangUse "借款"}} ID</th>
+                                <th>{{t .LangUse "客户"}} ID</th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "手机号"}}</th>
+                                <th>{{t .LangUse "减免本金"}}</th>
+                                <th>{{t .LangUse "减免宽限期利息"}}</th>
+                                <th>{{t .LangUse "减免罚息"}}</th>
+                                <th>{{t .LangUse "申请时间"}}</th>
+                                <th>{{t .LangUse "审批时间"}}</th>
+                                <th>{{t .LangUse "申请人"}}</th>
+                                <th>{{t .LangUse "审核人"}}</th>
+                                <th>{{t .LangUse "减免状态"}}</th>
+                                <th>{{t .LangUse "减免类型"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                          {{range .list}}
+                            <tr>
+                                <td>{{.CaseID}}</td>
+                                <td>{{.OrderId}}</td>
+                                <td>{{.UserAccountId}}</td>
+                                <td>{{.Name}}</td>
+                                <td>{{.Mobile}}</td>
+                                <td>{{.AmountReduced}}</td>
+                                <td>{{.GraceInterestReduced}}</td>
+                                <td>{{.PenaltyReduced}}</td>
+                                <td>{{.ApplyTime | mDateMHS}}</td>
+                                <td>{{.ConfirmTime | mDateMHS}}</td>
+                                <td>{{.ApplyUid}}</td>
+                                <td>{{.ConfirmUid}}</td>
+                                <td>{{reduceStatusDisplay $.LangUse .ReduceStatus}}</td>
+                                <td>{{reduceTypeDisplay $.LangUse .ReduceType | str2html    }}</td>
+                                <td>
+                                    {{if eq .ReduceStatus 2}}
+                                    <a href="/overdue/backend/reduction/confirm?id={{.Id}}" target="_blank" >{{t $.LangUse "审核"}}</a>|
+                                    {{end}}
+                                    <a href="/repay/backend/repay_plan?order_id={{.OrderId}}">{{t $.LangUse "还款计划"}}</a>
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

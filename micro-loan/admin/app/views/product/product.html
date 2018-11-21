@@ -1,0 +1,265 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+          {{if .isEdit}}
+          {{t .LangUse "编辑产品"}}
+          {{else}}
+          {{t .LangUse "添加产品"}}
+          {{end}}
+        </h1>
+    </section>
+
+
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    {{if ne .product.Id 0}}
+                    <form role="form" action="/product/doedit" method="post">
+                    {{else}}
+                    <form role="form" action="/product/add" method="post">
+                    {{end}}
+                        <div class="box-body">
+                            {{if or (eq .product.Status $.StatusNever) ( eq .isEdit false)}}
+                            <div class="form-group">
+                                <label for="name">{{t .LangUse "产品名称"}}</label>
+                                <input name='name' class="form-control" placeholder="{{t .LangUse "产品名称"}}" value="{{.product.Name}}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="product_type">{{t .LangUse "产品类型"}}</label>
+                                <select name="product_type" class="form-control select2" style="width: 100%;">
+                                  {{range  $i, $v :=.productTypeMap}}
+                                    {{if eq $i $.product.ProductType }}
+                                          <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                    {{else}}
+                                          <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                    {{end}}
+                                  {{end}}
+                                </select>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="ver">{{t .LangUse "产品版本"}}</label>
+                                <input name='ver' class="form-control"  type="number"  value="{{.product.Ver}}" placeholder="{{t .LangUse "产品版本"}}">
+                            </div> -->
+                            <!-- <div class="form-group">
+                                <label for="status">{{t .LangUse "产品状态"}}</label>
+                                <select name="status" class="form-control select2" style="width: 100%;">
+                                  {{range  $i, $v :=.productStatusMap}}
+                                    {{if eq $i $.product.Status }}
+                                          <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                    {{else}}
+                                          <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                    {{end}}
+                                  {{end}}
+                                </select>
+                            </div> -->
+
+                            <div class="form-group">
+                                <label for="day_interest_rate">{{t .LangUse "日利率"}}(‱)</label>
+                                <input name='day_interest_rate' class="form-control" type="number" mix ="0" max="10000"  value="{{.product.DayInterestRate}}" placeholder="{{t .LangUse "日利率"}}" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="day_fee_rate">{{t .LangUse "日费率"}}(‱)</label>
+                                <input name='day_fee_rate' class="form-control" type="number"  mix ="0" max="10000" value="{{.product.DayFeeRate}}" placeholder="{{t .LangUse "日费率"}}" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="day_grace_rate">{{t .LangUse "宽限期日费率"}}(‱)</label>
+                                <input name='day_grace_rate' class="form-control" type="number"  mix ="0" max="10000" value="{{.product.DayGraceRate}}" placeholder="{{t .LangUse "宽限期日费率"}}" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="day_penalty_rate">{{t .LangUse "罚息日费率"}}(‱)</label>
+                                <input name='day_penalty_rate' class="form-control" type="number"  mix ="0" max="10000" value="{{.product.DayPenaltyRate}}" placeholder="{{t .LangUse "日费率"}}" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="charge_interest_type">{{t .LangUse "利息收取类型"}}</label>
+                                <select name="charge_interest_type" class="form-control select2" style="width: 100%;">
+                                  {{range  $i, $v :=.productChargeInterestTypeMap}}
+                                    {{if eq $i $.product.ChargeInterestType }}
+                                          <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                    {{else}}
+                                          <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                    {{end}}
+                                  {{end}}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="charge_fee_type">{{t .LangUse "费用收取类型"}}</label>
+                                <select name="charge_fee_type" class="form-control select2" style="width: 100%;">
+                                  {{range  $i, $v :=.productChargeFeeTypeMap}}
+                                    {{if eq $i $.product.ChargeFeeType }}
+                                          <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                    {{else}}
+                                          <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                    {{end}}
+                                  {{end}}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min_amount">{{t .LangUse "最小借款金额"}}</label>
+                                <input name='min_amount' id='min_amount' class="form-control" type="number" value="{{.product.MinAmount}}" placeholder="{{t .LangUse "最小借款金额"}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max_amount">{{t .LangUse "最大借款金额"}}</label>
+                                <input name='max_amount' id='max_amount' class="form-control" type="number" value="{{.product.MaxAmount}}" placeholder="{{t .LangUse "最大借款金额"}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min_period">{{t .LangUse "最短借款期限"}}</label>
+                                <input name='min_period' id='min_period' class="form-control" type="number" value="{{.product.MinPeriod}}" placeholder="{{t .LangUse "最短借款期限"}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max_period">{{t .LangUse "最长借款期限"}}</label>
+                                <input name='max_period'  id='max_period' class="form-control" type="number" value="{{.product.MaxPeriod}}" placeholder="{{t .LangUse "最长借款期限"}}">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="repay_type">{{t .LangUse "还款方式"}} {{t .LangUse "暂时只实现了一次性还本付息"}}</label>
+                                <select name="repay_type" class="form-control select2" style="width: 100%;">
+                                    <option value="0"  selected="selected" > {{t $.LangUse "一次性还本付息"}}</option>
+                                  <!-- {{range  $i, $v :=.productRepayTypeMap}}
+                                    {{if eq $i $.product.RepayType }}
+                                          <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                    {{else}}
+                                          <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                    {{end}}
+                                  {{end}} -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="period">{{t .LangUse "期限单位"}}</label>
+                                <select name="period" class="form-control select2" style="width: 100%;">
+                                    <option value="1"  selected="selected" > {{t $.LangUse "日"}}</option>
+                                    <!-- {{range  $i, $v :=.productPeriodMap}}
+                                      {{if eq $i $.product.Period }}
+                                            <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                      {{else}}
+                                            <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                      {{end}}
+                                    {{end}} -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ceil_way">{{t .LangUse "取整方式"}}</label>
+                                <select name="ceil_way" class="form-control select2" style="width: 100%;">
+                                    <!-- <input name='ceil_way' id='ceil_way' class="form-control" type="number" value="{{.product.CeilWay}}" placeholder="{{t .LangUse "取整方式"}}"> -->
+                                    {{range  $i, $v :=.productCeilWayMap}}
+                                      {{if eq $i $.product.CeilWay }}
+                                            <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                      {{else}}
+                                            <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                      {{end}}
+                                    {{end}}
+                                </select>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="ceil_way">{{t .LangUse "取整单位"}}</label>
+                                <!-- <input name='ceil_way_unit' id='ceil_way_unit' class="form-control" type="number" value="{{.product.CeilWayUnit}}" placeholder="{{t .LangUse "取整单位"}}"> -->
+                                <select name="ceil_way_unit" class="form-control select2" style="width: 100%;">
+                                    {{range  $i, $v :=.productCeilWayUnitMap}}
+                                      {{if eq $i $.product.CeilWayUnit }}
+                                            <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                      {{else}}
+                                            <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                      {{end}}
+                                    {{end}}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="grace_period">{{t .LangUse "宽限期"}}</label>
+                                <input name='grace_period' class="form-control" type="number" value="{{.product.GracePeriod}}" placeholder="{{t .LangUse "宽限期"}}">
+                            </div>
+
+                            <!-- <div class="form-group">
+                                <label for="penalty_calc_expr">{{t .LangUse "罚息计算公式"}}</label>
+                                <input name='penalty_calc_expr' class="form-control" type="text" value="{{.product.PenaltyCalcExpr}}" placeholder="{{t .LangUse "罚息计算公式"}}">
+                            </div> -->
+                            <div class="form-group">
+                                  <label for="repay_order">
+                                  {{t .LangUse "部分还款顺序"}}
+                                  z:{{t .LangUse "滞纳金"}}
+                                  f:{{t .LangUse "罚息"}}
+                                  g:{{t .LangUse "宽限期"}}
+                                  s:{{t .LangUse "服务费"}}
+                                  i:{{t .LangUse "利息"}}
+                                  p:{{t .LangUse "本金"}}
+                                  {{t .LangUse "使用"}} ;{{t .LangUse "分割"}}{{t .LangUse "如"}}z;f;g;s;i;p
+                                </label>
+                                <input name='repay_order' class="form-control" type="text" value="{{if eq .product.RepayOrder ""}}z;f;g;s;i;p{{else}}{{.product.RepayOrder}}{{end}}" placeholder="{{t .LangUse "部分还款顺序"}}">
+                            </div>
+                            {{end}}
+
+                            <!-- <div class="form-group">
+                                <label for="repay_remind">{{t .LangUse "还款提醒"}}</label>
+                                <input name='repay_remind' type = "number" class="form-control" value="{{.product.RepayRemind}}" placeholder="{{t .LangUse "还款提醒"}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="overdue_remind">{{t .LangUse "逾期提醒"}}</label>
+                                <input name='overdue_remind'  type = "number" class="form-control" value="{{.product.OverdueRemind}}" placeholder="{{t .LangUse "逾期提醒"}}">
+                            </div> -->
+                            <div class="form-group">
+                                <label for="customer_visible">{{t .LangUse "客户是否可见"}}</label>
+                                <select name="customer_visible" class="form-control select2" style="width: 100%;">
+                                {{range  $i, $v :=.customerVisibleTypeMap}}
+                                {{if eq $i $.product.CustomerVisible }}
+                                    <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                {{else}}
+                                    <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                {{end}}
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="remarks">{{t .LangUse "备注"}}</label>
+                                <input name='remarks' class="form-control" type="text" value="{{.product.Remarks}}" placeholder="{{t .LangUse "备注"}}">
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <input type="hidden" name="id" value="{{.product.Id}}" />
+                            <button type="submit" id="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- /.content-wrapper -->
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,190 @@
+ <div class="content-wrapper">
+   <!-- Content Header (Page header) -->
+   <section class="content-header">
+       <h1>
+           操作日志管理
+       </h1>
+   </section>
+
+    <section class="content">
+      <div class="row">
+          <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                  <div class="box-header with-border">
+                      <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                  </div>
+                  <!-- /.box-header -->
+                  <!-- form start -->
+                  <form class="form-horizontal" action="/admin/op_log" method="get">
+                      <div class="box-body">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  ID:<input name="id" type="number" class="form-control" placeholder="{{t $.LangUse "日志"}}ID" value="{{ if gt $.id 0}}{{$.id}}{{end}}" />
+                              </div>
+                              <div class="col-xs-3">
+                                  {{t .LangUse "表名"}}:
+                                  <select name="op_table" class="form-control">
+                                      <option value="">{{t .LangUse "请选择"}}</option>
+                                  {{range $value, $show := .OpTableList}}
+                                      <option value="{{$value}}"{{if eq $.opTable $value}} selected{{end}}>{{$show}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+                              <div class="col-xs-3">
+                                  {{t .LangUse "操作内容"}}:
+                                  <select name="op_code" class="form-control">
+                                      <option value="">{{t .LangUse "请选择"}}</option>
+                                  {{range $value, $show := .OpCodeList}}
+                                      <option value="{{$value}}"{{if eq $.opCode $value}} selected{{end}}>{{$show}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+                              <div class="col-xs-3">
+                                    {{t .LangUse "操作用户"}}ID:<input name="op_uid" type="number" class="form-control" placeholder="{{t $.LangUse "操作用户"}}ID,  0:{{t $.LangUse "系统"}},  1:{{t $.LangUse "超管"}}" value="{{ if gt $.opUid -1}}{{$.opUid}}{{end}}" />
+                              </div>
+                          </div>
+                          <div class="row"><p>&nbsp;</p></div>
+                          <div class="row">
+                              <div class="col-xs-3">
+                                    {{t .LangUse "关联"}}ID:<input name="related_id" type="number" class="form-control" placeholder="{{t $.LangUse "关联"}}ID" value="{{ if gt $.relatedId 0}}{{$.relatedId}}{{end}}" />
+                              </div>
+                              <div class="col-xs-3">
+                              {{t .LangUse "月份"}}:
+                                  <select name="month" class="form-control">
+                                      <option value="-1">{{t .LangUse "当前月份"}}</option>
+                                  {{range $value, $show := $.monthMap}}
+                                      <option value="{{$value}}" {{if eq $.month $value}}  selected{{end}} >{{t $.LangUse $show}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+
+                              <div class="col-xs-3">
+                                {{t .LangUse "日期"}}:
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input name="time_range" id="time_range" type="text" readonly class="form-control" origin="{{.TimeRange}}" value="{{.TimeRange}}" />
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row"><br/></div>
+
+
+                          <div class="row"><br/></div>
+                          <div class="row">
+                              <div class="col-xs-1">
+                                  <input type="hidden" name="search" value="1">
+                                  <input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                              </div>
+                              <div class="col-xs-1">
+                                  <a href="/admin/op_log" class="form-control">{{t .LangUse "清除"}}</a>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <!-- /.box -->
+          </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="oplog-list" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>{{t .LangUse "操作员"}}</th>
+                  <th>{{t .LangUse "操作内容"}}</th>
+                  <th>{{t .LangUse "关联"}} ID</th>
+                  <th>{{t .LangUse "操作表"}}</th>
+                  <th>{{t .LangUse "操作时间"}}</th>
+                  <th>{{t .LangUse "操作"}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .List}}
+                <tr>
+                  <td>{{.Id}}</td>
+                  <td>
+                    {{if gt .OpUid 100000000}}
+                    <a href="/customer/detail?id={{.OpUid}}" target="_blank">{{.OpUid}}</a>
+                    {{else}}
+                    {{operatorName .OpUid}}
+                    {{end}}
+                  </td>
+                  <td>{{getOpLoggerCodeDesc .OpCode}}</td>
+                  <td>{{.RelatedId}}</td>
+                  <td>{{.OpTable}}</td>
+                  <td>{{mDateMHS .Ctime}}</td>
+                  <td>
+                    <!-- Button trigger modal -->
+                      <a href="#" data-id="{{.Id}}" data-ctime="{{.Ctime}}" data-toggle="modal" data-target="#myModal">{{t $.LangUse "查看"}}</a>
+                  </td>
+                </tr>
+                {{end}}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>ID</th>
+                    <th>{{t .LangUse "操作员"}}</th>
+                    <th>{{t .LangUse "操作内容"}}</th>
+                    <th>{{t .LangUse "关联"}} ID</th>
+                    <th>{{t .LangUse "操作表"}}</th>
+                    <th>{{t .LangUse "操作时间"}}</th>
+                    <th>{{t .LangUse "操作"}}</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+                <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+                </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog  modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">View Diff</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Column</th>
+            <th>Original</th>
+            <th>Edited</th>
+            <!-- <th>Is Changed</th> -->
+          </tr>
+          </thead>
+          <tbody id="displayDiff">
+          </tbody>
+        </table>
+        <!-- <pre id="displayDiff"></pre> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

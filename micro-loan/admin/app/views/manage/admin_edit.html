@@ -1,0 +1,42 @@
+<div class="modal-header createPayMethodFormTitle">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="updateModalLabel">{{t .LangUse "更新后台用户"}}</h4>
+</div>
+<form role="form" id="updateForm" method="post" action="/manage/admin/update">
+    <div class="modal-body">
+        <!-- text input -->
+        <div class="form-group">
+            <label for="email">{{t .LangUse "邮箱"}}</label>
+            <input name="email" type="email" class="form-control"  required placeholder="{{t .LangUse "邮箱"}}" value="{{$.Data.Email}}">
+        </div>
+        <div class="form-group">
+            <label for="mobile">{{t .LangUse "手机号"}}</label>
+            <input name="mobile" type="tel" class="form-control"  required placeholder="{{t .LangUse "联系方式"}}" value="{{$.Data.Mobile}}">
+        </div>
+        <div class="form-group">
+            <label for="nickname">{{t .LangUse "昵称"}}</label>
+            <input name="nickname" type="text" class="form-control" required placeholder="{{t .LangUse "昵称"}}" value="{{$.Data.Nickname}}">
+        </div>
+        <div class="form-group">
+            <label>{{t .LangUse "角色"}}</label>
+            <select class="form-control" name="role_id" id="">
+              <option value="">{{t .LangUse "选择一个角色"}}</option>
+              {{range .RoleList}}
+
+              <option value="{{.Id}}" {{if eq $.Data.RoleID .Id }}  selected {{end}} >{{getRoleNameDisplay $.LangUse .Type .Name}}</option>
+              {{end}}
+
+            </select>
+        </div>
+      <div class="form-group">
+        <label for="password">{{t $.LangUse "请设置一个复杂密码"}}</label>
+        <input name="password" type="text" class="form-control" id="password" placeholder="{{t .LangUse "不更新密码直接留空"}}">
+      </div>
+
+        <input type="hidden" class="form-control" name="id" value="{{$.Data.Id}}">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{t .LangUse "取消"}}</button>
+        <button type="submit" class="btn btn-success" id="submitButton" >{{t .LangUse "提交"}}</button>
+    </div>
+</form>

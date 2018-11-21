@@ -1,0 +1,98 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "工单分类"}}-{{t .LangUse "绩效管理"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/ticket/item/performance/month" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            {{t .LangUse "工单分类"}}:
+                                <select name="item_id" class="form-control">
+                                    <option value="-1">{{t .LangUse "请选择"}}</option>
+                                {{range $value, $show := $.ticketItemMap}}
+                                    <option value="{{$value}}"{{if eq $.itemID $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/ticket/item/performance/month" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                            <!-- <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control multiAssign">{{t .LangUse "分配工单"}}</a>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tr>
+                  <th class="listMultiSelect" style="display:none;">{{t .LangUse "Test"}}</th>
+                  <th>{{t .LangUse "日期"}}</th>
+                  <th>{{t .LangUse "工单分类"}}</th>
+                  <th>{{t .LangUse "处理数"}}</th>
+                  <th>{{t .LangUse "完成数"}}</th>
+                  <th>{{t .LangUse "完成率"}}</th>
+                  <th>{{t .LangUse "达标天数"}}</th>
+                  <th>{{t .LangUse "更新时间"}}</th>
+                </tr>
+                {{range .List}}
+                <tr>
+                  <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>
+                    <td>{{.Date}}</td>
+                    <td>{{getTicketItemDisplay $.LangUse .TicketItemID}}</td>
+                    <td>{{.HandleNum}}</td>
+                    <td>{{.CompleteNum}}</td>
+                    <td>{{.CompleteRate}}</td>
+                    <td>{{.OverdueRateAchieveDays}}</td>
+                    <td>{{mDateMHS .Utime}}</td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>

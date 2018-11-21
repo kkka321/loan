@@ -1,0 +1,95 @@
+ <div class="content-wrapper">
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">{{t .LangUse "后台用户管理"}}</h3>
+              <a href="/admin/create"><i class="fa fa-gear">{{t $.LangUse "添加用户"}}</i></a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="admin-list" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Nickname</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>{{t $.LangUse "操作人"}}</th>
+                  <th>RegisterTime</th>
+                  <th>LastLoginTime</th>
+                  <th>Operate</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .List}}
+
+                <tr>
+                  <td>{{.Id}}</td>
+                  <td>{{.Email}}</td>
+                  <td>{{.Nickname}}</td>
+                  <td>{{getRoleNameDisplay $.LangUse .RoleType .RoleName}}</td>
+                  <td>{{statusDisplay $.LangUse .Status | str2html}}</td>
+                  <td>{{operatorName .CreateUid}}</td>
+                  <td>{{mDateMHS .RegisterTime}}</td>
+                  <td>{{mDateMHS .LastLoginTime}}</td>
+                  <td>
+    {{if eq .Status 1}}
+    | <a href="#" data-id="{{.Id}}" data-toggle="modal" data-target="#updateModal" data-remote="/admin/edit?id={{.Id}}">{{t $.LangUse "编辑"}}</a>
+    | <a href="/admin/block?id={{.Id}}">{{t $.LangUse "封禁"}}</a>
+    {{else}}
+    | <a href="/admin/unblock?id={{.Id}}">{{t $.LangUse "解封"}}<a/>
+    {{end}}
+                  </td>
+                </tr>
+                {{end}}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Nickname</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>{{t $.LangUse "操作人"}}</th>
+                    <th>RegisterTime</th>
+                    <th>LastLoginTime</th>
+                    <th>Operate</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+</div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Tag</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "还款计划"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "应还日期"}}</th>
+                                <td>{{.repayPlan.RepayDate | mDateMHS}}</td>
+                                <th>{{t .LangUse "实还日期"}}</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>{{t .LangUse "应还本金"}}</th>
+                                <td>{{.repayPlan.Amount}}</td>
+                                <th>{{t .LangUse "已还本金"}}</th>
+                                <td>{{.repayPlan.AmountPayed}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{t .LangUse "应还利息"}}</th>
+                                <td>{{.repayPlan.Interest}}</td>
+                                <th>{{t .LangUse "已还利息"}}</th>
+                                <td>{{.repayPlan.InterestPayed}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{t .LangUse "应还服务费"}}</th>
+                                <td>{{.repayPlan.ServiceFee}}</td>
+                                <th>{{t .LangUse "已还服务费"}}</th>
+                                <td>{{.repayPlan.ServiceFeePayed}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{t .LangUse "应还罚息"}}</th>
+                                <td>{{.repayPlan.Penalty}}</td>
+                                <th>{{t .LangUse "已还罚息"}}</th>
+                                <td>{{.repayPlan.PenaltyPayed}}</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

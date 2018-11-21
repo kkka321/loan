@@ -1,0 +1,198 @@
+<script>
+    $(function() {
+      $('#allMemberRanking').DataTable({
+        'paging'      : true,
+        "pageLength"  : 15,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+      });
+      $('#groupMemberRanking').DataTable({
+        'paging'      : true,
+        "pageLength"  : 15,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+      });
+      $('#groupRanking').DataTable({
+        'paging'      : true,
+        "pageLength"  : 6,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+      });
+      Highcharts.setOptions({
+      	lang: {
+      		thousandsSep: ','
+      	}
+      });
+      function createLineChart() {
+        var serverData = {{$.jsonProcessChartDatas}}
+        var standardRepayRate = {{$.standardRepayRate}}
+        var data = (typeof serverData == 'string') ? JSON.parse(serverData) : serverData;
+        Highcharts.chart('chartContainer', {
+            title: {
+                text: ''
+            },
+            legend: {
+              layout: 'horizontal',
+            },
+            xAxis: {
+                tickInterval: 1,
+                title: {
+                    text: '{{t $.LangUse "时间"}}'
+                },
+                type: 'category',
+            },
+            yAxis: {
+                allowDecimals: false,
+                title: {
+                    text: '{{t $.LangUse "Bonus"}}'
+                },
+            },
+            tooltip: {
+        			shared: true,
+        			crosshairs: true,
+        		},
+
+            series: [{
+              name: '{{t $.LangUse "Bonus"}}',
+              type: "spline",
+              dataLabels: {
+                enabled: true,
+                formatter: function() {
+                  return Highcharts.numberFormat(this.y,0);
+                }
+              },
+              data:data,
+            }]
+        });
+      }
+      createLineChart()
+
+      function createGroupLineChart() {
+        var serverData = {{$.jsonGroupChartData}}
+        if(typeof serverData != 'string' || serverData == "") {
+          return
+        }
+        var data =  JSON.parse(serverData);
+        Highcharts.chart('groupChartContainer', {
+            title: {
+                text: ''
+            },
+            legend: {
+                layout: 'horizontal',
+            },
+            xAxis: {
+                tickInterval: 1,
+                title: {
+                    text: '{{t $.LangUse "时间"}}'
+                },
+                type: 'category',
+            },
+            yAxis: {
+                allowDecimals: false,
+                title: {
+                    text: '{{t $.LangUse "小组回收率"}}'
+                },
+            },
+            tooltip: {
+              shared: true,
+              crosshairs: true,
+            },
+
+            series: [{
+              name: '{{t $.LangUse "回收率"}}%',
+              type: "spline",
+              dataLabels: {
+                enabled: true,
+                formatter: function() {
+                  return this.y + "%";
+                }
+              },
+              data:data,
+            }]
+        });
+      }
+      createGroupLineChart()
+
+      function createPieChart(){
+        $('#diffTargetRepayChart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+        },
+        title: {
+            floating:true,
+            text: ''
+        },
+        tooltip: {
+            pointFormat: '{point.y:,.0f}'
+            //pointFormat: '{point.y}</br><b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        return this.point.noLabel ? null : this.point.name + ":" + Highcharts.numberFormat(this.point.y,0);
+                    },
+                    //color: 'white',
+                    //format:'<b>{point.name}</b>:{point.y:,.0f}',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                },
+                showInLegend: true,
+            }
+        },
+        series: [{
+            type: 'pie',
+            innerSize: '60%',
+            name: '差值金额',
+            data: [
+
+                {
+                    name: '{{t $.LangUse "差值金额"}}',
+                    y: {{$.lastestStatsData.DiffTargetRepay}},
+                    //sliced: true,
+                    //selected: true,
+                    color: '#EA8A80'
+                },
+                {
+                    name: '{{t $.LangUse "回款总金额"}}',
+                    y: {{$.lastestStatsData.RepayTotal}},
+                    //sliced: true,
+                    //selected: true,
+                    noLabel:true,
+                },
+
+                //['{{t $.LangUse "回款总金额"}}',   {{$.lastestStatsData.RepayTotal}}],
+                // ['{{t $.LangUse "回款总金额"}}',   3923373],
+
+
+            ]
+        }]
+    }, function(c) {
+        // 环形图圆心
+        var centerY = c.series[0].center[1],
+            titleHeight = parseInt(c.title.styles.fontSize);
+        c.setTitle({
+            y:centerY + titleHeight/2
+        });
+        chart = c;
+    });
+  }
+
+  createPieChart()
+});
+</script>

@@ -1,0 +1,45 @@
+<div class="content-wrapper">
+<section class="content">
+    <div class="box-body">
+        <div class="callout callout-success">
+            <h4>{{t $.LangUse "操作成功"}}!</h4>
+            <p>{{.OpMessage}}</p>
+            <p id="info"></p>
+        </div>
+    </div>
+</section>
+</div>
+
+<script>
+function closewindow(){
+    window.returnValue = true;
+    window.close();
+}
+
+function clock(){
+    if(document.getElementById("info")){
+        document.getElementById("info").innerHTML = "{{t $.LangUse "本窗口将在"}}"+" " + i + " " + "{{t $.LangUse "秒后自动跳转"}} , <a href='{{$.Redirect}}'> {{t $.LangUse "立即跳转"}} </a>";
+    }
+
+
+    if(i > 0) {
+        setTimeout("clock();", 1000);//设置定时器，目的：每隔一秒调用一次clock(),【递归调用】
+    } else {
+      if(redirect.length > 0) {
+        window.location.href = redirect;
+      } else {
+        //window.opener.location.reload();
+        closewindow();
+      }
+    }
+
+    i = i - 1;
+}
+
+var i = 3;
+var redirect = "{{$.Redirect}}";
+if(redirect.length == 0){
+  window.opener.location.reload();
+}
+clock();
+</script>

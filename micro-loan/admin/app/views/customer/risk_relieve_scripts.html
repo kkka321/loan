@@ -1,0 +1,31 @@
+<script>
+$(function () {
+
+    $('#updateForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            relieve_reason: {
+                message: '{{t $.LangUse "此栏目为必填项"}}.',
+                validators: {
+                  	"greaterThan": {
+                        value:1,
+                        message: '{{t $.LangUse "此栏目为必填项"}}.',
+                    },
+                }
+            },
+
+        }
+    })
+    .on('success.form.bv', function (e) {
+
+    });
+
+
+});
+
+</script>

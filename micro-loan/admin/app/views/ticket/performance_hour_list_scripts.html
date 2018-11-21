@@ -1,0 +1,32 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+
+  $('#date_range').daterangepicker({
+
+    // ranges: {
+    //   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //   'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //   'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //   'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    // },
+    "alwaysShowCalendars": true,
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#date_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  // $("#updateModal").on("hidden.bs.modal", function() {
+  //   console.log("hidden clear");
+  //   $(this).removeData("bs.modal");
+  // });
+
+});
+
+</script>

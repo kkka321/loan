@@ -1,0 +1,19 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+
+  $('#ctime_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#ctime_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+});
+
+</script>

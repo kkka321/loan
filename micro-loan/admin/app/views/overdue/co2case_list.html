@@ -1,0 +1,261 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "CO2案件管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/overdue/co2case_list" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "ID"}}:<input name="id" type="number" class="form-control" placeholder="{{t .LangUse "ID"}}" value="{{.id}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="order_id" type="number" class="form-control" placeholder="{{t .LangUse "借款"}}" value="{{.order_id}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "账户"}}ID:<input name="account_id" type="number" class="form-control" placeholder="{{t .LangUse "账户"}}" value="{{.account_id}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "筛选"}}:
+                                    <select name="filter" class="form-control">
+                                        <option value="-1">{{t .LangUse "全部"}}</option>
+                                        {{range $value, $show := .UrgeFilterMap}}
+                                            <option value="{{$value}}"{{if eq $.filter $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    {{t .LangUse "入催起止日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="join_urge_time_range"  id="join_urge_time_range" type="text" readonly class="form-control" origin="{{.joinUrgeTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.joinUrgeTimeRange}}" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    {{t .LangUse "出催起止日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="out_urge_time_range"  id="out_urge_time_range" type="text" readonly class="form-control" origin="{{.outUrgeTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.outUrgeTimeRange}}" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control" placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}" />
+                                </div>
+                                <div class="col-xs-3">
+                                    {{t .LangUse "手机号"}}:<input type="number" class="form-control pull-right" name="mobile" value="{{.mobile}}" />
+                                </div>
+
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                              
+                                <div class="col-xs-3">
+                                    {{t .LangUse "订单类型"}}:
+                                    <select name="ordertype" class="form-control">
+                                        <option value="-1">{{t .LangUse "全部"}}</option>
+                                        {{range $value, $show := .UrgeOrderTypeMap}}
+                                            <option value="{{$value}}"{{if eq $.ordertype $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-1 ">
+                                {{t .LangUse "逾期天数"}}:<input name="overdue_days_start" id="overdue_days_start" type="number" class="form-control" placeholder="0"  min="0" max="100" value="{{.overdueDaysStart}}" />
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <br/>
+                                    <input name="overdue_days_end"  id="overdue_days_end" type="number" class="form-control" placeholder="100" min="0" max="100" value = "{{.overdueDaysEnd}}"/>
+                                </div>
+                            </div>
+                            <div><p></p></div>
+
+                            <div class="row">
+                                <div class="col-xs-2 ">
+                                {{t .LangUse "剩余还款金额小于等于"}}:<input name="left_amount" id="left_amount" type="number" class="form-control" value="{{.leftAmount}}" />
+                                </div>
+                            </div>
+
+                            <p></p>
+
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;
+                                    <input type="submit" id="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/overdue/co2case_list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                    <th class="listMultiSelect" style="">
+                                            <input type="checkbox"  value="" id="selectAll" name="buttonAll"/><label for="selectAll">{{t .LangUse "全选"}}</label>
+                                        </th>
+                                <th>{{t .LangUse "ID"}}</th>
+                                <th class="th_sort" id="OrderId">{{t .LangUse "借款"}}ID<i id="iOrderId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th>{{t .LangUse "手机号"}}</th>
+                                <th>{{t .LangUse "状态"}}</th>
+                                <th class="th_sort" id="RepayDate">{{t .LangUse "应还日期"}}<i id="iRepayDate" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th class="th_sort" id="TotalRepay">{{t .LangUse "应还总额"}}<i id="iTotalRepay" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th class="th_sort" id="JoinUrgeTime">{{t .LangUse "入催时间"}}<i id="iJoinUrgeTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th class="th_sort" id="OverdueDays">{{t .LangUse "逾期天数"}}<i id="iOverdueDays" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th>{{t .LangUse "案件级别"}}</th>
+                                <th>{{t .LangUse "实还金额"}}</th>
+                                <!-- th>{{t .LangUse "承诺还款时间"}}</th -->
+                                <!-- th>{{t .LangUse "最近一次催收时间"}}</th -->
+
+                                <th>{{t .LangUse "催收类型"}}</th>
+                                <th>{{t .LangUse "委外公司"}}</th>
+                            {{if eq 1 .filter}}
+                                <th>{{t .LangUse "出催原因"}}</th>
+                                <th>{{t .LangUse "出催时间"}}</th>
+                            {{end}}
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            {{if eq (.PromiseRepayTime | checkPromiseIsToday) true}}
+                                {{if eq 0 .IsOut}}
+                                    <tr style="background-color:darkgoldenrod" >
+                                {{else}}
+                                    <tr>
+                                {{end}}
+                            {{else}}
+                                <tr>
+                            {{end}}
+                            <td class="listMultiSelect" style="" >
+
+                                    {{if eq "" .EntrustPname}}
+                                    {{if eq 0 .IsTicket }}
+                                        {{if eq 0 .IsOut}}
+                                    <input type="checkbox" class="listCheckBox" name="listCheckBox"  value="{{.Id}}" />
+                                    {{end}}
+                                    {{end}}
+                                    {{end}}
+                                </td>
+                                <td>{{.Id}}</td>
+                                <td>{{.OrderId}}</td>
+                                <td><a href="/customer/detail?id={{.AccountId}}">{{.Realname}}</a></td>
+                                <td><a href="/customer/detail?id={{.AccountId}}">{{.Mobile}}</a></td>
+                                <td>{{isOutDisplay $.LangUse .IsOut}}</td>
+                                <td>{{.RepayDate | mDateMHSDate}}</td>
+                                <td>{{.TotalRepay}}</td>
+                                <td>{{.JoinUrgeTime | mDateMHS}}</td>
+                                <td>{{.OverdueDays}}</td>
+                                <td>{{.CaseLevel}}</td>
+
+                                <td>{{.TotalRepayPayed}}</td>
+                                <!-- td>{{.PromiseRepayTime | mDateMHSDate}}</td -->
+                                <!-- td>{{.PhoneTime | mDateMHSDate}}</td -->
+                                <td>
+                                    {{if eq "" .EntrustPname}}
+                                    {{t $.LangUse "自催"}}
+                                    {{else}}
+                                    {{t $.LangUse "委外"}}
+                                    {{end}}
+                                </td>
+                                <td>{{entrustCompanyDisplay $.LangUse .EntrustPname}}</td>
+                            {{if eq 1 $.filter}}
+                                <td>{{urgeOutReasonDisplay $.LangUse .OutReason}}</td>
+                                <td>{{.OutUrgeTime | mDateMHS}}</td>
+                            {{end}}
+                                <td>
+
+
+                                    {{if eq "" .EntrustPname}}
+                                        {{if eq 0 .IsTicket }}
+                                            {{if eq 0 .IsOut}}
+                                            <a href="javascript:void(0);" id="create_ticket" data-id="{{.Id}}" target="_blank">{{t $.LangUse "创建工单"}}</a> 
+                                            {{end}}
+                                        {{else}}
+                                            <a href="/ticket/list?id={{.IsTicket}}&item_id=4&risk_level=-1&submit=true&size=15" target="_blank">{{t $.LangUse "查看工单"}}</a>
+                                        {{end}}
+                                    {{end}}
+                                </td>
+                            </tr>
+                        {{end}}
+                        <tr>
+
+                            <td colspan="15">
+                                <div class="col-xs-2">
+                                    <input type="button" id="batchAssign"  class="form-control btn btn-warning" value="{{t .LangUse "批量创建"}}">
+                                    <input type="hidden" class="form-control" name="ids" id="batchAssignIdContainer" value="">
+                                    <input type="hidden" class="form-control" name="ids" id="selectedTicketCount" value="">
+                                </div> 
+                            </td>
+                        </tr>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>

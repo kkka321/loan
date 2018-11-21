@@ -1,0 +1,72 @@
+<script>
+$(function () {
+
+  $('#statistic_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#statistic_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+    // 绑定，modal 弹出事件
+    $('#myModal').on('shown.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // 触发事件的按钮
+        var id = button.data('id') // 解析出data-whatever内容
+        $.ajax({
+            url: "/thirdparty/reconciliation_customer_detail",
+            type: "GET",
+            data: {id:id},
+            dataType: "json",
+        }).done(function(data) {
+            // var original = $.parseJSON(data.Original)
+            // var edited = $.parseJSON(data.Edited)
+            var display = document.getElementById('displayDiff');
+            for (var record in data){
+              console.log(data[record])
+              console.log("api:"+data[record].Api)
+
+              tr =  document.createElement('tr');
+              tdAPI = document.createElement('td');
+              tdAPI.appendChild(document.createTextNode(data[record].Api));
+              tdAPI.style="word-wrap:break-word; word-break:break-all;"
+              
+              tdCallCount = document.createElement('td');
+              tdCallCount.appendChild(document.createTextNode(data[record].CallCount));
+              tdCallCount.style.verticalAlign ="middle"
+              
+              tdSuccessCount = document.createElement('td');
+              tdSuccessCount.appendChild(document.createTextNode(data[record].SuccessCallCount));
+              tdSuccessCount.style.verticalAlign ="middle"
+              
+              tdHitCount = document.createElement('td');
+              tdHitCount.appendChild(document.createTextNode(data[record].HitCallCount));
+              tdHitCount.style.verticalAlign ="middle"
+              
+              tdApiFee = document.createElement('td');
+              tdApiFee.appendChild(document.createTextNode(data[record].ApiFee));
+              tdApiFee.style.verticalAlign ="middle"
+
+              tr.appendChild(tdAPI);
+              tr.appendChild(tdCallCount);
+              tr.appendChild(tdSuccessCount);
+              tr.appendChild(tdHitCount);
+              tr.appendChild(tdApiFee);
+              display.appendChild(tr);
+            }
+      });
+      return false;
+    })
+    $("#myModal").on("hidden.bs.modal", function() {
+        console.log("clear")
+        var display = document.getElementById('displayDiff');
+        display.innerHTML = "";
+
+        $(this).removeData("bs.modal");
+    });
+
+
+});
+
+</script>

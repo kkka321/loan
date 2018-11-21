@@ -1,0 +1,60 @@
+<script>
+$(function () {
+  // 初始化时间范围选择插件
+  // $('#apply_time_range').daterangepicker({locale: {
+  //     format: 'YYYY-MM-DD'
+  // }});
+
+  $('#join_urge_time_range').daterangepicker({
+
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#join_urge_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $('#out_urge_time_range').daterangepicker({
+
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#out_urge_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+  $('#promise_repay_time').datetimepicker({
+     format:'Y-m-d H:i',
+     step: 5
+  });
+
+
+  function showWarningBox(messageContent) {
+      var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+      showBoxMsg(warningBoxContent);
+  }
+
+  function showBoxMsg(msg) {
+      $("#smallModal div.modal-body").html(msg);
+      $("#smallModal").modal('show');
+  }
+
+  $("#submit").on("click", function(){
+    var overdueDaysStart = $('#overdue_days_start').val();
+    var overdueDaysEnd = $('#overdue_days_end').val();
+
+    var rS = parseInt(overdueDaysStart)
+    var rE = parseInt(overdueDaysEnd)
+    if(rS>rE) {
+       showBoxMsg('{{t .LangUse "逾期天数起始值大于终止值"}}')
+       //e.preventDefault();
+       return false
+    }
+  });
+
+});
+
+
+</script>

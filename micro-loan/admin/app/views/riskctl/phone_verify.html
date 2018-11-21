@@ -1,0 +1,263 @@
+
+<div class="row">
+        <div class="content-wrapper">
+                <div class="col-md-12">
+                        <!-- Custom Tabs -->
+                        <div class="nav-tabs-custom">
+                          <ul class="nav nav-tabs">
+                            <li class="active red">
+                                <a href="#tab_1" class="tab_a" data-toggle="tab" aria-expanded="true">{{t .LangUse "电核"}}</a>
+                            </li>
+                            <li class="yellow"><a href="#tab_2" id="custinfo" data-toggle="tab" aria-expanded="false">{{t .LangUse "客户详情"}}</a></li>
+                          </ul>
+                          <div class="tab-content">
+                            <div class="tab-pane active" id="tab_1">
+                                    
+                                    <section class="content-header">
+                                           
+                                        <div class="alert alert-warning alert-dismissible">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            <h4><i class="icon fa fa-warning"></i> Kata-kata dasar: </h4>
+                                            Halo, bolehkah saya bertanya kepada Bapak / Ibu? Saya adalah anggota staf bisnis
+                                        dari lembaga kredit tertentu Aplikasi pinjaman Anda kepada perusahaan telah diserahkan kepada
+                                        departemen kami, saya sekarang memiliki beberapa masalah terkait yang perlu diverifikasi lebih
+                                        lanjut dengan Anda.
+                                        </div>
+                                        </section>
+                                        <section class="content">
+                            
+                                            <form method="post" action="/riskctl/phone_verify/save" id="save_result">
+                                                <input type="hidden" name="order_id" value="{{.OrderId}}"/>
+                                                <input type="hidden" name="redirect_reject" value="0" id="redirect_reject"/>
+                                                <input type="hidden" name="result" value="0" id="result">
+                                                <input type="hidden" name="invalid_reason" value="0" id="invalid_reason">
+                                                <div class="box box-default color-palette-box">
+                                                    <div class="row">
+                                                        <div class="box-body">
+                                                            <div class="col-md-12">
+                                                                <div class="box-body no-padding">
+                                                                {{.QuestionHtml | str2html}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                            
+                                                    {{if ne $.ItemID 2}}
+                                                    <div class="row">
+                                                        <div class="box-body">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label>{{t .LangUse "电核结论"}}:</label>
+                                                                    <textarea name="remark" id="remark" class="form-control non-fixed" rows="3" required
+                                                                              placeholder="Enter ..."></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{end}}
+                            
+                                                    <div class="row">
+                                                        <div class="box-body">
+                                                            {{if ne $.ItemID 2}}
+                                                            <div class="col-md-3">
+                                                                <label>{{if eq $.ItemID 2}}{{t .LangUse "审核时间"}}{{else}}{{t .LangUse "电话拨打时间"}}{{end}}:</label>
+                                                                <td>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </div>
+                                                                        <input name="phone_time"  id="phone_time" type="text" readonly class="form-control" origin="" placeholder="{{t $.LangUse "选择拨打时间"}}" value="" />
+                                                                    </div>
+                                                                </td>
+                                                            </div>
+                            
+                                                            <div class="col-md-1"><p>&nbsp;</p></div>
+                                                            <div class="col-md-4">
+                                                                <label>{{t .LangUse "电话接通情况"}}:</label>
+                                                                <td>
+                                                                    <div>
+                                                                        {{t .LangUse "已接通"}}&nbsp;<input id="phone_connect" name="phone_connected" type="radio" value=1>
+                                                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                        {{t .LangUse "未接通"}}&nbsp;<input id="phone_not_connect" name="phone_connected" type="radio" value=0>
+                                                                    </div>
+                                                                </td>
+                                                            </div>
+                            
+                                                            <div class="col-md-2" id="phone_verify_call">
+                                                                <input type="text" id="phone-verify-call-input" class="form-control phone-verify-call hidden" value="{{.BaseInfo.Mobile}}" data-orderid="{{.OrderId}}" />
+                                                                <button id="phone-verify-call-button" type="button" class="btn btn-block btn-primary phone-verify-call"
+                                                                data-mobile="" data-orderid="">{{t .LangUse "呼叫"}}</button>
+                                                                <p></p>
+                                                                <button id="phone-verify-stop-button" type="button" class="btn btn-danger"
+                                                                style="display:none;size:15px">{{t .LangUse "中止"}}</button>
+                                                                <p></p>
+                                                                <input type="text" id="phone-verify-stop" class="form-control" style="border:none;display:none;width: 400px" value="" />
+                                                                <input type="text" id="phone-verify-call-result" class="form-control" style="border:none;display:none;width: 400px" value="" />
+                                                            </div>
+                                                            {{end}}
+                                                        </div>
+                                                    </div>
+                            
+                                                    <div class="row"><p>&nbsp;</p></div>
+                                                    <div class="row">
+                                                        <div class="box-body">
+                                                            <div class="col-md-2" id="phone_verify_pass">
+                                                                <button type="submit" class="btn btn-block btn-success set-result single-submit"
+                                                                        v="1">{{if eq $.ItemID 2}}{{t .LangUse "审核通过"}}{{else}}{{t .LangUse "电核通过"}}{{end}}</button>
+                                                            </div>
+                                                            <div class="col-md-2" id="phone_verify_refuse">
+                                                                <button type="submit" class="btn btn-block btn-danger set-result single-submit redirect-reject"
+                                                                        v="2">{{if eq $.ItemID 2}}{{t .LangUse "审核拒绝"}}{{else}}{{t .LangUse "电核拒绝"}}{{end}}</button>
+                                                            </div>
+                                                            {{if eq .ReloanFlag 0}}
+                                                            <div class="col-md-2" id="phone_verify_invalid">
+                                                                <input type="button"  class="btn btn-block btn-warning set-result single-submit"
+                                                                        v="3" data-toggle="modal" data-target="#myModal" value='{{t .LangUse "置为失效"}}'></input>
+                                                            </div>
+                                                            {{end}}
+                                                            {{if ne $.ItemID 2}}
+                                                            <div class="col-md-2">
+                                                                <button id="phone-verify-call-record" type="button" class="btn btn-block btn-primary phone-verify-record single-submit"
+                                                                    v="4" value="{{.OrderId}}" style="background:teal">{{t .LangUse "仅保存通话记录"}}</button>
+                                                            </div>
+                                                            {{end}}
+                                                        </div>
+                                                    </div>
+                            
+                                                    <div class="row"><p>&nbsp;</p></div>
+                            
+                                                    <div class="row">
+                                                        <div class="box-body">
+                                                            <div class="col-md-6">
+                                                                <p>{{t .LangUse "“置为失效”按钮适用情况"}}:</p>
+                                                                <p>1. {{t .LangUse "证件照和手持证件照照片模糊"}}</p>
+                                                                <p>2. {{t .LangUse "手持证件照中无人脸或者身份证"}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                            
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title" id="myModalLabel">{{t .LangUse "请选择失效原因"}}</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <table class="table table-bordered table-striped">
+                                                                    <tbody>
+                                                                    <select name="valid_confirm_select" id ="valid_confirm_select" class="form-control" >
+                                                                        <option value="0">please select</option>
+                                                                        <option value="1">{{t .LangUse "身份证照片模糊,身份证信息无法识别"}}</option>
+                                                                        <option value="2">{{t .LangUse "手持证件照模糊"}}</option>
+                                                                        <option value="3">{{t .LangUse "手持证件照中缺少人脸"}}</option>
+                                                                        <option value="4">{{t .LangUse "手持证件照中缺少身份证"}}</option>
+                                                                    </select>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button id="valid_confirm_bt" class="btn btn-success" data-dismiss="modal">Confirm</button>
+                                                                <button id="valid_cancel_bt" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                            
+                                        </section>
+        
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_2">
+                             
+                                <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- Custom Tabs -->
+                                            <div class="nav-tabs-custom">
+                                                <ul class="nav nav-tabs" id="tabs">
+                                                    <li id="tab1"><a data-toggle="tab" href="#tab-base-info" data-type="base-info">{{t .LangUse "身份信息"}}</a></li>
+                                                    <li id="tab2"><a data-toggle="tab" href="#tab-other-info" data-type="other-info">{{t .LangUse "其他信息"}}</a></li>
+                                                    <li id="tab3"><a data-toggle="tab" href="#tab-big-data-info" data-type="big-data-info">{{t .LangUse "大数据信息"}}</a></li>
+                                                    <li id="tab4"><a data-toggle="tab" href="#tab-communication-record" data-type="communication-record">{{t .LangUse "沟通记录"}}</a></li>
+                                                    <li id="tab5"><a data-toggle="tab" href="#tab-loan-history" data-type="loan-history">{{t .LangUse "借款历史"}}</a></li>
+                                                    <li id="tab6"><a data-toggle="tab" href="#tab-check-duplicate" data-type="check-duplicate">{{t .LangUse "查重"}}</a></li>
+                                                    <li class="pull-right">
+                                                        <a href="/customer/risk_report?cid={{.Id}}" class="text-muted" target="_blank"><i class="fa fa-gear">{{t .LangUse "上报风险"}}</i></a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div class="tab-pane" id="tab-base-info"></div>
+                                                    <div class="tab-pane" id="tab-other-info"></div>
+                                                    <div class="tab-pane" id="tab-big-data-info"></div>
+                                                    <div class="tab-pane" id="tab-communication-record"></div>
+                                                    <div class="tab-pane" id="tab-loan-history"></div>
+                                                    <div class="tab-pane" id="tab-check-duplicate"></div>
+                                                </div>
+                                                <!-- /.tab-content -->
+                                            </div>
+                                            <!-- nav-tabs-custom -->
+                                        </div>
+                                    </div>
+
+                                   
+
+                            </div>
+                            
+                            
+                            <!-- /.tab-pane -->
+                          </div>
+                          <!-- /.tab-content -->
+                        </div>
+                        <!-- nav-tabs-custom -->
+                      </div>
+        
+        
+            <!-- Content Header (Page header) -->
+            <!-- <section class="content-header">
+                <h3>
+                    {{t $.LangUse "催收"}}
+                </h3>
+                <a href="/overdue/urge/detail?id={{$.OneCase.Id}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+        
+            </section> -->
+        
+            <!-- Main content -->
+        
+        
+            <div class="modal fade" id="remindDialog" tabindex="-1" role="dialog" aria-spanledby="updateModalspan">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+        
+                    </div>
+                </div>
+            </div>
+            <!-- /.content -->
+        </div>
+        </div>
+        
+
+
+<!--  old dom struct replaced by top dom
+<div id="wrap" style="position: relative">
+    <ul>
+        <div class="content-wrapper" id="custom_one"
+             style="margin-right:851px;float: left;height: 924px;overflow: auto">
+
+            
+
+        </div>
+
+    {{/* <label style="background: #f00;position:absolute;right:601px;width:10px;height:588px" id='lab1'>1</label>*/}}
+
+        <div class="content-wrapper" style="position:absolute;width:850px;right:0px;margin: 0px;height:924px;overflow:auto;" id="custom_two">
+
+            <li class="glyphicon glyphicon-chevron-right" id="hebing" style="cursor:pointer;"></li>
+            
+        </div>
+    </ul>
+</div>
+
+-->

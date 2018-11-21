@@ -1,0 +1,133 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "第三方对账"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/thirdparty/reconciliation" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "名称"}}:<input name="name"  class="form-control" placeholder="{{t .LangUse "名称"}}" value="{{.name}}"/>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "日期"}}:
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input name="statistic_time_range" id="statistic_time_range" type="text" readonly
+                                                   class="form-control" origin="{{.statisticTimeRange}}"
+                                                   placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.statisticTimeRange}}"/>
+                                        </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "费用收取方式"}}
+                                    <select name="charge_type" class="form-control select2" style="width: 100%;">
+                                            <option value="0">{{t .LangUse "请选择"}}</option>
+                                        {{range  $i, $v :=.chargeTypeMap}}
+                                            {{if eq $i $.chargeType}}
+                                                <option value="{{$i}}"  selected="selected" > {{t $.LangUse $v}}</option>
+                                            {{else}}
+                                                <option value="{{$i}}"> {{t $.LangUse $v}}</option>
+                                            {{end}}
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    API:<input name="api_url"  class="form-control" placeholder="url" value="{{.apiUrl}}"/>
+                                </div>
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                    <div class="col-xs-1">
+                                        <input id="i_search" type="submit" class="form-control btn btn-block btn-info"
+                                               value="{{t .LangUse "搜索"}}">
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <a href="/thirdparty/reconciliation" class="form-control">{{t .LangUse "清除"}}</a>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <a href="javascript:void(0)"
+                                           class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                    </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- statistic-->
+                    <div class="box-header clearfix">
+                        <ul class="statistic pull-right">
+                        {{template "inc/statisticThirdparty.html" .}}
+                        </ul>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>{{t .LangUse "日期"}}</th>
+                                <th>{{t .LangUse "第三方名称"}}</th>
+                                <th>{{t .LangUse "Api"}}</th>
+                                <th>{{t .LangUse "单价"}}</th>
+                                <th>{{t .LangUse "费用收取方式"}}</th>
+                                <th >{{t .LangUse "调用次数"}}</th>
+                                <th>{{t .LangUse "调用成功次数"}}</th>
+                                <th >{{t .LangUse "命中次数"}} </th>
+                                <th>{{t .LangUse "收费金额"}} </th>
+                            </tr>
+                        {{range .list}}
+                            <tr>
+                                <td>{{.StatisticDateS}}</td>
+                                <td>{{t $.LangUse .Name}}</td>
+                                <td>{{.Api}}</td>
+                                <td>{{.Price}}</td>
+                                <td>{{chargeTypeDisplay $.LangUse .ChargeType}}</td>
+                                <td>{{.CallCount}}</td>
+                                <td>{{.SuccessCallCount}}</td>
+                                <td>{{.HitCallCount}}</td>
+                                <td>{{.TotalPrice}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

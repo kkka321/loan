@@ -1,0 +1,39 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "照片列表"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>{{t .LangUse "上传时间"}}</th>
+                                <th>{{t .LangUse "图片用途"}}</th>
+                                <th>{{t .LangUse "图片"}}</th>
+
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.Ctime | mDateMHS}}</td>
+                                <td>{{getResourceUserMark $.LangUse .UseMark}}</td>
+                                <td>{{.Id | genImgHTML | str2html}}</td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

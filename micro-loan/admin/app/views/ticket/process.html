@@ -1,0 +1,111 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "个人整体情况"}}
+      </h1>
+    </section>
+
+    <section class="content">
+      <div class="row">
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-aqua">
+                    <div class="inner">
+                      <h3>{{$.lastestStatsData.LoadLeftUnpaidPrincipal}}</h3>
+
+                      <p>{{t $.LangUse "分案本金"}}</p>
+                    </div>
+                    <div class="icon">
+                      <i class="fa fa-shopping-cart"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-green">
+                    <div class="inner">
+                      <h3>{{$.lastestStatsData.RepayTotal}}</h3>
+
+                      <p>{{t $.LangUse "回款总金额"}}</p>
+                    </div>
+                    <div class="icon">
+                      <i class="ion ion-stats-bars"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-yellow">
+                    <div class="inner">
+                      <h3>{{$.lastestStatsData.RepayAmountRate}}<sup style="font-size: 20px">%</sup></h3>
+                      <p>{{t $.LangUse "回收率"}}</p>
+                    </div>
+                    <div class="icon">
+                      <i class="ion ion-person-add"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-red">
+                    <div class="inner">
+                      <h3>{{$.lastestStatsData.DiffTargetRepay}}</h3>
+
+                      <p>{{t $.LangUse "差值金额"}}</p>
+                    </div>
+                    <div class="icon">
+                      <i class="ion ion-pie-graph"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- ./col -->
+      </div>
+
+
+            <div class="row">
+            <div class="col-md-12">
+
+
+              <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">{{t $.LangUse "员工日进度表"}}</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-wrench"></i></button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">No Action</a></li>
+                  </ul>
+                </div>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row" id="chartContainer">
+
+
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- ./box-body -->
+            <div class="box-footer">
+              <div class="row">
+
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+          </div>
+        </div>
+            </div>
+    </section>
+  </div>

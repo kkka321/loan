@@ -1,0 +1,131 @@
+ <div class="content-wrapper">
+   <!-- Content Header (Page header) -->
+   <section class="content-header">
+       <h1>
+           {{t $.LangUse "短信发送状态跟踪"}}
+       </h1>
+   </section>
+
+    <section class="content">
+      <div class="row">
+          <div class="col-md-12">
+              <!-- Horizontal Form -->
+              <div class="box box-info">
+                  <div class="box-header with-border">
+                      <h3 class="box-title">{{t $.LangUse "搜索"}}</h3>
+                  </div>
+                  <!-- /.box-header -->
+                  <!-- form start -->
+                  <form class="form-horizontal" action="/sms/sms_status_list" method="get">
+                      <div class="box-body">
+                          <div class="row">
+                              <div class="col-xs-3">
+                              {{t $.LangUse "短信服务商"}}:
+                                  <select name="sms_service" class="form-control">
+                                      <option value="-1">{{t .LangUse "请选择"}}</option>
+                                  {{range $k, $v := .serviceList}}
+                                      <option value="{{$k}}"{{if eq $.sms_service $k}} selected{{end}}>{{t $.LangUse $v}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+                              <div class="col-xs-3">
+                              {{t $.LangUse "短信类型"}}:
+                                  <select name="sms_type" class="form-control">
+                                      <option value="-1">{{t .LangUse "请选择"}}</option>
+                                  {{range $k, $v := .smsTypeList}}
+                                      <option value="{{$k}}"{{if eq $.sms_type $k}} selected{{end}}>{{t $.LangUse $v}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+                              <div class="col-xs-3">
+                              {{t $.LangUse "发送状态"}}:
+                                  <select name="sms_status" class="form-control">
+                                      <option value="-1">{{t .LangUse "请选择"}}</option>
+                                  {{range $k, $v := .statusList}}
+                                      <option value="{{$k}}"{{if eq $.sms_status $k}} selected{{end}}>{{t $.LangUse $v}}</option>
+                                  {{end}}
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="row"><p>&nbsp;</p></div>
+                          <div class="row">
+                              <div class="col-xs-3">
+                              {{t $.LangUse "发送时间"}}:
+                                  <div class="input-group">
+                                      <div class="input-group-addon">
+                                          <i class="fa fa-calendar"></i>
+                                      </div>
+                                      <input name="send_time_range"  id="send_time_range" type="text" readonly class="form-control" origin="{{.sendTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.sendTimeRange}}" />
+                                  </div>
+                              </div>
+                              <div class="col-xs-3">
+                                {{t .LangUse "关联"}}ID:<input name="relatedId" type="number" class="form-control" value="{{.relatedId}}" />
+                              </div>
+                          </div>
+                          <div class="row"><p>&nbsp;</p></div>
+                          <div class="row">
+                              <div class="col-xs-1">
+                                  <input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                              </div>
+                              <div class="col-xs-1">
+                                  <a href="/sms/sms_status_list" class="form-control">{{t .LangUse "清除"}}</a>
+                              </div>
+                              <div class="col-xs-1">
+                                  <a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <!-- /.box -->
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="oplog-list" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th class="th_sort" id="Id">ID<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th class="th_sort" id="RelatedID">{{t .LangUse "关联"}}ID<i id="iRelatedID" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th>{{t $.LangUse "短信服务商"}}</th>
+                  <th>{{t $.LangUse "短信类型"}}</th>
+                  <th>{{t $.LangUse "手机号"}}</th>
+                  <th class="th_sort" id="DeliveryTime">{{t $.LangUse "发送时间"}}<i id="iDeliveryTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                  <th>{{t $.LangUse "发送状态"}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .List}}
+                <tr>
+                  <td>{{.Id}}</td>
+                  <td>{{.RelatedID}}</td>
+                  <td>{{smsServiceDisplay $.LangUse .SmsService | str2html}}</td>
+                  <td>{{smsServiceTypeDisplay $.LangUse .ServiceType | str2html}}</td>
+                  <td>{{.Mobile}}</td>
+                  <td>{{.Ctime | mDateMHS}}</td>
+                  <td>{{smsDeliveryStatusDisplay $.LangUse .DeliveryStatus | str2html}}</td>
+                </tr>
+                {{end}}
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+                <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+                </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+</div>

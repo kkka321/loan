@@ -1,0 +1,125 @@
+<script>
+var DataSet = new Set();
+
+$(function () {
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        var dataType = $(e.target).attr("data-type");
+        var cid = $('#cid_box').attr('cid');
+        loadTab(cid, dataType)
+    });
+});
+
+function loadTab(id, dataType) {
+    if (DataSet.has(dataType)){
+        return
+    }
+
+    DataSet.add(dataType);
+
+    $.ajax({
+        type: "GET",
+        url: '/customer/detail/' + dataType + '?id=' + id,
+        //dataType: 'html',
+        success: function (data) {
+            var tab = document.getElementById("tab-" + dataType)
+            var t = document.getElementById("detail_" + dataType);
+            if (t != null) {
+                tab.removeChild(t);
+            }
+
+            var div = document.createElement("div");
+            div.setAttribute("id", "detail_" + dataType);
+            div.innerHTML = data;
+            tab.appendChild(div);
+            $('#tab-' + dataType).addClass('active');
+
+            if (dataType == "base-info") {
+                loadEvent();
+            }
+        }
+    });
+}
+
+function loadEvent() {
+    $(".ajax-change-filed").hover(function(){
+        $(this).append("<span class='label label-danger text-right'>Modify</span>").css({"background-color":"#dd4b39 !important","cursor":"pointer","color":"#fff","line-height":"100%"});
+    },function(){
+        $(this).css({"background-color":"","color":"#000"}).find(".label").remove();
+    });
+    $(".ajax-change-filed").click(function(){
+        $(this).hide();
+        $("#"+this.id+"_text").attr("class","form-control ajax-change-text show").focusEnd();
+    });
+    $(".ajax-change-text").blur(function(){
+        //change();
+    });
+    $(".ajax-change-text").keyup(function(e){
+
+        if ($(this)[0].getAttribute("data-filed") == "identity"){
+            this.value = this.value.match('^[0-9,]+','')
+        }
+
+        if(e.keyCode == 13){
+            change($(this)[0]);
+        }
+    });
+
+    function change(src){
+        obj = new Object();
+        obj.field = src.getAttribute("data-filed");
+        obj.value =src.value;
+        obj.id =  src.getAttribute("data-id");
+        var jsonStr = JSON.stringify(obj);
+
+        $.ajax({
+            type: "post",
+            url: '/customer/ajax_modify',
+            data:{'jsonStr':jsonStr},
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                if(data.data == true){
+                    $("#"+obj.field+"_text").attr("class","form-control ajax-change-text hidden");
+                    $("#"+obj.field ).html(obj.value).show();
+                }else{
+                    if(data.error == 1){
+                        alert(data.err_str);
+                    }
+                }
+            }
+        });
+    }
+
+    $.fn.setCursorPosition = function(position){
+        if(this.lengh == 0) return this;
+        return $(this).setSelection(position, position);
+    }
+
+    $.fn.setSelection = function(selectionStart, selectionEnd) {
+        if(this.lengh == 0) return this;
+        input = this[0];
+
+        if (input.createTextRange) {
+            var range = input.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', selectionEnd);
+            range.moveStart('character', selectionStart);
+            range.select();
+        } else if (input.setSelectionRange) {
+            input.focus();
+            input.setSelectionRange(selectionStart, selectionEnd);
+        }
+
+        return this;
+    }
+
+    $.fn.focusEnd = function(){
+        this.setCursorPosition(this.val().length);
+    }
+}
+
+$(document).ready(function(){
+    var cid = $('#cid_box').attr('cid');
+    loadTab(cid, "base-info");
+});
+</script>

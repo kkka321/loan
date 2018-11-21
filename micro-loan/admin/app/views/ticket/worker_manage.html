@@ -1,0 +1,121 @@
+
+
+<div class="content-wrapper">
+   <section class="content">
+
+   <div class="row">
+       <div class="col-md-12">
+           <!-- Horizontal Form -->
+           <div class="box box-info">
+               <div class="box-header with-border">
+                   <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+               </div>
+               <!-- /.box-header -->
+               <!-- form start -->
+               <form class="form-horizontal" action="/ticket/worker_manage" method="get">
+                   <div class="box-body">
+                       <div class="row">
+                           <div class="col-xs-3">
+                               <span>{{t .LangUse "昵称"}}:</span><input name="op_name"  id="op_name" type="text" class="form-control" placeholder="{{t .LangUse "昵称"}}" value="{{.opName}}" />
+                           </div>
+
+                           <div class="col-xs-3">
+                           {{t .LangUse "工作状态"}}:
+                               <select name="status" class="form-control">
+                                   <option value="-1">{{t .LangUse "请选择"}}</option>
+                                   <option value="0" {{if eq .status 0}} selected{{end}}>{{t .LangUse "暂停工作"}}</option>
+                                   <option value="1" {{if eq .status 1}} selected{{end}}>{{t .LangUse "正常"}}</option>
+                               </select>
+                           </div>
+
+                       </div>
+
+                       <div class="row">
+                           <div class="col-xs-1">
+                               &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                           </div>
+                           <div class="col-xs-1">
+                               &nbsp;<a href="/ticket/worker_manage" class="form-control">{{t .LangUse "清除"}}</a>
+                           </div>
+                           <div class="col-xs-1">
+                               &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                           </div>
+                       </div>
+
+                   </div>
+
+               </form>
+           </div>
+       </div>
+   </div>
+
+     <div class="row">
+       <div class="col-xs-12">
+         <div class="box">
+           <div class="box-header">
+             <h3 class="box-title"> {{t .LangUse "工作状态管理"}}</h3>
+           </div>
+           <!-- /.box-header -->
+           <div class="box-body">
+             <table class="table table-bordered">
+               <tr>
+                 <th>{{t $.LangUse "ID"}}</th>
+                 <th>{{t $.LangUse "昵称"}}</th>
+                 <th>{{t $.LangUse "邮箱"}}</th>
+                 <th>{{t $.LangUse "上次登录时间"}}</th>
+                 <th>{{t $.LangUse "接收工单状态"}}</th>
+                 <th>{{t $.LangUse "减免配额"}}</th>
+                 <!-- <th>{{t $.LangUse "工作状态"}}</th> -->
+                 <th>{{t $.LangUse "操作"}}</th>
+               </tr>
+               {{range .List}}
+               <tr>
+                   <input type="hidden" name="id" value="{{.Id}}"/>
+                   <td>{{.Id}}</td>
+                   <td>{{.Nickname}}</td>
+                   <td>{{.Email}}</td>
+                   <td>{{mDateMHS .LastLoginTime}}</td>
+                   <td>{{if .OnlineStatus}}{{t $.LangUse "是"}}{{else}}{{t $.LangUse "否"}}{{end}}</td>
+                   <!-- <td>{{if eq .WorkStatus 1}}{{t $.LangUse "正常"}} {{else}}{{t $.LangUse "暂停工作"}}{{end}}</td> -->
+                   <td>
+                        <div class="col-md-12 ajax-change-filed">
+                           {{.ReducedQuota}}
+                        </div>
+                       <div class="col-md-12">
+                            <input type="text" class="form-control ajax-change-text hidden" placeholder="{{t $.LangUse "减免配额"}}" value="{{.ReducedQuota}}" data-filed="reduced_quota" data-id="{{.Id}}">
+                        </div>  
+                   </td>
+                   <td>
+                     <!-- {{if eq .WorkStatus 1}}
+                     <a  class="stopWork" href="javascript:;" >{{t $.LangUse "暂停工作"}}</a>
+                     {{else}}
+                     <a  class="startWork" href="javascript:;" >{{t $.LangUse "恢复正常"}}</a>
+                     {{end}} -->
+                        {{if .OnlineStatus}}
+                        <a  class="offline" href="javascript:;" >{{t $.LangUse "暂停接单"}}</a>
+                        {{else}}
+                            {{if .IsTodayLogin}}
+                            <a  class="online" href="javascript:;" >{{t $.LangUse "恢复接单"}}</a>
+                            {{end}}
+                        {{end}}
+                   </td>
+               </tr>
+               {{end}}
+             </table>
+           </div>
+           <!-- /.box-body -->
+         </div>
+
+           <div class="box-footer clearfix">
+               <ul class="pagination pagination-sm no-margin pull-right">
+               {{template "inc/paginator.html" .}}
+               </ul>
+           </div>
+
+         <!-- /.box -->
+       </div>
+       <!-- /.col -->
+     </div>
+     <!-- /.row -->
+   </section>
+</div>

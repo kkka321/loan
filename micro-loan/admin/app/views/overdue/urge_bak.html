@@ -1,0 +1,231 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <!-- <section class="content-header">
+        <h3>
+            {{t .LangUse "催收"}}
+        </h3>
+        <a href="/overdue/urge/detail?id={{$.OneCase.Id}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+
+    </section> -->
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info ">
+                  <div class="box-header with-border">
+                      <h1 class="box-title">{{t .LangUse "催收"}}</h1>
+                      <a href="/overdue/urge/detail?order_id={{$.OneCase.OrderId}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+                      <a href="/repay/backend/repay_plan?order_id={{$.OneCase.OrderId}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "还款计划"}}</i></a>
+                  </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="/overdue/urge/save" method="post">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <td>{{t .LangUse "客户姓名"}}</td>
+                                    <td><a href="/customer/detail?id={{.Customer.Id}}" target="_blank">{{.Customer.Realname}}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "电话"}}</td>
+                                    <td>{{.Customer.Mobile}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "借款订单编号"}}</td>
+                                    <td>{{.OrderData.Id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "便利店付款码"}}</td>
+                                    <td id="payment_code_td">
+                                        {{if eq .PaymentCode ""}}
+                                            <input id="generate_paymentcode" type="button" value="generate payment code" />
+                                        {{else}}
+                                            {{if eq .ExpireFlag true}}
+                                                <input id="generate_paymentcode" type="button" value="generate payment code" />
+                                            {{else}}
+                                                {{t .LangUse "超市付款码"}} : {{.PaymentCode}}<br/>
+                                                {{t .LangUse "过期时间"}} : {{.ExpireDateTime}}<br/>
+                                                {{t .LangUse "付款状态"}} : {{.PaymentStatus}}
+                                            {{end}}
+                                        {{end}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "应还总额"}}</td>
+                                    <td>{{.LeftOver}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "应还罚息和宽限期利息"}}</td>
+                                    <td>{{.PenaltyAndGracePeriodInterest}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "可减免金额"}}</td>
+                                    <td>{{.CanReducedAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "结清最低应还款项"}}</td>
+                                    <td>{{.RepayClearLowstAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "应还日期"}}</td>
+                                    <td>{{.RepayPlan.RepayDate | mDateMHSDate}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "逾期天数"}}</td>
+                                    <td>{{.OneCase.OverdueDays}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "案件级别"}}</td>
+                                    <td>{{.OneCase.CaseLevel}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "入催时间"}}</td>
+                                    <td>{{.OneCase.JoinUrgeTime | mDateMHS}}</td>
+                                </tr>
+                                {{if eq .OneCase.IsOut 0}}
+
+                                <tr>
+                                    <td>{{t .LangUse "电话拨打时间"}}</td>
+                                    <td>
+                                        <div class="input-group col-xs-6">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input name="join_urge_time_range"  id="join_urge_time_range" type="text" readonly class="form-control" origin="{{.repayTimeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.repayTimeRange}}" />
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>{{t .LangUse "拨打对象"}}</td>
+                                    <td>
+                                        <select id="phone_objects" name="phone_objects">
+                                            <option value=0>{{t .LangUse "请选择"}}</option>
+                                            <option value=1>{{t .LangUse "本人"}}</option>
+                                            <option value=2>{{t .LangUse "联系人"}}</option>
+                                            <option value=3>{{t .LangUse "其他"}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>{{t .LangUse "电话接通情况"}}</td>
+                                    <td>
+                                    {{t .LangUse "接通"}}&nbsp;<input name="phone_connected" type="radio" value=1>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {{t .LangUse "未接通"}}&nbsp;<input name="phone_connected" type="radio" value=0>
+                                     </td>
+                                </tr>
+
+                                <tr id="i_tr_repay_inclination" style="display: none">
+                                    <td>{{t .LangUse "还款意愿"}}</td>
+                                    <td>
+                                        <select required id="repay_inclination" name="repay_inclination">
+                                            <option value=0>{{t .LangUse "请选择"}}</option>
+                                            <option value=1>{{t .LangUse "有"}}</option>
+                                            <option value=2>{{t .LangUse "无"}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr id="i_tr_promise_repay_time" style="display: none">
+                                    <td>{{t .LangUse "承诺还款时间"}}</td>
+                                    <td>
+                                        <div class="input-group col-xs-6">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input required name="promise_repay_time"  id="promise_repay_time" type="text" readonly class="form-control" origin="" placeholder="" value="" />
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr id="i_tr_overdue_reason" style="display: none">
+                                    <td>{{t .LangUse "逾期原因"}}</td>
+                                    <td>
+                                        <textarea id="overdue_reason" rows="3" class="form-control" name="overdue_reason" placeholder="{{t .LangUse "逾期原因"}}"></textarea>
+                                    </td>
+                                </tr>
+
+
+
+                                <tr id="i_tr_phone_unconnect_reason" style="display: none">
+                                    <td>{{t .LangUse "未接通原因"}}</td>
+                                    <td>
+                                        <select id="phone_unconnect_reason" name="phone_unconnect_reason">
+                                          <option value=0>{{t .LangUse "请选择"}}</option>
+                                          {{range $val,$show := $.UnconnectReasonMap}}
+                                          <option value="{{$val}}">{{t $.LangUse $show}}</option>
+                                          {{end}}
+                                        </select>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>{{t .LangUse "催收结果"}}</td>
+                                    <td>
+                                        <textarea rows="3" class="form-control" name="result" placeholder="{{t .LangUse "催收结果"}}"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "出催时间"}}</td>
+                                    <td>{{.OneCase.OutUrgeTime | mDateMHS}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "是否允许展期"}}</td>
+                                    <td>{{if eq .IsDefer true}}
+                                        <p>{{t .LangUse "允许展期"}}</p>
+                                        <a href="/overdue/defer_show?account_id={{.AccountId}}" target="_blank">{{t $.LangUse "试算"}}</a> |
+                                        {{else }}
+                                        <p>{{t .LangUse "不允许展期"}}</p>
+                                   {{end}}</td>
+                                </tr>
+                                {{else}}
+                                <tr>
+                                    <td>{{t .LangUse "出催时间"}}</td>
+                                    <td>{{.OneCase.OutUrgeTime | mDateMHS}}</td>
+                                </tr>
+                                {{end}}
+
+                            </table>
+                            {{if eq .OneCase.IsOut 0}}
+
+                            <input type="hidden" id="case_id" name="id" value="{{.OneCase.Id}}" />
+                            <input type="hidden" id="order_id" name="order_id" value="{{.OneCase.OrderId}}" />
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <input id="i_submit" type="submit" class="form-control btn btn-danger "  value="{{t .LangUse "提交"}}" />
+                                </div>
+                                {{if gt .CanReducedAmount 0}}
+                                <div class="col-md-2">
+                                    {{if .isExistAddminPrereduced}}
+                                    <input type="button" class="form-control btn btn-default" disabled value="{{t .LangUse "已申请结清减免"}}" />
+                                    {{else}}
+                                    <input id="reduced_quota_submit" type="button" class="form-control btn btn-info" data-status="no" data-alreadydo="已申请结清减免" value="{{t .LangUse "结清减免"}}" />
+                                    {{end}}
+                                </div>
+                                {{end}}
+                                <div class="col-md-2">
+                                    <a href="/overdue/list" class="form-control btn btn-default">{{t .LangUse "Go Back"}}</a>
+                                </div>
+                            </div>
+                            {{end}}
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="remindDialog" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+</div>

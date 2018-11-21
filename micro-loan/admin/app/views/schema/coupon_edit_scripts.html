@@ -1,0 +1,44 @@
+<script>
+    $(function () {
+        function updateType() {
+            v = $('#schema_mode').val()
+
+            if (v == 2) {
+                $(".date_div").show()
+            } else {
+                $(".date_div").hide()
+            }
+        }
+
+        $('#schema_date').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#schema_date').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+        var op = getParam("op")
+        if (op == "1") {
+            $(".task-op").removeAttr("disabled")
+            $("#page_title").text("新增任务")
+            $("#btn_submit").show()
+        } else if (op == "2") {
+            $("#page_title").text("编辑任务")
+            $(".task-op").removeAttr("disabled")
+            $("#btn_submit").show()
+        } else {
+            $("#page_title").text("查看任务")
+            $(".task-op").attr("disabled", "disabled")
+            $("#btn_submit").hide()
+        }
+
+        updateType()
+
+        $('#schema_mode').on('click', function (event) {
+            updateType()
+        });
+    });
+
+</script>

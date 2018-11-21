@@ -1,0 +1,454 @@
+{{if eq .DataType "base-info"}}
+<div>
+    <div class="box-body">
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "客户姓名"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline  ajax-change-filed" id="realname">
+                {{.BaseInfo.Realname}}
+            </div>
+                <input type="text" class="form-control ajax-change-text hidden" id = "realname_text" placeholder="{{t .LangUse "客户姓名"}}" value="{{.BaseInfo.Realname}}" data-filed="realname" data-id="{{.BaseInfo.Id}}">
+            
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "身份证号码"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline  ajax-change-filed" id="identity">
+                {{.BaseInfo.Identity}}
+            </div>
+                <input type="text" class="form-control ajax-change-text hidden" id = "identity_text" placeholder="{{t .LangUse "身份证号码"}}" value="{{.BaseInfo.Identity}}" data-filed="identity" data-id="{{.BaseInfo.Id}}">
+            
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "性别"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">{{getGenderDisplay .LangUse .BaseInfo.Gender}}</div>
+            
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "客户端版本号"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">{{t .LangUse .ClientInfo.AppVersion}}</div>
+        </div>
+        <div class="row">
+
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "手机号码"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">{{.BaseInfo.Mobile}}</div>
+
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "身份检查结果"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">
+                    {{if eq .BaseInfo.ThirdID ""}}<span class="label label-danger">{{t $.LangUse "未知"}}{{else}}<span class="label label-success">{{t $.LangUse "正常"}}{{end}}
+            </div>
+
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "手持照片比对"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">{{if .Profile.IdHoldingPhotoCheck}}{{.Profile.IdHoldingPhotoCheck}}{{else}}-{{end}}</div>
+
+            <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "GP中的版本号"}}</div>
+            <div class="col-xs-6 col-md-3 col-lg-2 div-heightline ">{{.ClientInfo.AppVersionCode}}</div>
+        </div>
+        </div>
+    </div>
+    <div class="row"><p></p></div>
+    
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">{{t $.LangUse "图像资料"}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-striped">
+            {{if .HasProfile}}
+                <tr>
+                    <td>{{t .LangUse "身份证照片"}}</td>
+                    <td>{{.Profile.IdPhoto | genImgHTML | str2html}}</td>
+                </tr>
+                <tr>
+                    <td>{{t .LangUse "手持身份证照片"}}</td>
+                    <td>{{.Profile.HandHeldIdPhoto | genImgHTML | str2html}}</td>
+                </tr>
+            {{end}}
+
+            {{if .HasLiveVerify}}
+                <tr>
+                    <td>{{t .LangUse "活体认证最佳"}}</td>
+                    <td>{{.LiveVerify.ImageBest | genImgHTML | str2html}}</td>
+                </tr>
+                <tr>
+                    <td>{{t .LangUse "活体认证全景"}}</td>
+                    <td>{{.LiveVerify.ImageEnv | genImgHTML | str2html}}</td>
+                </tr>
+                <tr>
+                    <td>{{t .LangUse "活体认证参考"}}1</td>
+                    <td>{{.LiveVerify.ImageRef1 | genImgHTML | str2html}}</td>
+                </tr>
+                <tr>
+                    <td>{{t .LangUse "活体认证参考"}}2</td>
+                    <td>{{.LiveVerify.ImageRef2 | genImgHTML | str2html}}</td>
+                </tr>
+                <tr>
+                    <td>{{t .LangUse "活体认证参考"}}3</td>
+                    <td>{{.LiveVerify.ImageRef3 | genImgHTML | str2html}}</td>
+                </tr>
+            {{end}}
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+</div>
+{{else if eq .DataType "other-info"}}
+<!-- /.tab-pane -->
+<div>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">{{t .LangUse "工作信息"}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {{if .HasProfile}}
+            <div class="container-fluid">
+            <div class="row">    
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "工作类型"}} </div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.JobTypeHTML | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "月收入"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.MonthlyIncomeHTML | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "公司名称"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.CompanyName}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "公司城市"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.CompanyCity}}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "公司详细地址"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> -{{.Profile.CompanyAddress}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "工作年限"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.ServiceYearsHTML | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "发薪日"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.SalaryDay}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "公司电话"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.CompanyTelephone}}</div>
+            </div>
+            </div>
+            {{end}}
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">{{t .LangUse "联系人信息"}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {{if .HasProfile}}
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "联系人"}}1{{t .LangUse "姓名"}} </div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Contact1Name}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "电话"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Contact1 | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "关系"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Relationship1 | .Profile.RelationshipHTML | str2html}}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "联系人"}}2{{t .LangUse "姓名"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Contact2Name}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "电话"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Contact2 | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "关系"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.Relationship2 | .Profile.RelationshipHTML | str2html}}</div>
+            </div>
+            </div>
+            {{end}}
+            
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">{{t .LangUse "附加信息"}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {{if .HasProfile}}
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "教育状况"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.EducationHTML | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "婚姻状况"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.MaritalStatusHTML | str2html}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "居住城市"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{if eq .Profile.ResidentCity ""}}-{{else}} {{.Profile.ResidentCity}} {{end}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "居住详细地址"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{if eq .Profile.ResidentAddress ""}}-{{else}} {{.Profile.ResidentAddress}} {{end}}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "银行名称"}} </div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.BankName}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline ">{{t .LangUse "银行卡号"}} </div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.BankNo}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-1 div-heightline "> {{t .LangUse "子女数"}}</div>
+                <div class="col-xs-6 col-md-3 col-lg-2 div-heightline "> {{.Profile.ChildrenNumberHTML | str2html}}</div>
+            </div>
+            </div>
+            {{end}}
+           
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+</div>
+{{else if eq .DataType "big-data-info"}}
+<!-- /.tab-pane -->
+<div>
+{{if .HasBigData}}
+    <table class="table table-bordered">
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "未抓取到设备信息"}}</p>
+            </td>
+            <td>{{.BigData.Source.NotObtainedDeviceInfo}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "未抓取到通话记录"}}</p>
+            </td>
+            <td>{{.BigData.Source.NotObtainedCallRecord}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "未抓取到通讯录"}}</p>
+            </td>
+            <td>{{.BigData.Source.NotObtainedAddressList}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "未抓取到短信记录"}}</p>
+            </td>
+            <td>{{.BigData.Source.NotObtainedMessage}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "未抓取到GPS信息"}}</p>
+            </td>
+            <td>{{.BigData.Source.NotObtainedGpsInfo}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "近1个月设备号登录的手机账号"}}</p>
+            </td>
+            <td>{{.BigData.Source.DevicePhone}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "近1个月手机号登录的设备号"}}</p>
+            </td>
+            <td>{{.BigData.Source.PhoneDevice}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "3个月内00:00—4:00通话时长"}}</p>
+            </td>
+            <td>{{.BigData.Source.MorningCallMinutes}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "3个月内无通话记录天数"}}</p>
+            </td>
+            <td>{{.BigData.Source.NoCallRecordDays}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "3个月内与第一联系人通话次数"}}</p>
+            </td>
+            <td>
+            {{range  $moble, $num := .BigData.Source.NumberOfCallsToFirstContact}}
+            {{if eq $moble $.Profile.Contact1}}
+                <p><span class="badge bg-red">{{$moble}}</span>: <span class="label label-danger">{{$num}}</span></p>
+            {{else}}
+                <p><span class="label label-info">{{$moble}}</span>: <span class="label label-danger">{{$num}}</span></p>
+            {{end}}
+            {{end}}
+            </td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "3个月内与第一联系人通话时长"}}</p>
+            </td>
+            <td>
+            {{range  $moble, $num := .BigData.Source.MinutesOfCallsToFirstContact}}
+            {{if eq $moble $.Profile.Contact1}}
+                <p><span class="badge bg-red">{{$moble}}</span>: <span class="label label-danger">{{$num}}</span></p>
+            {{else}}
+                <p><span class="label label-info">{{$moble}}</span>: <span class="label label-danger">{{$num}}</span></p>
+            {{end}}
+            {{end}}
+            </td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "通讯录个数"}}</p>
+            </td>
+            <td>{{.BigData.Source.NumberOfContacts}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "通讯录中固定电话占比"}}</p>
+            </td>
+            <td>{{.BigData.Source.ProportionOfTelephone}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "通话记录名单占通讯录的比例"}}</p>
+            </td>
+            <td>{{.BigData.Source.ProportionOfCallRecord}}</td>
+        </tr>
+        <tr>
+            <td class="div-heightline color-palette">
+                <p class="text-center">{{t .LangUse "包含以下关键字“逾期”的短信数量"}}</p>
+            </td>
+            <td>{{.BigData.Source.NumberOfMessagesContainKeyword}}</td>
+            <td class="div-heightline color-palette">
+                <p class="text-center"></p>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+{{else}}
+                            {{t .LangUse "没有抓到大数据"}}
+                        {{end}}
+</div>
+{{else if eq .DataType "communication-record"}}
+<!-- /.tab-pane -->
+<div>
+{{if .HasFollow}}
+    <div class="box">
+        <div class="box-body">
+            <table class="table table-striped">
+                <tbody><tr>
+                    <th>{{t .LangUse "沟通时间"}}</th>
+                    <th>{{t .LangUse "沟通人"}}</th>
+                    <th>{{t .LangUse "沟通内容"}}</th>
+                    <th>{{t .LangUse "备注"}}</th>
+                </tr>
+                {{range .FollowList}}
+                <tr>
+                    <td>{{.FollowTime | mDateMH}}</td>
+                    <td>{{.OpUid | operatorName}}</td>
+                    <td>{{.Content}}</td>
+                    <td>{{.Remark}}</td>
+                </tr>
+                {{end}}
+                </tbody></table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+{{else}}
+                        {{t .LangUse "暂无跟进数据"}}
+                    {{end}}
+</div>
+{{else if eq .DataType "loan-history"}}
+<div>
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th class="th_sort" id="Id">{{t .LangUse "借款ID"}}<i id="iId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th class="th_sort" id="Loan" >{{t .LangUse "借款金额"}}<i id="iLoan" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th class="th_sort" id="Period">{{t .LangUse "借款期限"}}<i id="iPeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th >{{t .LangUse "借款状态"}}</th>
+                    <th class="th_sort" id="ApplyTime">{{t .LangUse "申请时间"}}<i id="iApplyTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th class="th_sort" id="CheckTime">{{t .LangUse "审批时间"}} <i id="iCheckTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th class="th_sort" id="LoanTime">{{t .LangUse "放款时间"}}<i id="iLoanTime" class="text-primary glyphicon glyphicon-resize-vertical"></i> </th>
+                    <th class="th_sort" id="FinishTime">{{t .LangUse "结清时间"}}<i id="iFinishTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                    <th>{{t .LangUse "逾期天数"}}</th>
+                </tr>
+            {{range .List}}
+                <tr>
+                    <td>{{.OrderId}}</td>
+                    <td>{{.Loan}}</td>
+                    <td>{{.Period}}</td>
+                    <td>{{getLoanStatusDesc $.LangUse .CheckStatus}}</td>
+                    <td>{{.ApplyTime | mDateMHS}}</td>
+                    <td>{{.CheckTime | mDateMHS}}</td>
+                    <td>{{.LoanTime | mDateMHS}}</td>
+                    <td>{{.FinishTime | mDateMHS}}</td>
+                    <td>{{overdueDaysDisplay .OrderId}} </td>
+                </tr>
+            {{end}}
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+            <ul class="pagination pagination-sm no-margin pull-right">
+            {{template "inc/paginator.html" .}}
+            </ul>
+        </div>
+    </div>
+</div>
+{{else if eq .DataType "check-duplicate"}}
+<div>
+    <div class="box-body">
+        <table class="table table-bordered">
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "手机号"}}</p>
+                </td>
+                <td>{{.BaseInfo.Mobile}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.Mobile | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "联系人1手机号"}}</p>
+                </td>
+                <td>{{.Profile.Contact1}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.Contact1 | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "联系人2手机号"}}</p>
+                </td>
+                <td>{{.Profile.Contact2}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.Contact2 | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "居住地址"}}</p>
+                </td>
+                <td>{{.Profile.ResidentAddress}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.ResidentAddress | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "单位名称"}}</p>
+                </td>
+                <td>{{.Profile.CompanyName}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.CompanyName | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "单位地址"}}</p>
+                </td>
+                <td>{{.Profile.CompanyAddress}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.CompanyAddress | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "设备号"}}</p>
+                </td>
+                <td>{{.ClientInfo.Imei}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.Imei | str2html}}</td>
+            </tr>
+            <tr>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "IP地址"}}</p>
+                </td>
+                <td>{{.ClientInfo.IP}}</td>
+                <td class="div-heightline color-palette">
+                    <p class="text-center">{{t .LangUse "借款订单编号"}}</p>
+                </td>
+                <td>{{.DupOrderNo.IP | str2html}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{{end}}

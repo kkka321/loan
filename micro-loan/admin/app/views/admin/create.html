@@ -1,0 +1,51 @@
+<div class="content-wrapper">
+<section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">{{t .LangUse "添加后台用户"}}</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form" method="post" action="/admin/save">
+              <div class="box-body">
+                  <div class="form-group">
+                      <label for="email">{{t .LangUse "邮箱"}}</label>
+                      <input name="email" type="email" class="form-control" id="email" required placeholder="{{t .LangUse "邮箱"}}">
+                  </div>
+                  <div class="form-group">
+                      <label for="mobile">{{t .LangUse "手机号"}}</label>
+                      <input name="mobile" type="tel" class="form-control" id="email" required placeholder="{{t .LangUse "联系方式"}}">
+                  </div>
+                  <div class="form-group">
+                      <label for="nickname">{{t .LangUse "昵称"}}</label>
+                      <input name="nickname" type="text" class="form-control" id="email" required placeholder="{{t .LangUse "昵称"}}">
+                  </div>
+                  <div class="form-group">
+                      <label>{{t .LangUse "角色"}}</label>
+                      <select class="form-control" name="role_id" id="">
+                        <option value="">{{t .LangUse "选择一个角色"}}</option>
+                        {{range .RoleList}}
+
+                        <option value="{{.Id}}" >{{getRoleNameDisplay $.LangUse .Type .Name}}</option>
+                        {{end}}
+
+                      </select>
+                  </div>
+                <div class="form-group">
+                  <label for="password">{{t .LangUse "请设置一个复杂密码"}}</label>
+                  <input name="password" type="text" class="form-control" id="password" required placeholder="{{t .LangUse "登陆密码"}}">
+                </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}{{if .IsEdit}}{{t .LangUse "修改"}}{{end}}</button>
+              </div>
+            </form>
+          </div>
+	</div>
+</section>
+</div>

@@ -1,0 +1,62 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "修改客户基本信息"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="/loan/backend/do_edit_bank_info" method="post">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th>{{t .LangUse "客户"}}Id</th>
+                                    <th>{{.bankInfo.AccountId}} </th>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "客户姓名"}}</th>
+                                    <th>{{.bankInfo.Realname}}</th>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "银行名称"}}</th>
+                                    <th>
+                                        <select id="bank_name" name="bank_name" class="form-control select2" style="width: 100%;">
+                                            {{range $ele := .bankList}}
+                                                    {{if eq $ele $.bankInfo.BankName}}
+                                                        <option selected="selected">{{$ele}}</option>
+                                                    {{else}}
+                                                        <option>{{$ele}}</option>
+                                                    {{end}}
+                                            {{end}}
+                                        </select>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "银行卡号"}}</th>
+                                    <th><input type="text" name="bank_no" value="{{.bankInfo.BankNo}}" required /></th>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "备注"}}</th>
+                                    <th>{{t .LangUse "操作时间"}}</th>
+                                </tr>
+                            </table>
+                            <input type="hidden" name="account_id" value="{{.bankInfo.AccountId}}" />
+                            <input type="submit" value="{{t .LangUse "提交"}}" />
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+

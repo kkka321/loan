@@ -1,0 +1,164 @@
+<script>
+$(function(){
+    $('#apply_time_range').daterangepicker({
+        locale: {
+            format: 'YYYY-MM-DD'
+        },
+        "autoUpdateInput": false
+    }, function(start, end, label) {
+        $('#apply_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+    });
+
+    $('#check_time_range').daterangepicker({
+        locale: {
+            format: 'YYYY-MM-DD'
+        },
+        "autoUpdateInput": false
+    }, function(start, end, label){
+        $('#check_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+    });
+
+    var htmlBox = $('#all_regular');
+
+    $('#myModal').on('shown.bs.modal', function (event) {
+        var label = $(event.relatedTarget);
+        var order_id = label.data('id');
+
+        $.ajax({
+            url: "/riskctl/regular/all",
+            type: "POST",
+            data: {order_id:order_id},
+            dataType: "json"
+        }).done(function (json) {
+            //console.log(json);
+
+            if (json.code != 0) {
+                htmlBox.html('Has wrong...');
+                return;
+            }
+
+            if (json.data.number <= 0) {
+                htmlBox.html('No More Data');
+                return;
+            }
+
+            var html = [];
+            var data = json.data.list;
+            for (var i = 0; i < data.length; i++) {
+                html.push('<span class="label label-danger">' + data[i] + '</span>');
+            }
+
+            htmlBox.html(html.join(', '))
+        });
+    });
+
+    var verify_result_box = $('#verify_result');
+    $('#showVerifyResult').on('shown.bs.modal', function (event) {
+        verify_result_box.html('doing...');
+        var btn = $(event.relatedTarget);
+        var order_id = btn.data('id');
+        //console.log('order_id:' + order_id);
+        $.ajax({
+            url: "/riskctl/show_verify_result",
+            type: "POST",
+            data: {order_id: order_id},
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                if (json.code != 0) {
+                    verify_result_box.html('Has wrong...');
+                    return;
+                }
+
+                var html = [];
+                html.push('<table class="table table-bordered table-striped">');
+                html.push('<tr><th>Question</th><th>Status</th><th>Value</th></tr>');
+                var list = json.data.list;
+                for (var i = 0, ll = list.length; i < ll; i++) {
+                    var obj = list[i];
+
+                    if(obj.question == ""){
+                        continue;
+                    }
+
+                    html.push('<tr>');
+                    html.push('<td>' + obj.question + '</td>');
+                    html.push('<td>' + obj.status + '</td>');
+                    html.push('<td>' + obj.value + '</td>');
+                    html.push('</tr>');
+                }
+                html.push('</<table>');
+
+                html.push('<div class="callout callout-warning">');
+                html.push('Remark: ' + json.data.remark);
+                html.push('</div>');
+
+                verify_result_box.html(html.join(''));
+            },
+            error: function () {
+                verify_result_box.html('Something has Error...');
+            }
+        });
+    });
+
+    function showWarningBox(messageContent) {
+        var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+        showBoxMsg(warningBoxContent);
+    }
+
+    function showBoxMsg(msg) {
+        $("#smallModal div.modal-body").html(msg);
+        $("#smallModal").modal('show');
+    }
+
+    $("#submit").on("click", function(e){
+
+
+      var randomStart = $('#random_value_start').val();
+      var randomEnd = $('#random_value_end').val();
+
+      var rS = parseInt(randomStart)
+      var rE = parseInt(randomEnd)
+      if(rS>rE) {
+         showBoxMsg('{{t .LangUse "随机值起始值大于终止值"}}')
+         //e.preventDefault();
+         return false
+      }
+
+      //fix value
+      var fixStart = $('#fix_value_start').val();
+      var fixEnd = $('#fix_value_end').val();
+
+      var fS = parseInt(fixStart)
+      var fE = parseInt(fixEnd)
+      if(fS>fE) {
+         showBoxMsg('{{t .LangUse "修正值起始值大于终止值"}}')
+         //e.preventDefault();
+         return false
+      }
+      //
+    });
+
+    $('.check_blacklist').click(function() {
+        var id = $(this).attr('data-id')
+        $.ajax({
+            url:"/riskctl/check_blacklist?id=" + id,
+            dataType:'json',
+            cache:false,
+            type:"GET",
+            complete:function() {
+                location.reload();
+            }
+        });
+    })
+})
+
+if (typeof platformMarkMultiBox == "object" && platformMarkMultiBox != null) {
+    $('.platformMarkMultiBox option').each(function(){
+        if(platformMarkMultiBox.indexOf($(this).val()) >= 0){
+            $(this).prop("selected",true)
+        }
+    });
+}
+
+</script>

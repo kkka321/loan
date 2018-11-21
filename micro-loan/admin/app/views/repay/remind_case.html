@@ -1,0 +1,420 @@
+
+<div class="row">
+        <div class="content-wrapper">
+                <div class="col-md-12">
+                        <!-- Custom Tabs -->
+                        <div class="nav-tabs-custom">
+                          <ul class="nav nav-tabs">
+                            <li class="active red">
+                                <a href="#tab_1" class="tab_a" data-toggle="tab" aria-expanded="true">
+                                        {{t .LangUse "还款提醒"}}
+                                </a>
+                            </li>
+                            <li class="yellow"><a href="#tab_2" data-toggle="tab" aria-expanded="false">{{t $.LangUse "提醒记录"}}</a></li>
+                            <li class="blue"><a href="#tab_3" data-toggle="tab" aria-expanded="false">{{t .LangUse "自动外呼记录"}}</a></li>
+                          </ul>
+                          <div class="tab-content">
+                            <div class="tab-pane active" id="tab_1">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                            <form action="/repay/remind_case/update" method="post">
+
+                                            <div class="box box-default ">
+                                                    <div class="box-header with-border">
+                                                        <h1 class="box-title"> {{t .LangUse "还款提醒"}}</h1>
+                                                    </div>
+                                                        <!-- /.box-header -->
+                                                        <div class="box-body">
+                                                                <table class="table table-bordered table-striped">
+                                                                    <tr>
+                                                                        <td class="clo-xs-6 col-md-4 col-lg-3">{{t .LangUse "客户姓名"}}</td>
+                                                                        <td><a href="/customer/detail?id={{.Customer.Id}}" target="_blank">{{.Customer.Realname}}</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="clo-xs-6 col-md-4 col-lg-3">{{t .LangUse "电话"}}</td>
+                                                                        <td>
+                                                                            
+                                                                            {{.Customer.Mobile}}
+
+                                                                            <input type="text" id="remind-call-input" name="remind-call-input" class="form-control remind-call hidden" value="{{.Customer.Mobile}}" data-orderid="{{.OrderData.Id}}" data-caseid="{{.OneCase.Id}}" />
+
+                                                                            <button id="remind-call-button" type="button" class="btn btn-info btn-xs"
+                                                                            v="1" data-mobile="" data-orderid="" title="{{t .LangUse "呼叫"}}">
+                                                                            <i class="fa fa-fw fa-phone"></i>
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-info btn-xs copybtn" data-clipboard-text="{{$.Customer.Mobile}}"
+                                                                            data-toggle="tooltip" data-placement="right" title="{{t .LangUse "复制"}}">
+                                                                                <i class="fa fa-fw fa-clipboard"></i>
+                                                                            </button>
+
+                                                                        <button id="timer-stop-button" type="button" class="btn btn-primary remind-call"
+                                                                            v="4" style="display: none">{{t .LangUse "中止"}}</button>
+                                                                        <input type="text" id="remind-call-result" class="form-control" style="border:none;display:none;width:400px" value="" />
+                                                                        <input type="text" id="remind-stop" class="form-control" style="border:none;display:none;width: 600px;" value="" />
+
+
+                                                                            
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "借款订单编号"}}</td>
+                                                                        <td>{{.OrderData.Id}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "案件级别"}}</td>
+                                                                        <td>{{$.OneCase.Level}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "剩余应还总额"}}</td>
+                                                                        <td>{{$.leftRepayTotalAmount}}</td>
+                                                                    </tr>
+                                    
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "便利店付款码"}}</td>
+                                                                        {{if eq .ExpireFlag true}}
+                                                                            <td id="payment_code_td"><input id="generate_paymentcode" type="button" class="btn btn-info btn-xs" value="generate payment code" /></td>
+                                                                        {{else}}
+                                                                            <td>
+                                                                                {{$.PaymentCode}}<br />
+                                                                                {{t $.LangUse "付款码失效时间"}}:{{$.ExpireDateTime}}
+                                                                            </td>
+                                                                        {{end}}
+                                                                    </tr>
+                                    
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "应还日期"}}</td>
+                                                                        <td>{{.RepayPlan.RepayDate | mDateMHSDate}}</td>
+                                                                    </tr>
+                                    
+                                                                    <tr>
+                                                                        <td>{{t .LangUse "自动外呼结果"}}</td>
+                                                                        <td>
+                                                                            {{if gt $.AutoCallResult.StartTime 0}} 
+                                                                            {{$.AutoCallResult.StartTime | mDateMHS}}, {{phoneConnectDisplay $.LangUse $.AutoCallResult.IsDial}} 
+                                                                            {{else}}
+                                                                            {{t .LangUse "未接通"}}
+                                                                            {{end}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                                
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="box box-default ">
+                                                        <div class="box-header with-border">
+                                                            <h1 class="box-title"> {{t .LangUse "提醒记录"}}</h1>
+                                                        </div>
+                                                            <!-- /.box-header -->
+                                                            <div class="box-body">
+                                                                    <table class="table table-bordered table-striped">
+                                                                        
+                                                                <!-- case 有效 -->
+                                                                {{if eq .OneCase.Status 1}}
+                                        
+                                                                        <tr>
+                                                                            <td class="clo-xs-6 col-md-4 col-lg-3">{{t .LangUse "催收方式"}}</td>
+                                                                            <td>
+                                                                            <input  name="urge_type" type="radio" value=1>{{t .LangUse "电话"}} &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                
+                                                                            <input name="urge_type" type="radio" value=2> {{t .LangUse "Whatsapp"}}
+                                                                                </td>
+                                                                        </tr>
+                                                                        <tr id="i_tr_call_time">
+                                                                            <td>{{t .LangUse "电话拨打时间"}}</td>
+                                                                            <td>
+                                                                                <div class="input-group col-xs-6">
+                                                                                    <div class="input-group-addon">
+                                                                                        <i class="fa fa-calendar"></i>
+                                                                                    </div>
+                                                                                    <input name="phone_time"  id="phone_time" type="text" readonly class="form-control" origin="" placeholder="{{t $.LangUse "选择时间"}}" value="" />
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>{{t .LangUse "电话接通情况"}}</td>
+                                                                            <td>
+                                                                            {{t .LangUse "已接通"}}&nbsp;<input id="phone_connect" name="phone_connected" type="radio" value=1>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                            {{t .LangUse "未接通"}}&nbsp;<input id="phone_not_connect" name="phone_connected" type="radio" value=0>
+                                                                                </td>
+                                                                        </tr>
+                                        
+                                        
+                                                                        <!--
+                                                                        <tr>
+                                                                            <td>{{t .LangUse "拨打对象"}}</td>
+                                                                            <td>
+                                                                                <table class="table table-bordered table-striped">
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <select id="phone_objects" name="phone_objects">
+                                                                                                <option value=1>{{t .LangUse "本人"}}</option>
+                                                                                                <option value=2>{{t .LangUse "联系人"}}1</option>
+                                                                                                <option value=3>{{t .LangUse "联系人"}}2</option>
+                                                                                                <option value=4>{{t .LangUse "公司电话"}}</option>
+                                                                                                <option value=5>{{t .LangUse "通讯录"}}</option>
+                                                                                                <option value=6>{{t .LangUse "其他联系人"}}</option>
+                                                                                            </select>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="text" id="oneself" class="form-control hidden" value="" data-mobile="{{.Customer.Mobile}}" />
+                                                                                            <input type="text" id="contact1" class="form-control hidden" value="" data-mobile="{{.AccountProfile.Contact1}}" />
+                                                                                            <input type="text" id="contact2" class="form-control hidden" value="" data-mobile="{{.AccountProfile.Contact2}}" />
+                                                                                            <input type="text" id="company" class="form-control hidden" value="" data-mobile="{{.AccountProfile.CompanyTelephone}}" />
+                                                                                            <input type="text" id="remind-call-input" name="remind-call-input" class="form-control remind-call hidden" value="" data-orderid="{{.OrderData.Id}}" data-caseid="{{.OneCase.Id}}" />
+                                                                                            <button id="remind-call-button" type="button" class="btn btn-primary remind-call"
+                                                                                                v="3" data-mobile="" data-orderid="" disabled="disabled">{{t .LangUse "还款提醒呼叫"}}</button>
+                                                                                            <button id="timer-stop-button" type="button" class="btn btn-primary remind-call"
+                                                                                                v="4" style="display: none">{{t .LangUse "中止"}}</button>
+                                                                                            <input type="text" id="remind-call-result" class="form-control" style="border:none;display:none;width:400px" value="" />
+                                                                                            <input type="text" id="remind-stop" class="form-control" style="border:none;display:none;width: 600px;" value="" />
+                                        
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr id="i_tr_else_contact" style="display: none">
+                                                                                        <td>
+                                                                                            {{t .LangUse "姓名"}}&nbsp; <input name="else_contact_name"  id="else_contact_name" type="text"  value="" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {{t .LangUse "电话"}}&nbsp; <input name="else_contact_mobile"  id="else_contact_mobile" type="text" value="" />
+                                                                                        </td>
+                                                                                    </tr>
+                                        
+                                                                                    <tr id="i_tr_contact_list" style="display: none">
+                                                                                        <td>
+                                                                                        {{t .LangUse "通讯录"}}&nbsp; <select id="contact_list" name="contact_list">
+                                                                                                    <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                                                            {{if .HasBigData}}
+                                                                                                {{range  $key, $value := .ContactList}}
+                                                                                                    {{if eq $value.IsDailLast 0}}
+                                                                                                        <option style="background-color:salmon" value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                                                    {{else if eq $value.IsDailLast 1}}
+                                                                                                    <option style="background-color:mediumseagreen" value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                                                    {{else}}
+                                                                                                        <option value={{$value.Mobile}}>{{$value.Name}} &nbsp; {{$value.Mobile}} &nbsp; {{if gt $value.Num 0}}{{$value.Num}}{{end}}</option>
+                                                                                                    {{end}}
+                                                                                                {{end}}
+                                                                                            {{end}}
+                                                                                            </select>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        -->
+                                                                        
+                                                                        <tr id="i_tr_repay_inclination" style="display: none">
+                                                                            <td>{{t .LangUse "还款意愿"}}</td>
+                                                                            <td>
+                                                                                <select required id="repay_inclination" name="is_will_repay">
+                                                                                    <option value=0>{{t .LangUse "请选择"}}</option>
+                                                                                    {{range $val,$show := $.RepayInclinationMap}}
+                                                                                    <option value="{{$val}}">{{t $.LangUse $show}}</option>
+                                                                                    {{end}}
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                        
+                                                                        <tr id="i_tr_promise_repay_time" style="display: none">
+                                                                            <td>{{t .LangUse "承诺还款时间"}}</td>
+                                                                            <td>
+                                                                                <div class="input-group col-xs-6">
+                                                                                    <div class="input-group-addon">
+                                                                                        <i class="fa fa-calendar"></i>
+                                                                                    </div>
+                                                                                    <input required name="promise_repay_time"  id="promise_repay_time" type="text" readonly class="form-control" origin="" placeholder="{{t $.LangUse "选择时间"}}" value="" />
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                        
+                                                                        <tr id="i_tr_overdue_reason" style="display: none">
+                                                                            <td>{{t .LangUse "未还原因"}}</td>
+                                                                            <td>
+                                                                                <select class="form-control input-sm" required id="unrepay_reason" name="unrepay_reason">
+                                                                                <option value=0>{{t $.LangUse "请选择"}}</option>
+                                                                                {{range $val,$show := $.NotRepayReasonMap}}
+                                                                                <option value="{{t $.LangUse $show}}">{{t $.LangUse $show}}</option>
+                                                                                {{end}}
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                        
+                                        
+                                        
+                                                                        <tr id="i_tr_phone_unconnect_reason" style="display: none">
+                                                                            <td>{{t .LangUse "未接通原因"}}</td>
+                                                                            <td>
+                                                                                <select id="phone_unconnect_reason" name="phone_unconnect_reason">
+                                                                                <option value=0>{{t .LangUse "请选择"}}</option>
+                                                                                {{range $val,$show := $.UnconnectReasonMap}}
+                                                                                <option value="{{$val}}">{{t $.LangUse $show}}</option>
+                                                                                {{end}}
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                        
+                                                                     
+                                                                    {{else}}
+                                                                    <!-- case 失效 -->
+                                                                        <tr>
+                                                                            <td>{{t .LangUse "失效时间"}}</td>
+                                                                            <td>{{.OneCase.InvalidTime | mDateMHS}}</td>
+                                                                        </tr>
+                                                                    {{end}}
+                                        
+                                                                    </table>
+                                                                    
+                                                               
+                                                            </div>
+                                                        </div>
+                                        <!-- /.box -->
+
+                                        {{if eq .OneCase.Status 1}}
+                                        
+                                        <input type="hidden" name="phone_objects" value="1" />
+                                        <input type="hidden" name="id" value="{{.OneCase.Id}}" />
+                                        <input type="hidden" name="order_id" value="{{.OneCase.OrderId}}" />
+                                        <div class="col-md-12">
+                                            <input id="i_submit" type="submit" class="btn btn-block btn-info" value="{{t .LangUse "提交"}}" />
+                                        </div>
+                                       
+                                        {{end}}
+                                    </div>
+                                </div>
+                            </form>
+        
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_2">
+                                    <section class="content">
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="box">
+                                                        <!-- /.box-header -->
+                                                        <div class="box-body">
+                                                            <table class="table table-bordered table-striped">
+                                                                <tr>
+                                                                    <th>{{t .LangUse "提醒人"}}</th>
+                                                                    <th>{{t .LangUse "拨打对象"}}</th>
+                                                                    <th>{{t .LangUse "催收方式"}}</th>
+                                                                    <th>{{t .LangUse "联系方式"}}</th>
+                                                                    <th>{{t .LangUse "电话拨打时间"}}</th>
+                                    
+                                                                    <th>{{t .LangUse "应答时间"}}</th>
+                                                                    <th>{{t .LangUse "结束时间"}}</th>
+                                                                    <th>{{t .LangUse "挂机方向"}}</th>
+                                                                    <th>{{t .LangUse "挂机原因"}}</th>
+                                    
+                                                                    <th>{{t .LangUse "是否拨通"}}</th>
+                                                                    <th>{{t .LangUse "承诺还款时间"}}</th>
+                                                                    <th>{{t .LangUse "未还原因"}}</th>
+                                                                    <th>{{t .LangUse "偿还意愿"}}</th>
+                                                                    <th>{{t .LangUse "未接通原因"}}</th>
+                                                                    <th>{{t .LangUse "结果"}}</th>
+                                                                    <th>{{t .LangUse "记录"}}</th>
+                                                                </tr>
+                                                                {{range .list}}
+                                                                    <tr>
+                                                                        <td>{{.OpUid | operatorName}}</td>
+                                                                        <td>{{phoneObjectDisplay $.LangUse .PhoneObject}}</td>
+                                                                        <td>{{urgeCallTypeDisplay $.LangUse .UrgeType}}</td>
+                                                                        <td>{{.PhoneObjectMobile}}</td>
+                                                                        <td>{{mDateMHS .PhoneTime}}</td>
+                                    
+                                                                        <td>{{mDateMHS .AnswerTimestamp}}</td>
+                                                                        <td>{{mDateMHS .EndTimestamp}}</td>
+                                                                        <td>{{voipHangupDisplay $.LangUse .HangupDirection}}</td>
+                                                                        <td>{{voipHangupDisplay $.LangUse .HangupCause}}</td>
+                                    
+                                                                        <td>{{phoneConnectDisplay $.LangUse .PhoneConnect}}</td>
+                                                                        <td>{{mDateMHS .PromiseRepayTime}}</td>
+                                                                        <td>{{.UnrepayReason}}</td>
+                                                                        <td>{{repayInclinationDisplay $.LangUse .IsWillRepay}}</td>
+                                                                        <td>{{unconnectReasonDisplay $.LangUse .UnconnectReason}}</td>
+                                                                        <td>{{.Result}}</td>
+                                                                        <td>{{voipCallMothodDisplay $.LangUse .CallMethod}}</td>
+                                                                    </tr>
+                                                                {{end}}
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.box -->
+                                                </div>
+                                            </div>
+                                        </section>
+                            </div>
+                            <div class="tab-pane" id="tab_3">
+                                <section class="content">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box">
+                                                    <!-- /.box-header -->
+                                                    <div class="box-body">
+                                                        <table class="table table-bordered table-striped">
+                                                            <tr>
+                                                                <th>{{t .LangUse "自动外呼时间"}}</th>
+                                                                <th>{{t .LangUse "是否拨通"}}</th>
+                                                            </tr>
+                                                            {{range .autoCallRecord}}
+                                                                <tr>
+                                                                    <td>{{mDateMHS .StartTime}}</td>
+                                                                    <td>{{phoneConnectDisplay $.LangUse .IsDial}}</td>
+                                                                </tr>
+                                                            {{end}}
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <!-- /.box -->
+                                            </div>
+                                        </div>
+                                    </section>
+                            </div>
+
+                            <!-- /.tab-pane -->
+                         
+                            <!-- /.tab-pane -->
+                          </div>
+                          <!-- /.tab-content -->
+                        </div>
+                        <!-- nav-tabs-custom -->
+                      </div>
+        
+        
+            <!-- Content Header (Page header) -->
+            <!-- <section class="content-header">
+                <h3>
+                    {{t $.LangUse "催收"}}
+                </h3>
+                <a href="/overdue/urge/detail?id={{$.OneCase.Id}}" target="_blank"><i class="fa fa-gear">{{t $.LangUse "催收情况"}}</i></a>
+        
+            </section> -->
+        
+            <!-- Main content -->
+            
+        
+            <div class="modal fade" id="remindDialog" tabindex="-1" role="dialog" aria-spanledby="updateModalspan">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+        
+                    </div>
+                </div>
+            </div>
+            <!-- /.content -->
+        </div>
+        </div>
+        
+        
+
+
+
+
+
+
+
+

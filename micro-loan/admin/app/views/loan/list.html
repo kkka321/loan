@@ -1,0 +1,234 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "放款管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/loan/list" method="get">
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "借款"}}ID:<input name="id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "借款"}}ID" value="{{.id}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "账户"}}ID:<input name="account_id" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "账户"}}" value="{{.account_id}}"/>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "手机号码"}}:<input name="mobile" type="number" class="form-control"
+                                                             placeholder="{{t .LangUse "手机号码"}}"
+                                                             value="{{.mobile}}"/>
+                                </div>
+                            </div>
+
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control"
+                                                             placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}"/>
+                                </div>
+
+                                <div class="col-xs-3">{{t .LangUse "放款状态"}}:
+                                    <select id="check_status" name="check_status" title="{{t .LangUse "请选择"}}" class="statusSelectMultiBox selectpicker form-control" multiple="multiple" data-hide-disabled="true" data-size="5">
+                                {{range $value, $show := .check_status}}
+                                    <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3" id = "failed_code_group" >
+                                {{t .LangUse "失败原因"}}:
+                                    <select name="failed_code"  id = "failed_code" class="form-control" disabled>
+                                        <option value="0">{{t .LangUse "请选择"}}</option>
+                                    {{range $value, $show := .FailureCodeMap}}
+                                        <option value="{{$value}}" {{if eq $.FailedCode $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "申请时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="apply_time_range" id="apply_time_range" type="text" readonly
+                                               class="form-control" origin="{{.applyTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.applyTimeRange}}"/>
+                                    </div>
+
+                                </div>
+                                <!-- </div>
+                                <div class="row"> -->
+                                <div class="col-xs-3">
+                                {{t .LangUse "放款成功时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="loan_time_range" id="loan_time_range" type="text" readonly
+                                               class="form-control" origin="{{.loanTimeRange}}"
+                                               placeholder="{{t $.LangUse "选择日期范围"}}" value="{{.loanTimeRange}}"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3" id = "loan_channel_group" >
+                                    {{t .LangUse "放款渠道"}}:
+                                    <select name="loan_channel" id = "loan_channel" class="form-control" disabled>
+                                            <option value="0">{{t .LangUse "请选择"}}</option>
+                                        {{range $value, $show := .FundCodeNameMap}}
+                                            <option value="{{$value}}" {{if eq $.LoanChannel $value}} selected {{end}}>{{t $.LangUse $show}}</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "银行名称"}}:<input name="bankname" type="text" class="form-control"
+                                                             placeholder="{{t .LangUse "银行名称"}}" value="{{.Bankname}}"/>
+                                </div>
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <input type="submit" class="form-control btn btn-block btn-info"
+                                           value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="/loan/list" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    <a href="javascript:void(0)"
+                                       class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    <button class="form-control btn-warning" id="refund" disabled style="color: #000000">{{t .LangUse "批量放款"}}</button>
+                                </div>
+                             </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- statistic-->
+                    {{/*<div class="box-header clearfix">*/}}
+                        {{/*<ul class="statistic pull-right">*/}}
+                        {{/*{{template "inc/statisticLoan.html" .}}*/}}
+                        {{/*</ul>*/}}
+                    {{/*</div>*/}}
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>
+                                {{t .LangUse "全选/取消"}} </br><input type="checkbox"  class="input_check" name="check_all" id="check_all">
+                                </th>
+                                <th class="th_sort" id="Id">{{t .LangUse "借款"}}ID<i id="iId"
+                                                                                    class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "客户姓名"}}</th>
+                                <th class="th_sort" id="Amount">{{t .LangUse "金额"}}<i id="iAmount"
+                                                                                      class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="Loan">{{t .LangUse "放贷金额"}}<i id="iLoan"
+                                                                                      class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th class="th_sort" id="Period">{{t .LangUse "借款期限"}}<i id="iPeriod"
+                                                                                        class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "放款状态"}}</th>
+                                <th>{{t .LangUse "失败原因"}}</th>
+                                <th>{{t .LangUse "银行名称"}}</th>
+                                <th>{{t .LangUse "Transaction Id"}}</th>
+                                <th>{{t .LangUse "放款渠道"}}</th>
+                                <th>{{t .LangUse "银行卡号"}}</th>
+                                <th class="th_sort" id="PhoneVerifyTime">{{t .LangUse "电核完成时间"}}<i
+                                        id="iPhoneVerifyTime"
+                                        class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                <th class="th_sort" id="LoanTime">{{t .LangUse "放款成功时间"}}<i id="iLoanTime"
+                                                                                            class="text-primary glyphicon glyphicon-resize-vertical"></i>
+                                </th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>
+                                    {{if eq .CheckStatus 6 }}
+                                    <input type="checkbox" name="check_single" value="{{.Id}}">
+                                    {{end}}
+                                </td>
+                                <td>{{.Id}}</td>
+                                <td><a href="/customer/detail?id={{.AccountId}}" target="_blank">{{.Realname}}</a></td>
+                                <td>{{.Amount}}</td>
+                                <td>{{.Loan}}</td>
+                                <td>{{.Period}}</td>
+                                <td>{{getLoanStatusDesc $.LangUse .CheckStatus}}</td>
+                                <td>
+                                    {{if eq .CheckStatus 6}}
+                                        {{if containNumber .Realname}}
+                                            {{t $.LangUse "名字包含数字,不合法"}}
+                                        {{else}}
+                                            {{ getFailedDisburseOrderReason .Id | t $.LangUse }}
+                                        {{end}}
+                                    {{end}}
+                                </td>
+                                <td>{{.BankName }}</td>
+                                <td>{{.DisbursementId }}</td>
+                                <td>{{ companyDisplayByCode $.LangUse .LoanCompany}}</td>
+                                <td>{{.BankNo}}</td>
+                                <td>{{.PhoneVerifyTime | mDateMHS}}</td>
+                                <td>{{.LoanTime | mDateMHS}}</td>
+                                <td>
+                                {{if eq .CheckStatus 6}}
+                                    <a href="/loan/backend/edit_bank_info?account_id={{.AccountId}}">{{t $.LangUse "修改银行卡号"}}</a> -
+                                    <a href="/loan/backend/disburse_again?order_id={{.Id}}"  target="_blank">{{t $.LangUse "重新放款"}}</a> -
+                                    <a href="" value="{{.Id}}" id="{{.Id}}"  class="invalid_order">{{t $.LangUse "失效"}}</a>
+                                {{else if or (eq .CheckStatus 7) (eq .CheckStatus 9) (eq .CheckStatus 11) }}
+                                    <a href="" value="{{.Id}}" id="{{.Id}}"  class="loan_back">{{t $.LangUse "放款回退"}}</a>
+                                {{else}}
+                                    -
+                                {{end}}
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+{{.statusSelectMultiBox | str2html}}

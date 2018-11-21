@@ -1,0 +1,31 @@
+<script>
+    $(function () {
+        $('#time_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+            },
+            "autoUpdateInput": false,
+        }, function(start, end, label) {
+            $('#time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+        });
+
+        $('.coupon_active').click(function() {
+            var op = $(this).data("op")
+            var id = $(this).data("id")
+            var str = ""
+            if (op == "0") {
+                str = "是否重新启用该优惠券派发"
+            } else {
+                str = "是否停止派发该优惠券"
+            }
+
+            var re = window.confirm(str);
+            if (re == true) {
+                window.location.href = "/coupon/active?op=" + op + "&id=" + id
+            }
+        });
+
+
+    });
+
+</script>

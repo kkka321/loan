@@ -1,0 +1,179 @@
+<script>
+
+$(function(){
+    function showWarningBox(messageContent) {
+        var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+        showBoxMsg(warningBoxContent);
+    }
+
+    function showBoxMsg(msg) {
+        $("#smallModal div.modal-body").html(msg);
+        $("#smallModal").modal('show');
+    }
+
+    // d1 > d2 true   d1 < d2 false
+    function CompareDate(d1,d2)
+    {
+      return ((new Date(d1.replace(/-/g,"\/"))) > (new Date(d2.replace(/-/g,"\/"))));
+    }
+
+    $("#submit").on("click", function(e){
+
+      maxPeriod = parseInt($('#max_period').val())
+      minPeriod = parseInt($('#min_period').val())
+      if( maxPeriod < minPeriod){
+          showBoxMsg({{t .LangUse "最大期限小于最小期限"}})
+          return false
+      }
+
+      maxAmount = parseInt($('#max_amount').val())
+      minAmount = parseInt($('#min_amount').val())
+      if( maxAmount < minAmount){
+          showBoxMsg({{t .LangUse "最大金额小于最小金额"}})
+          return false
+      }
+
+      if( $('#period').val() == ""){
+          showBoxMsg({{t .LangUse "请填写借款期限"}})
+          return false
+      }else {
+        period = parseInt($('#period').val())
+        if (period > maxPeriod || period < minPeriod){
+          showBoxMsg({{t .LangUse "借款期限请填写借款期限范围内的值"}})
+          return false
+        }
+      }
+
+      if( $('#repayed_total').val() != "" && $('#repay_date').val() == ""){
+        showBoxMsg({{t .LangUse "请填写还款时间"}})
+        return false
+      }
+
+      if( $('#loan_date').val() == ""){
+          showBoxMsg({{t .LangUse "请填写放款时间"}})
+          return false
+      }
+      if( $('#current_date').val() == ""){
+          showBoxMsg({{t .LangUse "请填写当前时间"}})
+          return false
+      }
+
+      if($('#loan').val() == "" && $('#amount').val() == "" ){
+          showBoxMsg({{t .LangUse "请至少填写放款金额或借款金额"}})
+          return false
+      } else{
+        loan = parseInt($('#loan').val())
+        amount = parseInt($('#amount').val())
+        if (loan >0){
+          if (loan > maxAmount || loan < minAmount){
+            showBoxMsg({{t .LangUse "放款金额请填写借款金额范围内的值"}})
+            return false
+          }
+        }else {
+          if (amount > maxAmount || amount < minAmount){
+            showBoxMsg({{t .LangUse "借款金额请填写借款金额范围内的值"}})
+            return false
+          }
+        }
+      }
+
+      if(CompareDate($('#loan_date').val(),$('#repay_date').val())){
+        showBoxMsg({{t .LangUse "还款时间应大于放款时间"}})
+        return false
+      }
+
+      if(CompareDate($('#repay_date').val(),$('#current_date').val())){
+        showBoxMsg({{t .LangUse "还款时间应小于当前时间"}})
+        return false
+      }
+
+      if(CompareDate($('#loan_date').val(),$('#current_date').val())){
+        showBoxMsg({{t .LangUse "当前时间应大于放款时间"}})
+        return false
+      }
+    });
+
+    $('#loan_date').datepicker({
+       format:"yyyy-mm-dd",    //格式化日期
+       isshowtoday:true,    //打开选择今天按钮
+       autoclose: 1,        //选择完日期后，弹出框自动关闭
+       orientation:'bottom',
+    });
+
+    $('#current_date').datepicker({
+       format:"yyyy-mm-dd",    //格式化日期
+       isshowtoday:true,    //打开选择今天按钮
+       autoclose: 1,        //选择完日期后，弹出框自动关闭
+       orientation:'bottom',
+    });
+
+    $('#repay_date').datepicker({
+       format:"yyyy-mm-dd",    //格式化日期
+       isshowtoday:true,    //打开选择今天按钮
+       autoclose: 1,        //选择完日期后，弹出框自动关闭
+       orientation:'bottom',
+    });
+
+    // 绑定，modal 弹出事件，查看 log
+    $('#myModal').on('shown.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // 触发事件的按钮
+        var id = button.data('id') // 解析出data-whatever内容
+        $.ajax({
+            url: "/product/opt/record/view",
+            type: "GET",
+            data: {id:id},
+            dataType: "json",
+        }).done(function(data) {
+            var original = $.parseJSON(data.Original)
+            var edited = $.parseJSON(data.Edited)
+
+            var display = document.getElementById('displayDiff');
+
+
+
+        for(var index in original){
+          console.log("index:"+index)
+          tr =  document.createElement('tr');
+          tdColumn = document.createElement('td');
+          tdColumn.appendChild(document.createTextNode(index));
+          tdColumn.style.verticalAlign ="middle"
+          tdOriginal = document.createElement('td');
+          //tdOriginalInput = document.createElement('textarea')
+          tdOriginalInput = document.createElement('span')
+          //tdOriginalInput.value=original[index]
+          tdOriginalInput.appendChild(document.createTextNode(original[index]));
+
+          //tdOriginalInput.disabled="disabled"
+          //tdOriginalInput.rows="1"
+          //tdOriginalInput.className="form-control"
+          tdOriginal.appendChild(tdOriginalInput);
+          tdEdited = document.createElement('td');
+          //tdEditedInput = document.createElement('textarea')
+          tdEditedInput = document.createElement('span')
+          if(edited[index] == undefined || edited[index] != original[index]) {
+            tdEditedInput.style.color = 'red';
+          }
+          tdEditedInput.appendChild(document.createTextNode(edited[index]));
+
+          //tdEditedInput.value=edited[index]
+          //tdEditedInput.disabled="disabled"
+          //tdEditedInput.rows="1"
+          //tdEditedInput.className="form-control"
+          tdEdited.appendChild(tdEditedInput);
+          tr.appendChild(tdColumn);
+          tr.appendChild(tdOriginal);
+          tr.appendChild(tdEdited);
+          display.appendChild(tr);
+        }
+      });
+      return false;
+    })
+    $("#myModal").on("hidden.bs.modal", function() {
+        console.log("clear")
+        var display = document.getElementById('displayDiff');
+        display.innerHTML = "";
+
+        $(this).removeData("bs.modal");
+    });
+})
+</script>

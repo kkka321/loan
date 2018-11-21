@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="batchAssignModalLabel">{{t $.LangUse "批量分配"}}
+</div>
+<form role="form" id="batchAssignForm" method="post" action="/ticket/batch_assign">
+    <div>
+    <div class="modal-body">
+        <!-- text input -->
+        <div class="alert alert-info">
+          {{t $.LangUse "已选中"}}<strong>{{.ticketName}}</strong> {{t $.LangUse "工单"}}
+          <big id="selectedTicketCount" class="label pull-right bg-yellow"></big>
+        </div>
+
+        <div class="form-group">
+          <table class="table table-bordered">
+            <tr>
+              <th>{{t .LangUse "选择"}}</th>
+              <th>{{t .LangUse "昵称"}}</th>
+              <th>{{t .LangUse "邮箱"}}</th>
+              <th>{{t .LangUse "是否在线"}}</th>
+            </tr>
+            {{range .admins}}
+            <tr>
+              <td><input type="radio" id="adminRadio{{.Id}}" {{if ne .WorkStatus 1}} disabled {{end}} class="assignUID"  value="{{.Id}}" name="assign_uid"></td>
+              <td><label for="adminRadio{{.Id}}">{{.Nickname}}</label></td>
+              <td><label for="adminRadio{{.Id}}">{{.Email}}</label></td>
+              <td>{{displayWorkerCanAcceptTicket $.LangUse .Id}}</td>
+            </tr>
+            {{end}}
+
+          </table>
+
+        </div>
+        <input type="hidden" class="form-control" name="item_id" value="{{$.itemID}}">
+        <input type="hidden" class="form-control" name="ids" id="batchAssignIdContainer" value="">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{t $.LangUse "取消"}}</button>
+        <button type="button" class="btn btn-success" disabled id="submitBatchAssignButton" >{{t $.LangUse "提交"}}</button>
+    </div>
+</form>
+
+<script>
+$(function () {
+  updateMultiSelect()
+});
+</script>

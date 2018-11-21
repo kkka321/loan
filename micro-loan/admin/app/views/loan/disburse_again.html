@@ -1,0 +1,67 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "重新放款"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="/loan/backend/do_disburse_again" method="post">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th>{{t .LangUse "客户"}}ID</th>
+                                    <td>{{.data.Id}}</td>
+                                    <th>{{t .LangUse "客户姓名"}}</th>
+                                    <td>{{.data.Realname}}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "银行名称"}}</th>
+                                    <td>{{.data.BankName}}</td>
+                                    <th>{{t .LangUse "银行卡号"}}</th>
+                                    <td>{{.data.BankNo}}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "放款金额"}}</th>
+                                    <td>{{.data.Loan}}</td>
+                                    <th>{{t .LangUse "选择放款公司"}}</th>
+                                    <td>
+                                        <select name="loan_comany_code">
+                                        {{range $k, $v := .SupportCompany}}
+                                            <option value="{{$v}}" {{if eq $.CurrentCompany $v}} selected{{end}}>{{companyDisplayByCode $.LangUse $v}}</option>
+                                        {{end}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{t .LangUse "改订单状态"}}</th>
+                                    <td>
+                                        <select name="check_status">
+                                            <option value=10>{{t .LangUse "失效"}}</option>
+                                            <option value=5>{{t .LangUse "重新放款"}}</option>
+                                        </select>
+                                    </td>
+                                    <th></th>
+                                    <td></td>
+                                </tr>
+                            </table>
+
+                            <input type="hidden" name="order_id" value="{{.order_id}}" />
+                            <input type="submit" value="{{t .LangUse "提交"}}" />
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

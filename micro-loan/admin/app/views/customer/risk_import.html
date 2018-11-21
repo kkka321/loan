@@ -1,0 +1,51 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "黑名单导入"}}
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form method="post" id="addForm" action="/customer/blacklist_save">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <input type="hidden"  class="form-control" id="tmprisktype" name="tmprisktype">
+                                <label for="exampleInputEmail1">{{t .LangUse "风险项"}}</label>
+                                <select id="riskTypeSelecter" name="risk_type" title="{{t .LangUse "请选择"}}" class="selectpicker form-control" multiple="multiple" data-size="5">
+                                {{range $value, $show := .risk_type_list}}
+                                    <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+
+                            <!-- textarea -->
+                            <div class="form-group">
+                                <label>{{t .LangUse "黑名单内容"}}</label>
+                                <p/>
+                                <label>输入三列信息：客户id，上报原因，上报说明，（每一个客户一行，逗号分隔）。上报原因要求是数字（1：伪冒申请，2：中介代办，3：组团骗贷，4：贷后高风险，5：失联客户，6：其它，7：Akulaku黑名单）</label>
+                                <textarea name='risk_data' class="form-control" rows="3" style="min-height:400px;"></textarea>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">{{t .LangUse "提交"}}</button>
+                            <button type="reset" id="resetForm" class="btn btn-default">{{t .LangUse "重置"}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- /.content-wrapper -->

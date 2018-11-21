@@ -1,0 +1,48 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "展期"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="/overdue/backend/do_reduction" method="post">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <td>{{t .LangUse "最低还款额"}}</td>
+                                    <td>{{.min_repay}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "最晚还款时间"}}</td>
+                                    <td>{{.latest_repay_time | mDateMHS}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "展期后应还金额"}}</td>
+                                    <td>{{.extension_refund}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{t .LangUse "展期后应还时间"}}</td>
+                                    <td>{{.extension_repay_time | mDateUTC}}</td>
+                                </tr>
+                                
+                            </table>
+
+                            <p></p>
+                            
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

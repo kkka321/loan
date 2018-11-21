@@ -1,0 +1,43 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "系统监控"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <ul class="nav nav-tabs">
+                <li><a href="/monitor?data_type=0&chart_type=0">{{t .LangUse "订单状态统计"}}</a></li>
+                <li><a href="/monitor?data_type=1&chart_type=0">{{t .LangUse "订单通过率"}}</a></li>
+                <li><a href="/monitor?data_type=2&chart_type=0">{{t .LangUse "接口统计"}}</a></li>
+                <li><a href="/monitor?data_type=3&chart_type=0">{{t .LangUse "接口成功率"}}</a></li>
+                <li><a href="/monitor?data_type=4&chart_type=1">{{t .LangUse "Api抽样统计"}}</a></li>
+            </ul>
+            {{if eq .data_type 2}}
+                <select name="thirdparty" id="thirdparty" class="form-control thirdparty_select">
+                {{range $value, $show := .ThirdpartyList}}
+                    <option value="{{$value}}"{{if eq $.thirdparty $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                {{end}}
+                </select>
+            {{else if eq .data_type 3}}
+                <select name="thirdparty" id="thirdparty" class="form-control thirdparty_select">
+                {{range $value, $show := .ThirdpartyList}}
+                    <option value="{{$value}}"{{if eq $.thirdparty $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                {{end}}
+                </select>
+            {{end}}
+            <div class="row" id="chart_div">
+                <div class="box box-info">
+                    <div class="box-body">
+                        <div class="box-body" id="container" style="height: 500px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+

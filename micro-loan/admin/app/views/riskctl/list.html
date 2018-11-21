@@ -1,0 +1,265 @@
+<head>
+
+</head>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{t .LangUse "RiskCtl Manage"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/riskctl/list" method="get">
+                        <div class="box-body">
+                          <div class="row">
+                              <div class="col-xs-3">
+                              {{t .LangUse "借款"}}ID:<input name="id" type="number" class="form-control" placeholder="{{t .LangUse "借款"}}ID" value="{{if gt .id 0}}{{.id}}{{end}}" />
+                              </div>
+                              <div class="col-xs-3">
+                              {{t .LangUse "客户帐号"}}ID:<input name="user_account_id" type="number" class="form-control" placeholder="{{t .LangUse "客户帐号"}}ID" value="{{if gt .userAccountId 0}}{{.userAccountId}}{{end}}" />
+                              </div>
+                              <div class="col-xs-3">
+                                {{t .LangUse "客户姓名"}}:<input name="realname" type="text" class="form-control" placeholder="{{t .LangUse "客户姓名"}}" value="{{.realname}}" />
+                            </div>
+                            <div class="col-xs-3">
+                              {{t .LangUse "拒贷码"}}ID:<input name="risk_ctl_regular" type="text" class="form-control" placeholder="{{t .LangUse "拒贷码"}}" value="{{.riskCtlRegular}}" />
+                            </div>
+                          </div>
+                          <div class="row"><br/></div>
+                            <div class="row">
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "申请时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="apply_time_range" id="apply_time_range" type="text" readonly class="form-control" origin="{{.apply_time_range}}" placeholder="{{t .LangUse "申请时间"}}" value="{{.apply_time_range}}" />
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "审批时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="check_time_range" id="check_time_range" type="text" class="form-control" origin="{{.check_time_range}}" readonly placeholder="{{t .LangUse "审批时间"}}" value="{{.check_time_range}}" />
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "风险状态"}}:
+                                    <select name="risk_ctl_status" title="{{t .LangUse "请选择"}}" class="statusSelectMultiBox selectpicker form-control" multiple="multiple" data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := .RiskCtlMap}}
+                                        <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    {{t .LangUse "订单类型"}}:
+                                    <select name="is_reloan"  class="form-control"  data-hide-disabled="true" data-size="5">
+                                        <option value="-1" selected>{{t $.LangUse "请选择"}}</option>
+                                        {{range $value, $show := .IsReloanMap}}
+                                        <option value="{{$value}}" {{if eq $.is_reloan $value}} selected{{end}}> {{t $.LangUse $show}}</option>
+                                         {{end}}
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户标签"}}:
+                                    <select name="platform_mark" title="{{t .LangUse "请选择"}}" class="platformMarkMultiBox selectpicker form-control" multiple="multiple" data-hide-disabled="true" data-size="5">
+                                    {{range $value, $show := .PlatformMarkMap}}
+                                        <option value="{{$value}}">{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-1 ">
+                                    {{t .LangUse "随机值"}}:<input name="random_value_start"  id="random_value_start" type="number" class="form-control" placeholder="0"  min="0" max="100" value="{{.randomValueStart}}" />
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <br/>
+                                    <input name="random_value_end"  id="random_value_end" type="number" class="form-control" placeholder="100" min="0" max="100" value = "{{.randomValueEnd}}"/>
+                                </div>
+
+                                <div class="col-xs-1 col-md-offset-1 ">
+                                {{t .LangUse "修正值"}}:<input name="fix_value_start" id="fix_value_start" type="number" class="form-control" placeholder="0"  min="0" max="99999" value="{{.fixValueStart}}" />
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <br/>
+                                    <input name="fix_value_end" id="fix_value_end" type="number" class="form-control" placeholder="99999" min="0" max="99999" value = "{{.fixValueEnd}}" />
+                                </div>
+
+                            </div>
+                            {{/*}}
+                            <div class="row"><br/></div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    {{t .LangUse "应还时间"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="_range" id="_range" type="text" class="form-control" origin="{{._range}}" readonly placeholder="check time" value="{{._range}}" />
+                                    </div>
+                                </div>
+                            </div>
+                            {{*/}}
+                            <div class="row"><p></p></div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;
+                                    <input type="submit" id="submit"  class="form-control btn btn-block btn-info"  value="{{t .LangUse "搜索"}}"  >
+                                    <!--  -->
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/riskctl/list" class="form-control" >{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="th_sort" id="OrderId">{{t .LangUse "借款订单编号"}}<i id="iOrderId" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th>{{t .LangUse "客户姓名"}}</th>
+                                    <th class="th_sort" id="Amount">{{t .LangUse "合同金额"}}<i id="iAmount" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="Loan">{{t .LangUse "放贷金额"}}<i id="iLoan" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="Period">{{t .LangUse "借款期限"}}<i id="iPeriod" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="RandomValue">{{t .LangUse "随机值"}}<i id="iRandomValue" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="FixedRandom">{{t .LangUse "修正值"}}<i id="iFixedRandom" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th>{{t .LangUse "风控状态"}}</th>
+                                    <th>{{t .LangUse "订单类型"}}</th>
+                                    <th>{{t .LangUse "客户标签"}}</th>
+                                    <th class="th_sort" id="ApplyTime">{{t .LangUse "申请时间"}}<i id="iApplyTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="RiskCtlFinishTime">{{t .LangUse "反欺诈完成时间"}}<i id="iRiskCtlFinishTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort" id="PhoneVerifyTime">{{t .LangUse "电核完成时间"}}<i id="iPhoneVerifyTime" class="text-primary glyphicon glyphicon-resize-vertical"></i></th>
+                                    <th class="th_sort">{{t .LangUse "电核人员"}}</th>
+                                    <th class="th_sort">{{t .LangUse "操作"}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {{range .List}}
+                                <tr>
+                                    <td>{{.OrderId}}</td>
+                                    <td><a href="/customer/detail?id={{.AccountId}}&order_id={{.OrderId}}" target="_blank">{{.Realname}}</a></td>
+                                    <td>{{.Amount}}</td>
+                                    <td>{{.Loan}}</td>
+                                    <td>{{.Period}}</td>
+                                    <td>{{.RandomValue}}</td>
+                                    <td>{{.FixedRandom}}</td>
+                                    <td>
+                                        {{riskCtlStatusDisplay $.LangUse .RiskCtlStatus}}
+                                        <span class="label label-danger" data-id="{{.OrderId}}" data-toggle="modal" data-target="#myModal">{{.RiskCtlRegular}}</span>
+                                    </td>
+                                    <td>{{getIsLoan $.LangUse .IsReloan}}</td>
+                                    <td>{{platformMarkDisplay $.LangUse .PlatformMark}}</td>
+                                    <td>{{.ApplyTime | mDateMHS}}</td>
+                                    <td>{{.RiskCtlFinishTime | mDateMHS}}</td>
+                                    <td>{{.PhoneVerifyTime | mDateMHS}}</td>
+                                    <td>{{.OpUid | operatorName}}</td>
+                                    <td>
+                                        {{riskCtlOperateCmd $.LangUse .OrderId .AccountId .CheckStatus .RiskCtlStatus .PhoneVerifyTime | str2html}} |
+                                        <a href="/riskctl/follow?id={{.OrderId}}" target="_blank">{{t $.LangUse "设备信息"}}</a> |
+                                        <a href="/riskctl/phone_verify/detail?order_id={{.OrderId}}" target="_blank">{{t $.LangUse "电核情况"}}</a>
+                                    </td>
+                                </tr>
+                            {{end}}
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{t .LangUse "全部"}}</h4>
+            </div>
+            <div class="modal-body">
+                <div id="all_regular"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="smallModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="smallModalLabel">Warning</h4>
+            </div>
+            <div class="modal-body" id="resultMessage">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showVerifyResult" tabindex="-1" role="dialog" aria-labelledby="showVerifyResultBtn">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="showVerifyResultBtn">{{t .LangUse "查看电核结论"}}</h4>
+            </div>
+            <div class="modal-body">
+                <div id="verify_result"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{.statusSelectMultiBox | str2html}}
+{{.platformMarkMultiBox | str2html}}

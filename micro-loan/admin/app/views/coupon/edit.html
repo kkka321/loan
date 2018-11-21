@@ -1,0 +1,166 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1 id="title">
+        {{t .LangUse "优惠券"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" id="addForm" action="/coupon/edit_save" method="post">
+                        <input type="hidden" name="op" value="{{$.Op}}">
+                        <input type="hidden" name="id" value="{{$.Id}}">
+                        <div class="box-body">
+                            <div class="row col-xs-3">
+                            {{t .LangUse "优惠券活动名称"}}: <input name="name" type="text" class="form-control" placeholder="{{t .LangUse "活动名称"}}" value="{{$.name}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户类型"}}: <input name="distr_algo" type="text" class="form-control coupon-op" placeholder="{{t .LangUse "客户类型"}}" value="{{$.distr_algo}}" list="names" autocomplete="off">
+                                </div>
+                                <datalist id="names">
+                                {{range $i, $v := .CouponName}}
+                                <option value={{$v}}>
+                                {{end}}
+                                </datalist>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3">
+                                <div>
+                                {{t .LangUse "派发日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="distr_range"  id="distr_range" type="text" readonly class="form-control" origin="{{$.distrRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.distrRange}}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3">
+                            {{t .LangUse "劵种类"}}:
+                                <select name="coupon_type" id="coupon_type" class="form-control coupon-op">
+                                {{range $value, $show := .CouponTypeMap}}
+                                    <option value="{{$value}}"{{if eq $.coupon_type $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div id="redpacket_div">
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最低金额"}}: <input name="r_min_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最低金额"}}" value="{{$.r_min_amount}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "优惠金额"}}: <input name="r_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "优惠金额"}}" value="{{$.r_amount}}">
+                                    </div>
+                                </div>
+                                <div id="interest_div">
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最低金额"}}: <input name="i_min_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最低金额"}}" value="{{$.i_min_amount}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "免息天数"}}: <input name="i_day" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "免息天数"}}" value="{{$.i_day}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最高金额"}}: <input name="i_max_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最高金额"}}" value="{{$.i_max_amount}}">
+                                    </div>
+                                </div>
+                                <div id="discount_div">
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最低金额"}}: <input name="d_min_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最低金额"}}" value="{{$.d_min_amount}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "优惠折扣"}}: <input name="d_rate" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "优惠折扣"}}" value="{{$.d_rate}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最高金额"}}: <input name="d_max_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最高金额"}}" value="{{$.d_max_amount}}">
+                                    </div>
+                                </div>
+                                <div id="limit_div">
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "额度金额"}}: <input name="l_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "额度金额"}}" value="{{$.l_amount}}">
+                                    </div>
+                                    <div class="col-xs-3">
+                                    {{t .LangUse "最高额度"}}: <input name="l_max_amount" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "最高额度"}}" value="{{$.l_max_amount}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "开始日期"}}:
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" readonly class="form-control pull-right coupon-op" origin="{{$.coupon_start}}" name="coupon_start" id="coupon_start" placeholder="{{t $.LangUse "选择日期"}}" value="{{$.coupon_start}}">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <p>&nbsp;</p>
+                                    <input type="checkbox" id="coupon_today" class="coupon-op" name="coupon_today">发送当日生效
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "截止日期"}}:
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" readonly class="form-control pull-right coupon-op" origin="{{$.coupon_end}}" name="coupon_end" id="coupon_end" placeholder="{{t $.LangUse "选择日期"}}" value="{{$.coupon_end}}">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "有效天数"}}: <input name="coupon_days" id="coupon_days" type="number" class="form-control coupon-op" placeholder="{{t .LangUse "请填写有效天数"}}" value="{{$.coupon_days}}">
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3">
+                            {{t .LangUse "发放数量"}}: <input name="count" type="number" class="form-control" placeholder="{{t .LangUse "发放数量"}}" value="{{$.count}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3">
+                            {{t .LangUse "备注"}}: <input name="comment" type="text" class="form-control" placeholder="{{t .LangUse "备注"}}" value="{{$.comment}}">
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row" id="status_div2"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3" id="status_div">
+                                <select name="status" class="form-control">
+                                {{range $value, $show := .CouponMap}}
+                                    <option value="{{$value}}"{{if eq $.status $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row col-xs-3">
+                                <div>
+                                    <input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "提交"}}">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+

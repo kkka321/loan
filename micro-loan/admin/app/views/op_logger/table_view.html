@@ -1,0 +1,79 @@
+<script>
+  $(function () {
+    // 初始化时间范围选择插件
+    $('#time_range').daterangepicker({locale: {
+        format: 'YYYY-MM-DD'
+    }});
+
+
+    setTimeout(function () {
+        var obj = $('#time_range');
+        var origin = obj.attr("origin");
+        if (origin.length <= 0) {
+            obj.prop("value", "")
+        }
+    }, 500)
+
+    // 绑定，modal 弹出事件，查看 log
+    $('#myModal').on('shown.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // 触发事件的按钮
+      var id = button.data('id') // 解析出data-whatever内容
+      var ctime = button.data('ctime') // 解析出data-whatever内容
+      $.ajax({
+        url: "/admin/op_log/view",
+        type: "GET",
+        data: {id:id, ctime:ctime},
+        dataType: "json",
+      }).done(function(data) {
+        var original = $.parseJSON(data.Original)
+        var edited = $.parseJSON(data.Edited)
+
+        var display = document.getElementById('displayDiff');
+
+
+
+        for(var index in original){
+          tr =  document.createElement('tr');
+          tdColumn = document.createElement('td');
+          tdColumn.appendChild(document.createTextNode(index));
+          tdColumn.style.verticalAlign ="middle"
+          tdOriginal = document.createElement('td');
+          //tdOriginalInput = document.createElement('textarea')
+          tdOriginalInput = document.createElement('span')
+          //tdOriginalInput.value=original[index]
+          tdOriginalInput.appendChild(document.createTextNode(original[index]));
+
+          //tdOriginalInput.disabled="disabled"
+          //tdOriginalInput.rows="1"
+          //tdOriginalInput.className="form-control"
+          tdOriginal.appendChild(tdOriginalInput);
+          tdEdited = document.createElement('td');
+          //tdEditedInput = document.createElement('textarea')
+          tdEditedInput = document.createElement('span')
+          if(edited[index] == undefined || edited[index] != original[index]) {
+            tdEditedInput.style.color = 'red';
+          }
+          tdEditedInput.appendChild(document.createTextNode(edited[index]));
+
+          //tdEditedInput.value=edited[index]
+          //tdEditedInput.disabled="disabled"
+          //tdEditedInput.rows="1"
+          //tdEditedInput.className="form-control"
+          tdEdited.appendChild(tdEditedInput);
+          tr.appendChild(tdColumn);
+          tr.appendChild(tdOriginal);
+          tr.appendChild(tdEdited);
+          display.appendChild(tr);
+        }
+      });
+      return false;
+    })
+    $("#myModal").on("hidden.bs.modal", function() {
+        console.log("clear")
+        var display = document.getElementById('displayDiff');
+        display.innerHTML = "";
+
+        $(this).removeData("bs.modal");
+    });
+  })
+</script>

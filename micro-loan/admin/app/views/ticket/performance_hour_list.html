@@ -1,0 +1,146 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{t .LangUse "人员当日绩效"}}
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+               
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal" action="/ticket/performance/management_hour" method="get">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            
+                                <select name="item_id" class="form-control">
+                                    <option value="-1">{{t .LangUse "工单分类"}}</option>
+                                {{range $value, $show := $.ticketItemMap}}
+                                    <option value="{{$value}}"{{if eq $.itemID $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                {{end}}
+                                </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                            
+                                  
+                                    <select name="hour" class="form-control">
+                                        <option value="-1">{{t .LangUse "创建时间"}}</option>
+                                    {{range $v,$k:=$.hourList}}
+                                        <option value="{{$k}}"{{if eq $.currentHour $k}} selected{{end}}>{{$k}}</option>
+                                    {{end}}
+                                    </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                            
+                                <div class="input-group">
+                                    <input name="op_name"  id="op_name" type="text" class="form-control" placeholder="{{t .LangUse "分配给"}}" value="{{.opName}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-1">
+                                &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="/ticket/performance/management_hour" class="form-control">{{t .LangUse "清除"}}</a>
+                            </div>
+                            <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                            </div>
+                            <!-- <div class="col-xs-1">
+                                &nbsp;<a href="javascript:void(0)" class="form-control multiAssign">{{t .LangUse "分配工单"}}</a>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header clearfix">
+                  <ul class="stastic pull-right">
+                      <label class="disabled"><a>{{t .LangUse "总分配量"}}: {{$.totalStats.TotalAssign}}</a></label>
+                      <label class="disabled"><a>{{t .LangUse "总处理量"}}: {{$.totalStats.TotalHandle}}</a></label>
+                  </ul>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered table-striped">
+                <tr>
+                  <th class="listMultiSelect" style="display:none;">{{t .LangUse "Test"}}</th>
+                  <th>{{t .LangUse "日期"}}</th>
+                  <th>{{t .LangUse "工单分类"}}</th>
+                  <th>{{t .LangUse "排名"}}</th>
+                  <th>{{t .LangUse "分配给"}}</th>
+                  <th>{{t .LangUse "分案本金"}}</th>
+                  <th>{{t .LangUse "回款本金"}}</th>
+                  <th>{{t .LangUse "回款息费"}}</th>
+                  <th>{{t .LangUse "回款总金额"}}</th>
+                  <th>{{t .LangUse "回收率"}} %</th>
+                  <th>{{t .LangUse "目标回收率"}} %</th>
+                  <th>{{t .LangUse "差值金额"}}</th>
+                  <th>{{t .LangUse "新分配数"}}</th>
+                  <th>{{t .LangUse "处理数"}}</th>
+                  <th>{{t .LangUse "完成数"}}</th>
+                  <th>{{t .LangUse "负载数"}}</th>
+                </tr>
+                {{range .List}}
+                <tr>
+                  <input type="hidden" name="id" value="{{.Id}}"/>
+                    <td class="listMultiSelect" style="display:none;"><input type="checkbox" value="{{.Id}}" name="listMultiSelect"/></td>
+                    <td>{{.Hour}}</td>
+                    <td>{{getTicketItemDisplay $.LangUse .TicketItemID}}</td>
+                    <td>{{.Ranking}}</td>
+                    <td>{{operatorName .AdminUID}}</td>
+                    <td>{{.LoadLeftUnpaidPrincipal}}</td>
+                    <td>{{.RepayPrincipal}}</td>
+                    <td>{{.RepayInterest}}</td>
+                    <td>{{.RepayTotal}}</td>
+                    <td>{{.RepayAmountRate}}</td>
+                    <td>{{.TargetRepayRate}}</td>
+                    <td>{{.DiffTargetRepay}}</td>
+                    <td>{{.AssignNum}}</td>
+                    <td>{{.HandleNum}}</td>
+                    <td>{{.CompleteNum}}</td>
+                    <td>{{.LoadNum}}</td>
+                </tr>
+                {{end}}
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                {{template "inc/paginator.html" .}}
+              </ul>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>

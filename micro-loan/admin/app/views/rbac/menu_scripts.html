@@ -1,0 +1,361 @@
+<script>
+
+$(function(){
+
+  $(".menuOpertaionButton .updateMenu").on("click",function(){
+      $("#updateModal").modal({
+        remote:"/menu/update_page?id=" + $(this).data("id")
+      })
+      return false
+  })
+});
+
+// $("li.treeview").on("focus", function(){
+//   var buttonGroup = $(this).children().find("li span.menuOpertaionButton");
+//   console.log(buttonGroup);
+// })
+
+
+$(function(){
+  // 绑定，modal 弹出事件，查看 log
+  $('#myModal').on('shown.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // 触发事件的按钮
+    var pid = button.data('pid') // 解析出data-whatever内容
+    var pname = button.data('pname') // 解析出data-whatever内容
+    $("#menuPid").val(pid);
+    $("#myModalLabel strong").html(pname);
+
+
+
+
+    return false;
+  });
+
+  $('.deleteMenu').on('click', function (event) {
+    $('#deleteModal').modal();
+
+    var button = $(this); // 触发事件的按钮
+    var id = button.data('id'); // 解析出data-whatever内容
+    var name = button.data('name'); // 解析出data-whatever内容
+    $("#deleteSubmitButton").data("id", id);
+    $("#deleteSubmitButton").data("pid", button.data('pid'));
+    $("#deleteModal .modal-body strong").html(name);
+    return false;
+  });
+
+  $('#deleteSubmitButton').on('click', function (event) {
+    var pid = $(this).data("pid")
+
+    $.ajax({
+        url:"/menu/delete",
+        data:{id:$(this).data("id")},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        error: function () {
+            $("#deleteSubmitButton").html("确认");
+            $("#deleteSubmitButton").removeAttr("disabled");
+            showWarningBox('Request Failed');
+        },
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+                showWarningBox(result.error);
+            } else {
+                console.log("success");
+                $('#deleteModal').modal('hide');
+
+                $('#deleteModal').modal('hide').on('hidden.bs.modal', function (e) {
+                    $(this).removeData();
+                    $("#resultMessage").html("删除成功, ID:" + result.id);
+                    $('#smallModal').modal('show')
+                        .on('hidden.bs.modal', function (e) {
+                            location.href = '/menu?id='+pid;
+                        })
+                });
+            }
+        },
+        complete:function() {
+            $("#deleteSubmitButton").html("确认");
+            $("#deleteSubmitButton").removeAttr("disabled");
+        },
+        beforeSend:function() {
+            $("#deleteSubmitButton").attr('disabled', 'disabled');
+            $("#deleteSubmitButton").html("删除中...");
+        }
+    });
+  });
+
+  $('.updateSort').on('click', function (event) {
+    event.stopPropagation();
+    var id = $(this).data("id");
+    $.ajax({
+        url:"/menu/update_sort",
+        data:{id:id, operation: $(this).data("operation")},
+        dataType:'json',
+        cache:false,
+        type:"POST",
+        success:function(result) {
+            if (result.hasOwnProperty('error') ) {
+                showWarningBox(result.error);
+            } else {
+                console.log("success");
+                location.href = '/menu?id='+id;
+            }
+        },
+        complete:function() {
+        },
+        beforeSend:function() {
+
+        }
+    });
+    return false;
+  });
+
+
+
+
+
+
+
+  $('#addForm').bootstrapValidator({
+      message: 'This value is not valid',
+      feedbackIcons: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+      },
+      fields: {
+          name: {
+              message: 'The Name is not valid.',
+              validators: {
+                  notEmpty: {
+                    message: 'The Name is required and can\'t be empty.'
+                  },
+              }
+          },
+      }
+  })
+  .on('success.form.bv', function (e) {
+      // Prevent form submission
+      e.preventDefault();
+      // Get the form instance
+      if (!setPrivilegeID('#addForm')){
+        showWarningBox('Check the path, cannot find related privilege');
+        $("#submitButton").html("Submit");
+        $("#submitButton").removeAttr("disabled");
+        return
+      }
+      var $form = $(e.target);
+      // Get the BootstrapValidator instance
+      var bv = $form.data('bootstrapValidator');
+      // Use Ajax to submit form data
+      $.ajax({
+          url:$form.attr('action'),
+          data:$form.serialize(),
+          dataType:'json',
+          cache:false,
+          type:$form.attr('method'),
+          error: function () {
+              $("#submitButton").html("Submit");
+              $("#submitButton").removeAttr("disabled");
+              showWarningBox('Request Failed');
+              bv.resetForm();
+          },
+          success:function(result) {
+              if (result.hasOwnProperty('error') ) {
+                  showWarningBox(result.error);
+                  bv.resetForm();
+              } else {
+                  console.log("success");
+                  $('#myModal').modal('hide');
+
+                  $('#myModal').modal('hide').on('hidden.bs.modal', function (e) {
+                      $(this).removeData();
+                      $("#resultMessage").html("Created successful, ID:" + result.id);
+                      $('#smallModal').modal('show')
+                          .on('hidden.bs.modal', function (e) {
+                              location.href = '/menu?id='+result.id;
+                          })
+                  });
+              }
+          },
+          complete:function() {
+              $("#submitButton").html("Submit");
+              $("#submitButton").removeAttr("disabled");
+          },
+          beforeSend:function() {
+              $("#submitButton").attr('disabled', 'disabled');
+              $("#submitButton").html("Waiting...");
+          }
+      });
+  });
+
+  function setPrivilegeID(formID){
+    var pathEle = $(formID +  " input[name='path']");
+    var privilegeNameEle = $(formID + " input[name='privilege_name']");
+    var privilegeIDEle = $(formID + " input[name='privilege_id']");
+    var pathVal = pathEle.val()
+
+    if (pathVal.length == 0) {
+      privilegeIDEle.val("");
+      privilegeNameEle.attr("disabled",false);
+      privilegeNameEle.val("");
+      privilegeNameEle.attr("disabled",true);
+      return true
+    }
+    if (privilegeIDEle.data("relatedpath") == pathEle.val()){
+      return true
+    }
+
+    $.ajax({
+        url:pathVal,
+        data:{token:"menu_bind"},
+        dataType:'json',
+        cache:false,
+        sync:false,
+        type:"GET",
+        error: function () {
+            console.log("get p failed");
+            return false
+        },
+        success:function(result) {
+            if (result.hasOwnProperty('id') && result.id > 0 ) {
+                console.log(result);
+                privilegeIDEle.data("relatedpath",pathVal)
+                privilegeIDEle.val(result.id);
+                privilegeNameEle.attr("disabled",false);
+                privilegeNameEle.val(result.name);
+                privilegeNameEle.attr("disabled",true);
+                return true
+            }
+            return false
+        },
+    });
+  }
+
+  $("#addForm input[name='path']").on("blur",function(){
+    setPrivilegeID('#addForm');
+  });
+
+
+
+    $('#updateModal').on('shown.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // 触发事件的按钮
+      //var id = button.data('id') // 解析出data-whatever内容
+      event.preventDefault();
+      $('#updateForm').bootstrapValidator({
+          message: 'This value is not valid',
+          feedbackIcons: {
+              valid: 'glyphicon glyphicon-ok',
+              invalid: 'glyphicon glyphicon-remove',
+              validating: 'glyphicon glyphicon-refresh'
+          },
+          fields: {
+              name: {
+                  message: 'The Name is not valid.',
+                  validators: {
+                      notEmpty: {
+                        message: 'The Name is required and can\'t be empty.'
+                      }
+                  }
+              },
+          }
+      })
+      .on('success.form.bv', function (e) {
+          // Prevent form submission
+          e.preventDefault();
+          // Get the form instance
+          if (!setPrivilegeID('#updateForm')){
+            showWarningBox('Check the path, cannot find related privilege');
+            $("#submitButton").html("Submit");
+            $("#submitButton").removeAttr("disabled");
+            return
+          }
+          var $form = $(e.target);
+          // Get the BootstrapValidator instance
+          var bv = $form.data('bootstrapValidator');
+          // Use Ajax to submit form data
+          $.ajax({
+              url:$form.attr('action'),
+              data:$form.serialize(),
+              dataType:'json',
+              cache:false,
+              type:$form.attr('method'),
+              error: function () {
+                  $("#submitButton").html("Submit");
+                  $("#submitButton").removeAttr("disabled");
+                  showWarningBox('Request Failed');
+                  bv.resetForm();
+              },
+              success:function(result) {
+                  if (result.hasOwnProperty('error') ) {
+                      showWarningBox(result.error);
+                      bv.resetForm();
+                  } else {
+                      console.log("success");
+
+                      $('#updateModal').modal('hide').on('hidden.bs.modal', function (e) {
+                          $(this).removeData();
+                          $("#resultMessage").html(result.info);
+                          $('#smallModal').modal('show')
+                              .on('hidden.bs.modal', function (e) {
+                                location.href = '/menu?id='+result.id;
+                              })
+                      });
+                      $('#updateModal').modal('hide');
+
+                  }
+              },
+              complete:function() {
+                  $("#submitButton").html("Submit");
+                  $("#submitButton").removeAttr("disabled");
+              },
+              beforeSend:function() {
+                  $("#submitButton").attr('disabled', 'disabled');
+                  $("#submitButton").html("Waiting...");
+              }
+          });
+
+      });
+
+      $("#updateForm input[name='path']").on("blur",function(){
+        setPrivilegeID('#updateForm');
+      });
+
+      return false;
+    });
+
+  $('#myModal').on('hide.bs.modal', function (e) {
+     $(this).removeData();
+  });
+
+  $("#myModal").on("hidden.bs.modal", function() {
+      console.log("clear")
+      $(this).removeData("bs.modal");
+  });
+  $('#updateModal').on('hide.bs.modal', function (e) {
+    console.log("hide clear");
+    $(this).removeData();
+  });
+
+
+
+  $("#updateModal").on("hidden.bs.modal", function() {
+    console.log("hidden clear");
+    $(this).removeData("bs.modal");
+  });
+})
+
+
+
+function showWarningBox(messageContent) {
+    var warningBoxContent = '<div class="callout callout-danger"><h4>Warning!</h4><p>' + messageContent +  '</p> </div>';
+    showBoxMsg(warningBoxContent);
+}
+
+function showBoxMsg(msg) {
+    $("#smallModal div.modal-body").html(msg);
+    $("#smallModal").modal('show');
+}
+
+</script>

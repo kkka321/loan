@@ -1,0 +1,61 @@
+<script>
+$(function () {
+  $('#register_time_range').daterangepicker({
+    locale: {
+      format: 'YYYY-MM-DD',
+    },
+    "autoUpdateInput": false,
+  }, function(start, end, label) {
+    $('#register_time_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
+  });
+
+    $('.delete_customer').click(function() {
+        var id = $(this).attr('data-id')
+        $.ajax({
+            url:"/customer/delete?id=" + id,
+            dataType:'json',
+            cache:false,
+            type:"GET",
+            complete:function() {
+                location.reload();
+            }
+        });
+    });
+
+     $('.super_delete_customer').click(function() {
+         if (deleteConfirm()){
+            var id = $(this).attr('data-id')
+            $.ajax({
+                url:"/customer/super_delete?id=" + id,
+                dataType:'json',
+                cache:false,
+                type:"GET",
+                complete:function() {
+                    location.reload();
+                }
+            });
+        }else{
+            return 
+        }
+    });
+
+    $('#updateModal').on('hide.bs.modal', function (e) {
+        console.log("hide clear");
+        $(this).removeData();
+    });
+
+    $("#updateModal").on("hidden.bs.modal", function() {
+        console.log("hidden clear");
+        $(this).removeData("bs.modal");
+    });
+    function deleteConfirm() {
+　　　　if (window.confirm("你确定要删除该用户吗？")) {
+　　　　　　return true;//确定返回真
+　　　　}
+　　　　else {
+　　　　　　return false;//取消返回假
+　　　　}
+　　}
+});
+
+</script>

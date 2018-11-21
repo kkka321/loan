@@ -1,0 +1,154 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+        {{t .LangUse "优惠券管理"}}
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{t .LangUse "搜索"}}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form class="form-horizontal" action="/coupon" method="get">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "活动名称"}}: <input name="name" type="text" class="form-control" placeholder="{{t .LangUse "活动名称"}}" value="{{$.name}}">
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "活动状态"}}:
+                                    <select name="status" class="form-control">
+                                        <option value="-1">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .CouponMap}}
+                                        <option value="{{$value}}"{{if eq $.status $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "派发状态"}}:
+                                    <select name="distribute_status" class="form-control">
+                                        <option value="-1">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .DistributeStatusMap}}
+                                        <option value="{{$value}}"{{if eq $.distribute_status $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row"><p>&nbsp;</p></div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                {{t .LangUse "起止日期"}}:
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input name="time_range"  id="time_range" type="text" readonly class="form-control" origin="{{$.timeRange}}" placeholder="{{t $.LangUse "选择日期范围"}}" value="{{$.timeRange}}" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "券种类"}}:
+                                    <select name="coupon_type" class="form-control">
+                                        <option value="-1">{{t $.LangUse "请选择"}}</option>
+                                    {{range $value, $show := .CouponTypeMap}}
+                                        <option value="{{$value}}"{{if eq $.coupon_type $value}} selected{{end}}>{{t $.LangUse $show}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                {{t .LangUse "客户类型"}}:
+                                    <select name="distribute_algo" class="form-control">
+                                        <option value="">{{t $.LangUse "请选择"}}</option>
+                                    {{range $i, $v := .CouponName}}
+                                        <option value="{{$v}}"{{if eq $.distribute_algo $v}} selected{{end}}>{{t $.LangUse $v}}</option>
+                                    {{end}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    &nbsp;<input type="submit" class="form-control btn btn-block btn-info" value="{{t .LangUse "搜索"}}">
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/coupon" class="form-control">{{t .LangUse "清除"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="javascript:void(0)" class="form-control reload-page">{{t .LangUse "刷新"}}</a>
+                                </div>
+                                <div class="col-xs-1">
+                                    &nbsp;<a href="/coupon/edit?op=1" class="form-control btn btn-block btn-info">+{{t .LangUse "添加优惠券"}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;word-break:break-all;">
+                            <tr>
+                                <th>Id</th>
+                                <th>{{t .LangUse "活动名称"}}</th>
+                                <th>{{t .LangUse "券种类"}} ID</th>
+                                <th>{{t .LangUse "用户类型"}}</th>
+                                <th>{{t .LangUse "开始日期"}}</th>
+                                <th>{{t .LangUse "截止派发日期"}}</th>
+                                <th>{{t .LangUse "使用数"}}</th>
+                                <th>{{t .LangUse "活动生效金额"}}</th>
+                                <th>{{t .LangUse "派发总数"}}</th>
+                                <th>{{t .LangUse "状态"}}</th>
+                                <th>{{t .LangUse "派发状态"}}</th>
+                                <th>{{t .LangUse "操作"}}</th>
+                            </tr>
+                        {{range .List}}
+                            <tr>
+                                <td>{{.Id}}</td>
+                                <td>{{.Name}}</td>
+                                <td>{{couponTypeDisplay $.LangUse .CouponType}}</td>
+                                <td>{{.DistributeAlgo}}</td>
+                                <td>{{mDateMHS .DistributeStart}}</td>
+                                <td>{{mDateMHS .DistributeEnd}}</td>
+                                <td>{{.UsedNum}}</td>
+                                <td>{{.UsedAmount}}</td>
+                                <td>{{.DistributeAll}}</td>
+                                <td>{{couponAvaliableDisplay $.LangUse .IsAvailable}}</td>
+                                <td>{{couponDistributeDisplay $.LangUse .IsAvailable .DistributeStart .DistributeEnd}}</td>
+                                <td>
+                                    <a href="/coupon/edit?id={{.Id}}&op=2">{{t $.LangUse "编辑"}}</a> |
+                                    <a href="/coupon/coupon_detail?id={{.Id}}">{{t $.LangUse "发放详情"}}</a> |
+                                {{if eq .IsAvailable 0}}
+                                    <a style="cursor: pointer" data-id={{.Id}} data-op={{.IsAvailable}} class="coupon_active">{{t $.LangUse "开启"}}</a>
+                                {{else}}
+                                    <a style="cursor: pointer" data-id={{.Id}} data-op={{.IsAvailable}} class="coupon_active">{{t $.LangUse "停止"}}</a>
+                                {{end}}
+                                </td>
+                            </tr>
+                        {{end}}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                        {{template "inc/paginator.html" .}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
